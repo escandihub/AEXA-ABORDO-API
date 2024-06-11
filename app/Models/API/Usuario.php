@@ -5,8 +5,9 @@ namespace App\Models\API;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuario extends Model
+class Usuario extends Model 
 {
     use HasFactory, HasApiTokens;
 
@@ -23,6 +24,6 @@ class Usuario extends Model
 
     public function taquilla()
     {
-        return $this->belongsTo(Taquilla::class, 'taquilla', 'id_usuario');
+        return $this->hasOne(Taquilla::class, 'taquilla', 'id_usuario');
     }
 }

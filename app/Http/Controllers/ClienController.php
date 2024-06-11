@@ -30,7 +30,7 @@ class ClienController extends Controller
         $user = Usuario::where('user', $request->user)->first();
         return response()->json([
             "user" => $user,
-            "token" => $user->createToken('omnibus', ['*'], now()->addDay())->plainTextToken
+            "token" => $user->createToken('omnibus', ["*"], now()->addDay())->plainTextToken
         ], 200);
 
     }

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class LoginUser
 {
@@ -21,9 +22,14 @@ class LoginUser
             'password' => 'required'
         ]);
 
+        
         if ($validator->fails()) {
             return response()->json(["error" => $validator->errors()], 422);
         }
-        return $next($request);
+
+        if(\App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first()){
+            return $next($request);    
+        }
+        return response()->json(["error" => "Credenciales invalidas"], 422);
     }
 }
