@@ -3,14 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\User;
+use App\Models\API\Empleado;
 
 class ListUserAPI extends Component
 {
     public function render()
     {
         return view('livewire.list-user-api',  [
-            'users' => User::all()
+            'users' => Empleado::all()
         ]);
     }
 }
