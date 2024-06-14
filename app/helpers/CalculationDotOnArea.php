@@ -102,4 +102,6 @@ class CalculationDotOnArea
 
         return $formula;
     }
+
+    
 }

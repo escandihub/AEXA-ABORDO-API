@@ -9,5 +9,6 @@ class Terminal extends Model
 {
     use HasFactory;
 
+    protected $table = 'terminales';
     protected $primaryKey = 'id_terminal';
 }
