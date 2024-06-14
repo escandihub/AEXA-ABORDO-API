@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\API\Usuario;
 use App\Models\Diario;
 use App\Http\Resources\CorridaResource;
+use App\Http\Resources\PasajeroResource;
+use App\Models\API\Pasajero;
 use Illuminate\Support\Facades\Log;
 use \Carbon\Carbon;
 
@@ -39,6 +41,20 @@ class CorridasController extends Controller
      * solo la que el usuario este autorizado
      */
     public function show($id) {
+        $diario = Diario::find($id);
+
+        $v = $diario->pasajero()->where('abordo', 0)->get();
+
+        // $pasajero = Pasajero::Where('id_diario_c', $id)->where('abordo', 0)->get();
         
+        return  PasajeroResource::collection($v)->resolve();
+    }
+
+    public function edit($id){
+        $pasajero = Pasajero::find($id);
+
+        $pasajero->update(['abordo' => true]);
+
+        return response()->json(["messaje" => "OK" ], 200);
     }
 }

@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('corridas',[ CorridasController::class, 'index']); 
+    Route::get('pasajeros/{id}',[ CorridasController::class, 'show']); 
 });
 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class);
