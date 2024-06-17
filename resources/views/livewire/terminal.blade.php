@@ -40,7 +40,7 @@
                         {{ $terminal->abreviacion }}
                     </td>
                     <td class="">
-                        <button wire:click="update()" class="btn btn-primary btn-sm">Editar</button>
+                        <button wire:click="showMap({{ $terminal->id_terminal }})" class="btn btn-primary btn-sm">Editar</button>
                         {{-- <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         --}}
                     </td>
@@ -50,6 +50,7 @@
         </table>
       
     </div>
-    @livewire('map.container')
+    {{-- @livewire('map.container') --}}
+    @livewire('map.modal-form')
 </div>
 

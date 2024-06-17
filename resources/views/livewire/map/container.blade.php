@@ -13,10 +13,10 @@
 
 @script
 <script>
-    let map = L.map('map').setView([16.742368220989242, -93.10303916632063], 13);
+    let map = L.map('map').setView([$wire.lat, $wire.log], 15);
 
     // let marker = L.marker([ {{ $lat }}, {{ $log }} ]).addTo(map);
-    let marker = L.marker([ 16.742368220989242, -93.10303916632063]).addTo(map);
+    let marker = L.marker([ $wire.lat, $wire.log]).addTo(map);
     
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
