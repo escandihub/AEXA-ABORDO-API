@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\API\Terminal;
+use App\Models\API\Taquilla;
+use App\helpers\formula;
+
 class LoginUser
 {
     /**
@@ -22,14 +26,43 @@ class LoginUser
             'password' => 'required'
         ]);
 
-        
+
         if ($validator->fails()) {
             return response()->json(["error" => $validator->errors()], 422);
         }
 
-        if(\App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first()){
-            return $next($request);    
+        $usuario = \App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first();
+
+        if ($usuario) {
+            if ($this->validLocation($usuario->id_usuario, $request->lat, $request->log)) {
+                return $next($request);
+            } else {
+                return response()->json(["error" => "No se encuentra dentro de la Terminal."], 401);
+            }
+        } else {
+            return response()->json(["error" => "Credenciales invalidas, por favor de validar sus credenciales."], 401);
         }
-        return response()->json(["error" => "Credenciales invalidas"], 422);
+    }
+
+    /**
+     * Se valida que el usuario se encuentre dentro del radio 
+     * permitido para acceder a la aplicacion
+     */
+
+    public function validLocation($id_empleado, $lat, $log)
+    {
+
+
+        $taquilla = Taquilla::where('taquilla', $id_empleado)->first();
+        $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
+
+        $calculo = new formula();
+        $isValid = $calculo->isPointWithinRadius($terminal->latitud, $terminal->longitud, $lat, $log, $terminal->radio);
+
+        if ($isValid) {
+            return true;
+        }
+        return false;
+        return response()->json(["error" => "No se encuentra dentro de la Terminal."], 401);
     }
 }
