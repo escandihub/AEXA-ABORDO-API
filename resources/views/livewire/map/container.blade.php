@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ lataa:2 }">
     <div style="width: 600px; height: 400px; position: relative; outline-style: none;" id="map" map></div>
 </div>
 
@@ -15,7 +15,8 @@
 <script>
     let map = L.map('map').setView([16.742368220989242, -93.10303916632063], 13);
 
-    let marker = L.marker([16.741982949707726, -93.10112138694628]).addTo(map);
+    // let marker = L.marker([ {{ $lat }}, {{ $log }} ]).addTo(map);
+    let marker = L.marker([ 16.742368220989242, -93.10303916632063]).addTo(map);
     
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -23,11 +24,19 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-let circle = L.circle([16.74165417955225, -93.10123940413854], {
+
+let circle = L.circle([$wire.lat, $wire.log], {
     color: 'red',
     fillColor: '#f03',
     fillOpacity: 0.5,
-    radius: 50
+    radius: $wire._radio
 }).addTo(map);
+
+document.addEventListener('livewire:init', () => {
+        // Runs after Livewire is loaded but before it's initialized
+        // on the page...
+
+        console.log(window.Livewire);
+    })
 </script>
 @endscript
