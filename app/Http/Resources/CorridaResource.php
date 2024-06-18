@@ -25,6 +25,7 @@ class CorridaResource extends JsonResource
             "origen" => $this->origen,
             "destino" => $this->destino,
             "bus" => [
+                "card_code" => $this->autobus,
                 "capacidad" => $this->capacidad,
                 "disponibilidad" => $this->disponibles
             ],

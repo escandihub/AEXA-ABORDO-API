@@ -47,6 +47,20 @@ class CorridasController extends Controller
 
         // $pasajero = Pasajero::Where('id_diario_c', $id)->where('abordo', 0)->get();
         
+        return response()->json([
+            "diario_id" => $diario->id_diario_c,
+            "car_code" => $diario->autobus,
+            "date" => "{$diario->hora}:{$diario->minutos}",
+            "hour" => $diario->fecha,
+            "passengers" => $diario->capacidad,
+            "disponibilidad" => $diario->disponibles,
+            "route" => [
+                "from" => $diario->origen,
+                "to" => $diario->destino,
+            ],
+            "pasajeros" => PasajeroResource::collection($v)->resolve()
+
+        ], 200);
         return  PasajeroResource::collection($v)->resolve();
     }
 

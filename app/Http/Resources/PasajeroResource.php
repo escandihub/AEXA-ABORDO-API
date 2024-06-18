@@ -14,12 +14,15 @@ class PasajeroResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $name = preg_split("/[-.]+/", $this->nombre); 
         return [
             "id" => $this->id_pasajero,
+            "nombre" =>  $name[0],
             "folio" => $this->folio_empleado,
             "escala" => $this->escala,
             "status" => $this->status,
-            "abordo" => $this->abordo
+            "abordo" => $this->abordo,
+            "asiento" => $this->numero_asiento
         ];
     }
 }
