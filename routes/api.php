@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienController;
 use App\Http\Controllers\CorridasController;
+use App\Http\Middleware\isLocationValid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RegisterClientAPI;
@@ -18,4 +19,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class);
-Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware(LoginUser::class);
+Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class]);
