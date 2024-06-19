@@ -57,7 +57,6 @@ class CorridasController extends Controller
             "route" => [
                 "from" => $diario->origen,
                 "to" => $diario->destino,
-                "to2" => $diario->destino,
             ],
             "pasajeros" => PasajeroResource::collection($v)->resolve()
 
