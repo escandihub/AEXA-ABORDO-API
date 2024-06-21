@@ -64,10 +64,13 @@ class CorridasController extends Controller
         return  PasajeroResource::collection($v)->resolve();
     }
 
-    public function edit($id){
+    /**
+     * agregar middleware por si no existe el id del usuario
+     */
+    public function update($id){
         $pasajero = Pasajero::find($id);
 
-        $pasajero->update(['abordo' => true]);
+        $pasajero->update(['abordo' => 1]);
 
         return response()->json(["messaje" => "OK" ], 200);
     }

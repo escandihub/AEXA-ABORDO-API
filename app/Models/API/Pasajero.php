@@ -12,6 +12,7 @@ class Pasajero extends Model
     
     protected $table = 'pasajeros';
     protected $primaryKey = 'id_pasajero';  
+    public $timestamps = false;
 
 
     protected $fillable = [
