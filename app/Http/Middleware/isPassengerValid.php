@@ -15,11 +15,22 @@ class isPassengerValid
 {
     /**
      * Handle an incoming request.
+     * 
+     * verifica que la corrida sea parte el usuario que se va a escanear
+     * para no procesar el pasajero
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $validator = Validator::make($request->all(), [
+            'diario_id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["error" => $validator->errors()], 422);
+        }
+
+
         $param = 0;
         if ($request->id) {
             $param = $request->id;
@@ -27,7 +38,7 @@ class isPassengerValid
                 return $next($request);
             }
         }
-        return response()->json(["error" => "El pasajero no es de la corrida actual."], 400);
+        return response()->json(["error" => "El pasajero no es de la corrida actual."], 422);
     }
 
     public function isPartOfCorrida($id, $request)
