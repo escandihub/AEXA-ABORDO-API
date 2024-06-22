@@ -26,14 +26,17 @@ class isPassengerValid
         $validator = Validator::make($request->all(), [
             'diario_id' => 'required'
         ]);
+
+        Log::info($request->all());
+
         if ($validator->fails()) {
             return response()->json(["error" => $validator->errors()], 422);
         }
 
 
         $param = 0;
-        if ($request->id) {
-            $param = $request->id;
+        if ($request->pasajero_id) {
+            $param = $request->pasajero_id;
             if ($this->isPartOfCorrida($param, $request)) {
                 return $next($request);
             }
