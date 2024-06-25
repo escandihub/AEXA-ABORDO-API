@@ -54,6 +54,7 @@ class CorridasController extends Controller
             "hour" => $diario->fecha,
             "passengers" => $diario->capacidad,
             "disponibilidad" => $diario->disponibles,
+            "a_abordar" => $v->count(),
             "route" => [
                 "from" => $diario->origen,
                 "to" => $diario->destino,
