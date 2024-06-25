@@ -23,4 +23,8 @@ class ModalForm extends Component
         $this->terminal = $terminal_id;
         $this->showV = true;
     }
+
+    public function close(){
+        $this->showV = false;
+    }
 }
