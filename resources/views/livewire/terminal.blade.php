@@ -24,8 +24,6 @@
                     </th>
                 </tr>
             </thead>
-
-            <body>
                 @foreach ($terminales as $terminal)
                 <tr
                     class="odd:bg-black odd:dark:bg-gray-900 even:bg-blue-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
@@ -46,11 +44,10 @@
                     </td>
                 </tr>
                 @endforeach
-            </body>
         </table>
       
     </div>
     {{-- @livewire('map.container') --}}
-    @livewire('map.modal-form')
+    @livewire('map.modal-form') 
 </div>
 
