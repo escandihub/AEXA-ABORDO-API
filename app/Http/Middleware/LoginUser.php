@@ -23,7 +23,9 @@ class LoginUser
     {
         $validator = Validator::make($request->all(), [
             'user' => 'string|required',
-            'password' => 'required'
+            'password' => 'required',
+            'lat' => 'required',
+            'log' => 'required',
         ]);
 
 
@@ -45,6 +47,8 @@ class LoginUser
     }
 
     /**
+     *  se dibuja en metros
+     * -- algoritmo en... 
      * Se valida que el usuario se encuentre dentro del radio 
      * permitido para acceder a la aplicacion
      */
@@ -57,7 +61,9 @@ class LoginUser
         $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
 
         $calculo = new formula();
-        $isValid = $calculo->isPointWithinRadius($terminal->latitud, $terminal->longitud, $lat, $log, $terminal->radio);
+        \Log::info($log);
+        $radio = ($terminal->radio / 1000); // se divide el radio q se guardo en metros para convertirlo en kilometros
+        $isValid = $calculo->isPointWithinRadius($terminal->latitud, $terminal->longitud, $lat, $log, $radio);
 
         if ($isValid) {
             return true;
