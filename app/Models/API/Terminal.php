@@ -11,4 +11,12 @@ class Terminal extends Model
 
     protected $table = 'terminales';
     protected $primaryKey = 'id_terminal';
+    public $timestamps = false;
+
+
+    protected $fillable = [
+        'latitud',
+        'longitud',
+        'radio',
+    ];
 }
