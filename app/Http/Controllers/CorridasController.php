@@ -10,6 +10,7 @@ use App\Http\Resources\PasajeroResource;
 use App\Models\API\Pasajero;
 use Illuminate\Support\Facades\Log;
 use \Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CorridasController extends Controller
 {
@@ -23,17 +24,29 @@ class CorridasController extends Controller
         $usuario = Usuario::find($request->user()->id_usuario);
         $taquilla = $usuario->taquilla;
 
-        $fecha = '2024-05-25'; #\Carbon\Carbon::now()->format('Y-m-d')
-        $inicioH = Carbon::now()->subHour(2);
+        //'2024-07-31'; #
+        $fecha = \Carbon\Carbon::now()->format('Y-m-d');
+        $inicioH = Carbon::now()->subHour(1);
         $finH = Carbon::now()->addHour(1);
-        $corridas = Diario::where('destino', $taquilla->abreviacion)
-            // ->whereBetween('hora', [$inicioH->hour, $finH->hour]) 
-            ->where('fecha', $fecha)
-            ->orderBy('id_diario_c', 'desc')->get();
+
+        /**
+         * Se hace una subconsulta para acceder al hora:minutos
+         */
+        // se filtra por el dia y los hora 
+        $corridas = DB::table('diario_c')->selectRaw("concat(hora,':', minutos) as hora, id_diario_c")
+        ->where('fecha', $fecha)
+        ->whereBetween('hora', [$inicioH->hour, $finH->hour]);
+        
+        // luego se hace el join con los resultados para filtrar completamente
+        $corridaFilter = Diario::selectRaw("*")->joinSub($corridas, 'corridas', function($join)use($inicioH, $finH){
+            $join->on("corridas.id_diario_c", '=', 'diario_c.id_diario_c');
+            $join->whereBetween('corridas.hora', ["{$inicioH->hour}:$inicioH->minute", "{$finH->hour}:$finH->minute"]);
+            $join->orderBy('corrida.hora', 'desc');
+        })->get();
 
         Log::debug($corridas->count());
 
-        return  CorridaResource::collection($corridas)->resolve();
+        return  CorridaResource::collection($corridaFilter)->resolve();
     }
 
     /**
