@@ -18,20 +18,25 @@
 
     @script
     <script>
-        let map = L.map('map').setView([$wire.lat, $wire.log], 15);
+        const lat = $wire.lat || 16.7377763
+        const log = $wire.log || -93.103351
 
-        let marker = L.marker([$wire.lat, $wire.log]).addTo(map);
+        let map = L.map('map').setView([lat, log], 15);
+
+        let marker = L.marker([lat , log]).addTo(map);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        const radio = $wire._radio || 50
 
-        let circle = L.circle([$wire.lat, $wire.log], {
+        // dibuja el circulo 
+        let circle = L.circle([lat, log], {
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.5,
-            radius: $wire._radio
+            radius: radio
         })//.addTo(map);
 
         //  circle.editing.enable()
@@ -89,12 +94,20 @@
             if(type == 'circle'){
                 // createCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius)
                 // Livewire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
+                sendMessage(e.layer._latlng.lat, e.layer._latlng.lng)
                 $wire.dispatch('new-circle', 
                 {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
             }
          console.log(e);
 
      });
+
+     function sendMessage(lat, log){
+        L.marker([lat, log]).addTo(map)
+    .bindPopup('Se ha agregado la ubicacion exitosamente .<br> GUARDADO.')
+    .openPopup();
+        alert('se ha guardado la nueva ubicacion exitosamente')
+     }
 
      map.on('draw:deletestart', function (event) {
         var layer = event.layer;

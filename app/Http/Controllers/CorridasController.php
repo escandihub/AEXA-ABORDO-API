@@ -35,6 +35,7 @@ class CorridasController extends Controller
         // se filtra por el dia y los hora 
         $corridas = DB::table('diario_c')->selectRaw("concat(hora,':', minutos) as hora, id_diario_c")
         ->where('fecha', $fecha)
+        ->where('origen', $request->user()->taquilla->abreviacion)
         ->whereBetween('hora', [$inicioH->hour, $finH->hour]);
         
         // luego se hace el join con los resultados para filtrar completamente
