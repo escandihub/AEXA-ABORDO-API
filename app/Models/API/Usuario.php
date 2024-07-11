@@ -24,6 +24,6 @@ class Usuario extends Model
 
     public function taquilla()
     {
-        return $this->hasOne(Taquilla::class, 'taquilla', 'id_usuario');
+        return $this->hasOne(Taquilla::class, 'taquilla', 'id_empleado');
     }
 }
