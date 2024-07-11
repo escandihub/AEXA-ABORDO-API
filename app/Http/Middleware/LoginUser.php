@@ -28,7 +28,8 @@ class LoginUser
             'log' => 'required',
         ]);
 
-
+        // \Log::info($request->lat);
+        // \Log::info($request->log);
         if ($validator->fails()) {
             return response()->json(["error" => $validator->errors()], 422);
         }
@@ -36,7 +37,7 @@ class LoginUser
         $usuario = \App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first();
 
         if ($usuario) {
-            if ($this->validLocation($usuario->id_usuario, $request->lat, $request->log)) {
+            if ($this->validLocation($usuario->id_empleado, $request->lat, $request->log)) {
                 return $next($request);
             } else {
                 return response()->json(["error" => "No se encuentra dentro de la Terminal."], 401);
@@ -55,7 +56,7 @@ class LoginUser
 
     public function validLocation($id_empleado, $lat, $log)
     {
-
+        \Log::info($id_empleado);
 
         $taquilla = Taquilla::where('taquilla', $id_empleado)->first();
         $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
@@ -65,6 +66,7 @@ class LoginUser
         $radio = ($terminal->radio / 1000); // se divide el radio q se guardo en metros para convertirlo en kilometros
         $isValid = $calculo->isPointWithinRadius($terminal->latitud, $terminal->longitud, $lat, $log, $radio);
 
+        \Log::info($isValid);
         if ($isValid) {
             return true;
         }
