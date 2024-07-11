@@ -30,7 +30,7 @@ class ClienController extends Controller
         $user = Usuario::where('user', $request->user)->first();
         return response()->json([
             "user" => $user,
-            "token" => $user->createToken('omnibus', ["*"], now()->addMinute(10), $request->lat, $request->log)->plainTextToken,
+            "token" => $user->createToken('omnibus', ["*"], now()->addMinute(5), $request->lat, $request->log)->plainTextToken,
             
         ], 200);
 
