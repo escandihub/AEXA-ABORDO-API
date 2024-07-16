@@ -18,5 +18,13 @@ class Empleado extends Model
         'numero_terminal',
     ];
 
-    
+    public function termi()
+    {
+        return $this->hasOne(Terminal::class, 'clave_terminales', 'id_terminal');
+    }
+    public function terminal()
+    {
+        return $this->hasOne(Terminal::class, 'id_terminal', 'clave_terminales');
+    }
+       
 }
