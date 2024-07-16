@@ -11,6 +11,8 @@ use App\Models\API\Pasajero;
 use Illuminate\Support\Facades\Log;
 use \Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\DiarioCiudad;
+use Illuminate\Database\Query\JoinClause;
 
 class CorridasController extends Controller
 {
@@ -33,21 +35,56 @@ class CorridasController extends Controller
          * Se hace una subconsulta para acceder al hora:minutos
          */
         // se filtra por el dia y los hora 
-        $corridas = DB::table('diario_c')->selectRaw("concat(hora,':', minutos) as hora, id_diario_c")
+        $corridas = DB::table('diario_c')->selectRaw("concat(hora,':', minutos) as hora, id_diario_c, llave_corrida")
         ->where('fecha', $fecha)
-        ->where('origen', $request->user()->taquilla->abreviacion)
+        // ->where('origen', $request->user()->taquilla->abreviacion)
         ->whereBetween('hora', [$inicioH->hour, $finH->hour]);
         
+        $terminal = $request->user()->empleado->terminal;
+
+        \Log::info($terminal->abreviacion);
+        \Log::info($inicioH->hour);
+        \Log::info($finH->hour);
+
+        
+        $ciudad = DB::table('diario_c')->select('diario_c.*')
+        ->join('diario_c_ciudades', function(JoinClause $join)use($fecha, $inicioH, $finH, $terminal){
+            $join->on('diario_c_ciudades.id_diario_c', '=', 'diario_c.id_diario_c')
+            ->where('diario_c_ciudades.fecha', $fecha)
+            ->whereBetween('diario_c_ciudades.hora', [$inicioH->hour, $finH->hour])
+            ->where("diario_c_ciudades.{$terminal->abreviacion}", 1)
+            ->where("diario_c_ciudades.destino","!=",$terminal->abreviacion);
+        })->orderBy('diario_c_ciudades.hora', 'asc')->get();
+
+
+        // ->orderBy('diario_c_ciudades.hora', 'desc')->get();
+
+        // $corrida = DB::table('diario_c')->select("*")->joinSub($ciudad, 'ciudad', function($join)use($fecha){
+        //     $join->on("ciudad.id_diario_c", '=', 'diario_c.id_diario_c');
+        // })->orderBy('ciudad.hora', 'desc')->get();
+
         // luego se hace el join con los resultados para filtrar completamente
-        $corridaFilter = Diario::selectRaw("*")->joinSub($corridas, 'corridas', function($join)use($inicioH, $finH){
-            $join->on("corridas.id_diario_c", '=', 'diario_c.id_diario_c');
-            $join->whereBetween('corridas.hora', ["{$inicioH->hour}:$inicioH->minute", "{$finH->hour}:$finH->minute"]);
-            $join->orderBy('corrida.hora', 'desc');
-        })->get();
+        // $corrida_ciudad = DiarioCiudad::selectRaw("*")->joinSub($corridas, 'corridas', function($join)use($inicioH, $finH, $terminal, $fecha){
+        //     $join->on("corridas.llave_corrida", '=', 'diario_c_ciudades.llave_corrida');
+        //     $join->where('fecha', $fecha);
+        //     $join->where($terminal->abreviacion, 1);
+        //     $join->whereBetween('corridas.hora', ["{$inicioH->hour}:$inicioH->minute", "{$finH->hour}:$finH->minute"]);
+        //     $join->orderBy('corrida.hora', 'desc');
+        // })->where('fecha', $fecha)->get();
+
+
+
+
+
+        // $corridaFilter = Diario::selectRaw("*")->joinSub($corridas, 'corridas', function($join)use($inicioH, $finH){
+        //     $join->on("corridas.id_diario_c", '=', 'diario_c.id_diario_c');
+        //     $join->whereBetween('corridas.hora', ["{$inicioH->hour}:$inicioH->minute", "{$finH->hour}:$finH->minute"]);
+        //     $join->orderBy('corrida.hora', 'desc');
+        // })->get();
 
         Log::debug($corridas->count());
 
-        return  CorridaResource::collection($corridaFilter)->resolve();
+        return  CorridaResource::collection($ciudad)->resolve();
     }
 
     /**
