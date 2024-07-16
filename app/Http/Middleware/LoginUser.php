@@ -37,7 +37,7 @@ class LoginUser
         $usuario = \App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first();
 
         if ($usuario) {
-            if ($this->validLocation($usuario->id_empleado, $request->lat, $request->log)) {
+            if ($this->validLocation($usuario, $request->lat, $request->log)) {
                 return $next($request);
             } else {
                 return response()->json(["error" => "No se encuentra dentro de la Terminal."], 401);
@@ -54,12 +54,12 @@ class LoginUser
      * permitido para acceder a la aplicacion
      */
 
-    public function validLocation($id_empleado, $lat, $log)
+    public function validLocation($usuario, $lat, $log)
     {
-        \Log::info($id_empleado);
+        \Log::info($usuario->id_usuario);
 
-        $taquilla = Taquilla::where('taquilla', $id_empleado)->first();
-        $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
+        $terminal =  $usuario->empleado->terminal;
+        // $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
 
         $calculo = new formula();
         \Log::info($log);
