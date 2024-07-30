@@ -12,6 +12,7 @@ class Diario extends Model
 
     protected $table = 'diario_c';
     protected $primaryKey = 'id_diario_c';  
+    public $timestamps = false;
 
     protected $fillable = [
         'capacidad',

@@ -122,8 +122,9 @@ class CorridasController extends Controller
     public function update($id){
         $pasajero = Pasajero::find($id);
 
-        $pasajero->update(['abordo' => 1]);
-
+        $diario = $pasajero->diario;
+        $pasajero->diario()->update(["abordaron" => $diario->abordaron + 1 ]);
+        $pasajero->update(["abordo" => 1]);
         return response()->json(["messaje" => "OK" ], 200);
     }
 }

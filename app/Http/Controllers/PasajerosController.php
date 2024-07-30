@@ -16,14 +16,17 @@ class PasajerosController extends Controller
     public function asientos(Request $request)
     {
         $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo")->get();
+        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->get();
+
+        $terminal_empleado = $request->user()->empleado;
         // $pasajaero = Pasajero::where('id_diario_c', $request->corrida)
         // ->select("numero_asiento", "abordo")->get();
 
         return response()->json([
             "capacidad" =>  $diario->capacidad,
             "disponibilidad" =>  $diario->disponibilidad,
-            "asientos" => PasajerosResource::collection($pasajero)->resolve()
+            "asientos" => PasajerosResource::collection($pasajero)->resolve(),
+            "terminal" => $terminal_empleado->numero_terminal
          ], 200);
     }
 }

@@ -17,7 +17,20 @@ class PasajerosResource extends JsonResource
         return [
             "number" => $this->numero_asiento,
             "abordo" => $this->abordo,
-            "color" => $this->abordo ? 'red' : 'blue'
+            "color" => $this->abordo ? 'red' : 'blue',
+            "currentTerminal" => $this->numero_terminal
         ];
     }
+
+    public function generateColor($terminal, $compra_t, $abordo) {
+        
+        if($terminal === $compra_t && $abordo ==  0){
+            return 'blue';
+        }else if($terminal === $compra_t && $abordo ==  1){
+            return 'green';
+        }else if($terminal !== $compra_t && $abordo ==  0){
+            return 'red';
+        }
+        return 'gray';
+        }
 }
