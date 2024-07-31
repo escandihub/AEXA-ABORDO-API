@@ -16,7 +16,7 @@ class PasajerosController extends Controller
     public function asientos(Request $request)
     {
         $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->get();
+        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->orderBy('numero_asiento', 'ASC')->get();
 
         $terminal_empleado = $request->user()->empleado;
         // $pasajaero = Pasajero::where('id_diario_c', $request->corrida)
