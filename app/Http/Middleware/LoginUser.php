@@ -58,7 +58,7 @@ class LoginUser
     {
         \Log::info($usuario->id_usuario);
 
-        $terminal =  $usuario->empleado->terminal;
+        $terminal =  $usuario->empleado->taquilla;
         // $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
 
         $calculo = new formula();
