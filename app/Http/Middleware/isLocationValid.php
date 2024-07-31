@@ -22,7 +22,7 @@ class isLocationValid
         $coordenates = $request->coordenadas;
 
         $taquilla = Taquilla::where('taquilla', $request->user->id_empleado)->first();
-        $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
+        // $terminal = Terminal::where('abreviacion', $taquilla->abreviacion)->first();
 
         $calculo = new formula();
         $isValid = $calculo->isPointWithinRadius($terminal->latitud, $terminal->longitud, $request->lat, $request->log, $terminal->radio);
