@@ -91,12 +91,14 @@ class CorridasController extends Controller
      * Se optine los datos de una corrida 
      * solo la que el usuario este autorizado
      */
-    public function show($id) {
+    public function show($id,  Request $request) {
         $diario = Diario::find($id);
 
         $v = $diario->pasajero()->where('abordo', 0)->get();
 
         // $pasajero = Pasajero::Where('id_diario_c', $id)->where('abordo', 0)->get();
+        $user_terminal = $request->user()->empleado;
+        $abordo = $this->a_abordar($v, $user_terminal);
         
         return response()->json([
             "diario_id" => $diario->id_diario_c,
@@ -105,7 +107,7 @@ class CorridasController extends Controller
             "hour" => $diario->fecha,
             "passengers" => $diario->capacidad,
             "disponibilidad" => $diario->disponibles,
-            "a_abordar" => $v->count(),
+            "a_abordar" => $abordo->count(),
             "route" => [
                 "from" => $diario->origen,
                 "to" => $diario->destino,
@@ -126,5 +128,11 @@ class CorridasController extends Controller
         $pasajero->diario()->update(["abordaron" => $diario->abordaron + 1 ]);
         $pasajero->update(["abordo" => 1]);
         return response()->json(["messaje" => "OK" ], 200);
+    }
+
+    public function a_abordar($pasajeros, $empleado){
+        return $pasajeros->filter(function($pasajero)use($empleado){
+            return $pasajero->numero_terminal === $empleado->numero_terminal;
+        });
     }
 }
