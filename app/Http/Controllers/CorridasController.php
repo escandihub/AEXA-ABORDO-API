@@ -94,7 +94,7 @@ class CorridasController extends Controller
     public function show($id,  Request $request) {
         $diario = Diario::find($id);
 
-        $v = $diario->pasajero()->where('abordo', 0)->get();
+        $v = $diario->pasajero()->where('abordo', 0)->where("status", "V")->get();
 
         // $pasajero = Pasajero::Where('id_diario_c', $id)->where('abordo', 0)->get();
         $user_terminal = $request->user()->empleado;
