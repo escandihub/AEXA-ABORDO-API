@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\API\Pasajero;
 use App\Models\Diario;
 use App\Http\Resources\PasajerosResource;
+use Illuminate\Support\Facades\DB;
 
 class PasajerosController extends Controller
 {
@@ -15,10 +16,11 @@ class PasajerosController extends Controller
      */
     public function asientos(Request $request)
     {
-        $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->where("status", "V")->orderBy('numero_asiento', 'ASC')->get();
-
         $terminal_empleado = $request->user()->empleado;
+        $diario = Diario::find($request->corrida);
+        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->where("status", "V")->where("numero_terminal", $terminal_empleado->numero_terminal )->orderBy('numero_asiento', 'ASC')->get();
+
+        
         // $pasajaero = Pasajero::where('id_diario_c', $request->corrida)
         // ->select("numero_asiento", "abordo")->get();
 
@@ -26,7 +28,13 @@ class PasajerosController extends Controller
             "capacidad" =>  $diario->capacidad,
             "disponibilidad" =>  $diario->disponibilidad,
             "asientos" => PasajerosResource::collection($pasajero)->resolve(),
-            "terminal" => $terminal_empleado->numero_terminal
+            "terminal" => $terminal_empleado->numero_terminal,
+            "ListAbordo" => $this->terminales($request->corrida)
          ], 200);
+    }
+
+    public function terminales($id_diario){
+        
+        return DB::table('pasajeros')->selectRaw("terminal, count(terminal) as cantidad")->where("id_diario_c", $id_diario)->whereNotIn('status', ["Z", "C"])->groupBy("terminal")->get();
     }
 }
