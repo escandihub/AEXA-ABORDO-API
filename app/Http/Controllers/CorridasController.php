@@ -121,12 +121,14 @@ class CorridasController extends Controller
     /**
      * agregar middleware por si no existe el id del usuario
      */
-    public function update($id){
-        $pasajero = Pasajero::find($id);
+    public function update(Request $request, $id){
+        $diario =  $request->diario_id;
+        try {
+            $result =   DB::select("call updatePasajero(?, ?)", [$id, $diario]);
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage());
+        }
 
-        $diario = $pasajero->diario;
-        $pasajero->diario()->update(["abordaron" => $diario->abordaron + 1 ]);
-        $pasajero->update(["abordo" => 1]);
         return response()->json(["messaje" => "OK" ], 200);
     }
 
@@ -134,5 +136,19 @@ class CorridasController extends Controller
         return $pasajeros->filter(function($pasajero)use($empleado){
             return $pasajero->numero_terminal === $empleado->numero_terminal;
         });
+    }
+
+    public function terminales(){
+        $ciudades = DB::table('diario_c_ciudades')->select('TGZ', 'CIN', 'CIR', 'MAD', 'JIQ')->where('id_diario_c', 420114)->get();
+        $ciudades = $ciudades->each(function($value){
+            $ciudad = $value->getAttributes;
+            foreach ($ciudad as $c => $value) {
+                \Log::info($c);
+            }
+            // foreach($value->getAtributes() as $attribute){
+            //     return $value->$attribute != 0;
+            // }
+        });
+        return $ciudades;
     }
 }
