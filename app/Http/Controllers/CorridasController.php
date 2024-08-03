@@ -123,13 +123,16 @@ class CorridasController extends Controller
      */
     public function update(Request $request, $id){
         $diario =  $request->diario_id;
-        try {
-            $result =   DB::select("call updatePasajero(?, ?)", [$id, $diario]);
-        } catch (\Throwable $th) {
-            \Log::info($th->getMessage());
-        }
-
+        $pasajero = Pasajero::find($id);
+        if(!$pasajero->abordo){
+            try {
+                $result =   DB::select("call updatePasajero(?, ?)", [$id, $diario]);
+            } catch (\Throwable $th) {
+                \Log::info($th->getMessage());
+            }
         return response()->json(["messaje" => "OK" ], 200);
+        }
+        return response()->json(["messaje" => "Ticket invalido" ], 400);
     }
 
     public function a_abordar($pasajeros, $empleado){
