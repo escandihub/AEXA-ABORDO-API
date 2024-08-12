@@ -37,7 +37,8 @@ class LoginUser
         $usuario = \App\Models\API\Usuario::where('user', $request->user)->where('pass', $request->password)->first();
 
         if ($usuario) {
-            if ($this->validLocation($usuario, $request->lat, $request->log)) {
+            if (true) {
+            // if ($this->validLocation($usuario, $request->lat, $request->log)) {
                 return $next($request);
             } else {
                 return response()->json(["error" => "No se encuentra dentro de la Terminal."], 401);
