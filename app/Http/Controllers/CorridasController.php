@@ -237,12 +237,12 @@ class CorridasController extends Controller
     }
 
     #Request $request
-    public function readCorridas(){
+    public function readCorridas($request){
     
         $fecha = \Carbon\Carbon::now()->format('Y-m-d');
         $columnas = [];
         $result = '';
-        $terminal_user = 'PIJ'; #$request->user()->empleado->terminal->abreviacion;
+        $terminal_user = $request->user()->empleado->terminal->abreviacion;
         $corridas = DB::table('diario_c')->select('*')->where('fecha', '=', $fecha)
         ->get();
 
@@ -314,11 +314,29 @@ class CorridasController extends Controller
         // \Log::info($filtroDate);
         // \Log::info();
         $filtroDate->values();
-        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->get();
+        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->get()
+        ->map(function($corrida)use($filtroDate){
+            $terminal = $filtroDate->filter(function($terminal)use($corrida){ return $terminal->id_diario_c == $corrida->id_diario_c; });
+            return [
+                "id" => $corrida->id_diario_c,
+                "origen" => $corrida->origen,
+                "destino" => $corrida->destino,
+                "clase" => $corrida->clase,
+                "bus" => [
+                    "card_code" => $corrida->autobus,
+                    "capacidad" => $corrida->capacidad,
+                    "disponibilidad" => $corrida->disponibles,
+                ],
+                "fecha" => $corrida->fecha,
+                "hora" =>  "{$terminal->values()->pluck('hora')->first()}:{$terminal->values()->pluck('minutos')->first()}"
+            ];
+        });
         \Log::info($diario);
         \Log::info('Detalles: type -----');
 
         #return 0;
+        $diario = $diario->values();
+        return $diario;
         return  CorridaResource::collection($diario, 1)->resolve();
         // return  CorridaResource::collection($diario, 1)->resolve();
         // return  new CorridaResource($diario, 1);
@@ -334,7 +352,7 @@ class CorridasController extends Controller
         if($usuario->abreviacion == "TGZ"){
             return $this->index($request);
         }else{
-            return $this->readCorridas();
+            return $this->readCorridas($request);
         }
     }
 }
