@@ -17,11 +17,15 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('corridas',[ CorridasController::class, 'index']); // ->middleware(VadilateLocation::class); 
+    Route::get('corridas',[ CorridasController::class, 'choseTyeOfquery']); // ->middleware(VadilateLocation::class); 
     Route::get('pasajeros/{id}',[ CorridasController::class, 'show']); //->middleware(VadilateLocation::class); 
     Route::put('pasajero/{pasajero_id}',[ CorridasController::class, 'update'])->middleware(isPassengerValid::class); 
     Route::get('pasajero/asientos/{corrida}',[ PasajerosController::class, 'asientos']); 
+    
+    // Route::get('corrida/test',[ CorridasController::class, 'terminales']); 
 });
 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class);
 Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class]);
+Route::get('corridas/all',[ CorridasController::class, 'getCorridas']); 
+Route::get('corridas/columna',[ CorridasController::class, 'readCorridas']); 

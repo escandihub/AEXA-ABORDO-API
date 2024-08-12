@@ -13,6 +13,7 @@ use \Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\DiarioCiudad;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\Schema;
 
 class CorridasController extends Controller
 {
@@ -84,7 +85,7 @@ class CorridasController extends Controller
 
         Log::debug($corridas->count());
 
-        return  CorridaResource::collection($ciudad)->resolve();
+        return  CorridaResource::collection($ciudad, 1)->resolve();
     }
 
     /**
@@ -149,17 +150,191 @@ class CorridasController extends Controller
         });
     }
 
+    /**
+     * Se obtiene la lista de terminales que pasara el autobus
+     */
     public function terminales(){
-        $ciudades = DB::table('diario_c_ciudades')->select('TGZ', 'CIN', 'CIR', 'MAD', 'JIQ')->where('id_diario_c', 420114)->get();
-        $ciudades = $ciudades->each(function($value){
-            $ciudad = $value->getAttributes;
-            foreach ($ciudad as $c => $value) {
-                \Log::info($c);
-            }
-            // foreach($value->getAtributes() as $attribute){
-            //     return $value->$attribute != 0;
-            // }
+        // $terminales = ["TGZ", "CIN", "CER", "ARR","TON", "PIJ","MAP","ESC", "HUI", "TAP", "SNC", "OCO", "PAL", "CIR","MAD","PQR","AGU","PTE","TGR","ORT","TIL","LIB","CND","CHN","DME","VAL","SNM","ECE","LCR","JIQ","LAF","OCZ","TGP","PTO","PTI","PTR","TPR","PR5","HHE"];
+        // $condiciones = [];
+        // foreach($terminales as $terminal){
+        //     $condiciones[] = ["$terminal", ">", "0"];
+        // }
+        $fecha = "2024-07-30"; # \Carbon\Carbon::now()->format('Y-m-d');
+        $inicioH = Carbon::now()->subHour(1);
+        $finH = Carbon::now()->addHour(1);
+
+        $usuario = "ARR";
+        
+        $corridas = DB::table('diario_c_ciudades')->where('id_diario_c', 427109)
+        // ->where('diario_c_ciudades.fecha', $fecha)
+        // ->whereBetween('diario_c_ciudades.hora', [$inicioH->hour, $finH->hour])
+        ->get();
+        $cols = [];
+        $model = (new DiarioCiudad());
+        $columnObjects = DB::select("SHOW COLUMNS FROM {$model->getTable()}");
+        
+        $columnNames = array_map(fn ($column) => $column->Field, $columnObjects);
+
+        $trueColums = collect($columnNames)->filter(function ($column) use ($corridas){
+            return $corridas->contains(function($corrida) use ($column){
+                if(is_int($corrida->{$column})){
+                    return $corrida->{$column} === 1;
+                }
+            });
         });
-        return $ciudades;
+
+        return $trueColums;
+    }
+
+    public function renderCiudad($user = "ARR"){
+
+        $fecha = "2024-07-30"; # \Carbon\Carbon::now()->format('Y-m-d');
+        $inicioH =  "03:00"; # Carbon::now()->subHour(1);
+        $finH = "05:00"; #Carbon::now()->addHour(1);
+        $corridas = DB::table('diario_c')->select('diario_c.*')
+        ->join('diario_c_terminales', function(JoinClause $join)use ($fecha, $inicioH, $finH){
+            $join->on('diario_c_terminales.id_diario_c', "=", "diario_c.id_diario_c");
+        });
+    }
+
+    public function isCity($corrida): Array{
+        $model = (new DiarioCiudad());
+        $columnObjects = DB::select("SHOW COLUMNS FROM {$model->getTable()}");
+        
+        $columnNames = array_map(fn ($column) => $column->Field, $columnObjects);
+
+        return collect($columnNames)->filter(function ($column) use ($corrida){
+            return $corrida->contains(function($corrida) use ($column){
+                if(is_int($corrida->{$column})){
+                    return $corrida->{$column} === 1;
+                }
+            });
+        })->value->all();
+    }
+
+    public function getCorridas(Request $request){
+        $user = "TON"; //$request->user()->empleado->terminal->abreviacion;
+        $fecha =  \Carbon\Carbon::now()->format('Y-m-d');
+        $inicioH =   Carbon::now()->subHour(4);
+        $finH = Carbon::now()->addHour(1);
+
+        \Log::info($inicioH->hour);
+        \Log::info($finH->hour);
+
+        $lista = DB::table('pasajeros')->selectRaw('distinct pasajeros.id_diario_c, pasajeros.hora as "pHora", pasajeros.minutos as "pMinutos"')->where('origen', '=', $user)
+        ->whereNotIn('status', ['Z','C'])
+        ->where('fecha_salida', '=', $fecha);
+
+        $corridas = DB::table('diario_c')->select('diario_c.*', "filterCorrida.pHora", "filterCorrida.pMinutos")
+        ->joinSub($lista, 'filterCorrida', function(JoinClause $join)use($fecha){
+            $join->on("diario_c.id_diario_c", "=", "filterCorrida.id_diario_c");
+        })->where('diario_c.fecha', $fecha)->get()->filter(function($corrida)use($inicioH, $finH){
+            $date = Carbon::parse("{$corrida->pHora}:{$corrida->pMinutos}");
+            return $date->between($inicioH, $finH);
+        });
+
+        return CorridaResource::collection($corridas, 2)->resolve();
+    }
+
+    #Request $request
+    public function readCorridas(){
+    
+        $fecha = \Carbon\Carbon::now()->format('Y-m-d');
+        $columnas = [];
+        $result = '';
+        $terminal_user = 'PIJ'; #$request->user()->empleado->terminal->abreviacion;
+        $corridas = DB::table('diario_c')->select('*')->where('fecha', '=', $fecha)
+        ->get();
+
+        //  $corridas->each(function($corrida)use($columnas){
+        //  $result =   DB::select("call getColumn(?, @val)", [$corrida->id_diario_c]);
+        // $columnas['current_column'] = $result[0]->terminal;
+        // });
+        // \Log::info($columnas);
+        // return null;
+        /**
+         * Se hace el recorido de las corridas para obtener las columnas correspondientes
+         * al usuario actual autenticado mediante un procedimiento almacenado.
+         */
+        $fecha = \Carbon\Carbon::now()->format('Y-m-d');
+        foreach ($corridas as $key => $corrida) {
+            $result =   DB::select("call getColumn(?,?,?,@val)", [$corrida->id_diario_c, "{$terminal_user} TERMINAL", $fecha]);
+            $columnas[] = [
+                "terminal" => $result[0]->terminal,
+                "id" => $corrida->id_diario_c
+            ];
+        }
+
+        /**
+         * Una vez obtenida las columnas, se filtra de las cuales
+         * el usuario autenticado no  pertenece y se obtiene el 
+         * numero entero de la columna de la terminal.
+         */
+        $filter = collect($columnas)->filter(function($columna){
+            return $columna['terminal'] != 'sin terminal';
+        })->map(function($columna) {
+            return [
+                "id" => $columna['id'],
+                "terminal" => $columna['terminal'],
+                "col" => $this->getNumberRow($columna['terminal']),
+            ];
+        });
+
+        $corridas_ = collect(); #se crea una colleccion 
+
+        /**
+         * Se hace una selecion individual para estandarizar las cabeceras de las terminales
+         * y el resultado se agrega en la coleccion
+         */
+        foreach ($filter as $key => $corrida) {
+            $value = DB::table('diario_c_terminales')->selectRaw("id_diario_c, terminal{$corrida['col']} AS terminal, status_t{$corrida['col']} AS status, hr{$corrida['col']} AS hora, min{$corrida['col']} AS minutos, fecha, CONCAT( hr{$corrida['col']},':',min{$corrida['col']}) AS horario")->where('id_diario_c', $corrida['id'])->first();
+            $corridas_->push($value);
+        }
+
+        \Log::info($corridas_);
+       # se crean las fechas 
+        $fecha1 =  \Carbon\Carbon::now(); #\Carbon\Carbon::now()->format('Y-m-d');  \Carbon\Carbon::parse('2024-06-01 13:00'); #
+        $fecha2 =  \Carbon\Carbon::now(); #\Carbon\Carbon::parse('2024-06-01 13:00'); # \Carbon\Carbon::now()->format('Y-m-d');
+        // \Log::info($fecha);
+        $inicioH = $fecha1->subHour(1); #Carbon::now()->subHour(4);
+        $finH = $fecha2->addHour(6); #Carbon::now()->addHour(1);
+        \Log::info($inicioH);
+        \Log::info($finH);
+        $filtroDate = $corridas_->filter(function($c)use($inicioH, $finH) {
+            $date_corrida = Carbon::parse("{$c->fecha} {$c->horario}");
+
+            // \Log::info($inicioH);
+            // \Log::info($finH);
+            // \Log::info($date_corrida->toString());
+            // \Log::info();
+            return   $date_corrida->between($inicioH, $finH) && $c->status != 'S' && $c->status != 'C' && $c->status != 'F';
+        });
+
+        // \Log::info('filtrado');
+        // \Log::info($filtroDate);
+        // \Log::info();
+        $filtroDate->values();
+        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->get();
+        \Log::info($diario);
+        \Log::info('Detalles: type -----');
+
+        #return 0;
+        return  CorridaResource::collection($diario, 1)->resolve();
+        // return  CorridaResource::collection($diario, 1)->resolve();
+        // return  new CorridaResource($diario, 1);
+    }
+
+    public function getNumberRow($column = 'terminal8'){
+        return substr($column, -1);
+    }
+
+    function choseTyeOfquery(Request $request){
+        $usuario = $request->user()->empleado->terminal;
+
+        if($usuario->abreviacion == "TGZ"){
+            return $this->index($request);
+        }else{
+            return $this->readCorridas();
+        }
     }
 }
