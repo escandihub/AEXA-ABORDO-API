@@ -350,7 +350,7 @@ class CorridasController extends Controller
     function choseTyeOfquery(Request $request){
         $usuario = $request->user()->empleado->terminal;
 
-        if($usuario->abreviacion == "TGZ"){
+        if($usuario->abreviacion == "TGZ" || $usuario->abreviacion == 'TAP'){
             return $this->index($request);
         }else{
             return $this->readCorridas($request);
