@@ -244,6 +244,7 @@ class CorridasController extends Controller
         $result = '';
         $terminal_user = $request->user()->empleado->terminal->abreviacion;
         $corridas = DB::table('diario_c')->select('*')->where('fecha', '=', $fecha)
+        ->where('condicion_corrida','=', 'Disponible')
         ->get();
 
         //  $corridas->each(function($corrida)use($columnas){
