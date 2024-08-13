@@ -53,3 +53,17 @@ class CorridaResource extends JsonResource
         ];
     }
 }
+
+/*
+"id_diario_c" => $corrida->id_diario_c,
+"origen" => $corrida->origen,
+"destino" => $corrida->destino,
+"clase" => $corrida->clase,
+"autobus" => $corrida->autobus,
+"capacidad" => $corrida->capacidad,
+"disponibles" => $corrida->disponibles,
+"fecha" => $corrida->fecha,
+"hora" =>  $terminal->values()->pluck('hora')->first(),
+"minutos" => $terminal->values()->pluck('minutos')->first(),
+
+*/

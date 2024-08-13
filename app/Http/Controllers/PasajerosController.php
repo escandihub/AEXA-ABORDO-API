@@ -31,7 +31,8 @@ class PasajerosController extends Controller
             "disponibilidad" =>  $diario->disponibilidad,
             "asientos" => PasajerosResource::collection($pasajero)->resolve(),
             "terminal" => $terminal_empleado->numero_terminal,
-            "origen" => $diario->origen,
+            "origen" => $terminal_empleado->terminal->abreviacion,
+            "destino_corrida" => $diario->destino,
             "ListAbordo" => $this->terminales($request->corrida)
          ], 200);
     }

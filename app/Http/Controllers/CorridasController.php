@@ -297,7 +297,7 @@ class CorridasController extends Controller
         $fecha1 =  \Carbon\Carbon::now(); #\Carbon\Carbon::now()->format('Y-m-d');  \Carbon\Carbon::parse('2024-06-01 13:00'); #
         $fecha2 =  \Carbon\Carbon::now(); #\Carbon\Carbon::parse('2024-06-01 13:00'); # \Carbon\Carbon::now()->format('Y-m-d');
         // \Log::info($fecha);
-        $inicioH = $fecha1->subHour(1); #Carbon::now()->subHour(4);
+        $inicioH = $fecha1->subHour(5); #Carbon::now()->subHour(4);
         $finH = $fecha2->addHour(6); #Carbon::now()->addHour(1);
         \Log::info($inicioH);
         \Log::info($finH);
@@ -308,7 +308,9 @@ class CorridasController extends Controller
             // \Log::info($finH);
             // \Log::info($date_corrida->toString());
             // \Log::info();
-            return   $date_corrida->between($inicioH, $finH) && $c->status != 'S' && $c->status != 'C' && $c->status != 'F';
+            #agregar filtro despues de hacer pruebas prod
+            // && $c->status != 'S'
+            return   $date_corrida->between($inicioH, $finH)  && $c->status != 'C' && $c->status != 'F';
         });
 
         // \Log::info('filtrado');
