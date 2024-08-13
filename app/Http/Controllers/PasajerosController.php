@@ -18,7 +18,7 @@ class PasajerosController extends Controller
     {
         $terminal_empleado = $request->user()->empleado;
         $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->where("status", "V")
+        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal", "origen","destino")->where("status", "V")
         ->orderBy('numero_asiento', 'ASC')->get();
         // ->where("numero_terminal", $terminal_empleado->numero_terminal )
 
@@ -31,12 +31,20 @@ class PasajerosController extends Controller
             "disponibilidad" =>  $diario->disponibilidad,
             "asientos" => PasajerosResource::collection($pasajero)->resolve(),
             "terminal" => $terminal_empleado->numero_terminal,
+            "origen" => $diario->origen,
             "ListAbordo" => $this->terminales($request->corrida)
          ], 200);
     }
 
     public function terminales($id_diario){
         
-        return DB::table('pasajeros')->selectRaw("terminal, count(origen) as cantidad")->where("id_diario_c", $id_diario)->whereNotIn('status', ["Z", "C"])->groupBy("terminal")->get();
+        return DB::table('pasajeros')->selectRaw("origen, count(origen) as cantidad")->where("id_diario_c", $id_diario)->whereNotIn('status', ["Z", "C"])->groupBy("origen")->get()
+        ->map(function($terminal){
+            return [
+                "terminal" => "{$terminal->origen} Terminal",
+                "cantidad" => $terminal->cantidad
+            ];
+        });
+        // ->having('terminal', '!=', "TGZ ONLINE")->get();
     }
 }
