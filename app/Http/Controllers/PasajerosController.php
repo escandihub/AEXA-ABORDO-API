@@ -18,7 +18,9 @@ class PasajerosController extends Controller
     {
         $terminal_empleado = $request->user()->empleado;
         $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->where("status", "V")->where("numero_terminal", $terminal_empleado->numero_terminal )->orderBy('numero_asiento', 'ASC')->get();
+        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal")->where("status", "V")
+        ->orderBy('numero_asiento', 'ASC')->get();
+        // ->where("numero_terminal", $terminal_empleado->numero_terminal )
 
         
         // $pasajaero = Pasajero::where('id_diario_c', $request->corrida)
@@ -35,6 +37,6 @@ class PasajerosController extends Controller
 
     public function terminales($id_diario){
         
-        return DB::table('pasajeros')->selectRaw("terminal, count(terminal) as cantidad")->where("id_diario_c", $id_diario)->whereNotIn('status', ["Z", "C"])->groupBy("terminal")->get();
+        return DB::table('pasajeros')->selectRaw("terminal, count(origen) as cantidad")->where("id_diario_c", $id_diario)->whereNotIn('status', ["Z", "C"])->groupBy("terminal")->get();
     }
 }
