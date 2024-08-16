@@ -14,7 +14,7 @@ class ListUserAPI extends Component
         return view('livewire.list-user-api',  [
             'users' => Empleado::all()
         ]);
-    }
+    } 
 
     public function update(){
         $this->view = "update";
