@@ -5,7 +5,9 @@ this.show = ! this.show,
 $wire.closeChild()
 }
 }" id="default-modal" :class="{ 'hidden': !   show }"
-    class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+centrar un objecto fixed
+<div class="fixed inset-0  top-0 left-0 z-50 mx-auto w-screen h-screen flex items-center justify-center" style="background: rgba(0, 0, 0, 0.3);">
+    {{-- class="inset-0 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"  style="background: rgba(0, 0, 0, 0.3);"> --}}
     @if ($usuario)
 
 
