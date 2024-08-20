@@ -27,4 +27,8 @@ class Pasajero extends Model
     {
         return $this->belongsTo(Diario::class, 'id_diario_c', 'id_diario_c');
     }
+    public function terminal()
+    {
+        return $this->belongsTo(Terminal::class, 'numero_terminal', 'id_terminal');
+    }
 }
