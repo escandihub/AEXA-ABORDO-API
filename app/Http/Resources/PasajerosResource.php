@@ -19,7 +19,8 @@ class PasajerosResource extends JsonResource
             "abordo" => $this->abordo,
             "color" => $this->abordo ? 'red' : 'blue',
             "currentTerminal" => $this->numero_terminal,
-            "origen" => $this->origen
+            "origen" => $this->origen,
+            "destino" => $this->destino
         ];
     }
 
