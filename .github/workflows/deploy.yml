@@ -40,10 +40,10 @@ jobs:
       - name: ejecutando comando remoto con ssh using key
         uses: appleboy/ssh-action@v1.0.3
         with: 
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME_SSH }}
-        key: ${{ secrets.KEY_SSH }}
-        port: ${{ secrets.PORT_SSH }}
-        script: |
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME_SSH }}
+          key: ${{ secrets.KEY_SSH }}
+          port: ${{ secrets.PORT_SSH }}
+          script: |
           cd /home/wwgrup/abordo.aexa.api.grupoaexataller.com/alex_abordo_aexa
           \cp -r .env abordo.aexa.api.grupoaexataller.com/.
