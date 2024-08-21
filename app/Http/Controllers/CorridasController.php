@@ -29,15 +29,15 @@ class CorridasController extends Controller
         $taquilla = $usuario->taquilla;
 
         //'2024-07-31'; #
-        $fecha_ = \Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
-        $fecha_2 = \Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
+        $fecha_ = \Carbon\CarbonImmutable::now(); #\Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
+        $fecha_2 = \Carbon\CarbonImmutable::now(); #\Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
         // \Log::info($fecha);
         
         $inicioH = $fecha_->copy()->subHour(2); #Carbon::parse(""); //Carbon::now()->subHour(1);
         $finH = $fecha_2 ;# Carbon::now()->addHour(1);
         $fecha = $fecha_->copy()->subHour(1)->format('Y-m-d H:i');
         $fecha2 = $fecha_2->copy()->addHour(2)->format('Y-m-d H:i');
-        \Log::info('---');
+        // \Log::info('---');
         // \Log::info($fecha_);
         // \Log::info($fecha_2->copy()->format('Y-m-d'));
 
@@ -52,11 +52,11 @@ class CorridasController extends Controller
         
         $terminal = $request->user()->empleado->terminal;
 
-        \Log::info($terminal->abreviacion);
-        \Log::info($fecha);
-        \Log::info($fecha2);
-        \Log::info($inicioH->hour);
-        \Log::info($finH->hour);
+        // \Log::info($terminal->abreviacion);
+        // \Log::info($fecha);
+        // \Log::info($fecha2);
+        // \Log::info($inicioH->hour);
+        // \Log::info($finH->hour);
 
   /*      
         $ciudad = DB::table('diario_c')->select('diario_c.*')
@@ -265,7 +265,7 @@ class CorridasController extends Controller
         $fecha = $hoy->subHour(2);
         // SI EL HORARIO ACTUAL ES DE MADRUGADA REALIZAR UNA CONSULTA EL DIA ANTERIOR A LAS 23 HORAS
         if($hoy->format('H') >= 1 &&  $hoy->format('H') <= 5){
-            $fecha = $hoy->subDay(1)->setTime(23, 00, 00);
+            $fecha = $hoy->subDay(1)->setTime(21, 30, 00);
         }
 
         $columnas = [];
