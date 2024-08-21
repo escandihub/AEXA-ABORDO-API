@@ -24,7 +24,7 @@ class Empleado extends Model
     }
     public function terminal()
     {
-        return $this->hasOne(Terminal::class, 'id_terminal', 'clave_terminales');
+        return $this->hasOne(Terminal::class, 'clave', 'clave_terminales');
     }
        
     public function taquilla()
