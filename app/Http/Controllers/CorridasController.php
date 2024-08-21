@@ -72,6 +72,7 @@ class CorridasController extends Controller
         $ciudad = DB::table('diario_c')->select("diario_c.*")
         ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
         ->where('origen', $terminal->abreviacion)
+        ->where('condicion_corrida','=', 'Disponible')
         ->orderBy('hora', 'asc')
         ->get();
 
