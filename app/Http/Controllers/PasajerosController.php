@@ -18,7 +18,7 @@ class PasajerosController extends Controller
     {
         $terminal_empleado = $request->user()->empleado;
         $diario = Diario::find($request->corrida);
-        $pasajero = $diario->pasajero()->select("numero_asiento", "abordo", "numero_terminal", "origen","destino")->where("status", "V")
+        $pasajero = $diario->pasajero()->select("id_pasajero","nombre","numero_asiento", "abordo", "numero_terminal", "origen","destino")->where("status", "V")
         // ->where('destino', '!=', $terminal_empleado->terminal->abreviacion)
         ->orderBy('numero_asiento', 'ASC')->get();
         // ->where("numero_terminal", $terminal_empleado->numero_terminal )
