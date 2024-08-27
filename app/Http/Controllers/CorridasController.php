@@ -84,10 +84,10 @@ class CorridasController extends Controller
             ->get();
         }else {
             $ciudad = DB::table('diario_c')->select("diario_c.*")
-            ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha_, $fecha_2])
+            ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
             ->where('origen', $terminal->abreviacion)
             ->where('condicion_corrida','=', 'Disponible')
-            ->orderBy('hora', 'asc')
+            ->orderBy('hora', 'desc')
             ->get();
     
         }
@@ -372,11 +372,11 @@ class CorridasController extends Controller
     }
 
     function choseTyeOfquery(Request $request){
-        $usuario = $request->user()->empleado; #->terminal->abreviacion;
+        $usuario = $request->user()->empleado->terminal->abreviacion;
 
         // \Log::info("-------NOM TAQUILLA");
         // \Log::info($usuario->nombre_taquilla);
-        if($usuario->nombre_taquilla == "TGZ" || $usuario->nombre_taquilla == 'TAP'){
+        if($usuario == "TGZ" || $usuario == 'TAP'){
             return $this->index($request);
         }else{
             return $this->readCorridas($request);
