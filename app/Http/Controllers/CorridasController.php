@@ -80,14 +80,14 @@ class CorridasController extends Controller
             ->whereIn('id_diario_c', $corida_hora->pluck('id_diario_c'))
             ->where('origen', $terminal->abreviacion)
             ->where('condicion_corrida','=', 'Disponible')
-            ->orderBy('hora', 'desc')
+            ->orderBy('hora', 'asc')
             ->get();
         }else {
             $ciudad = DB::table('diario_c')->select("diario_c.*")
             ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
             ->where('origen', $terminal->abreviacion)
             ->where('condicion_corrida','=', 'Disponible')
-            ->orderBy('hora', 'desc')
+            ->orderBy('hora', 'asc')
             ->get();
     
         }
@@ -301,13 +301,13 @@ class CorridasController extends Controller
         // ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
         
         ->where('condicion_corrida','=', 'Disponible')
-        ->orderBy('hora', 'desc')
+        // ->orderBy('hora', 'asc')
         ->get(); 
         }else{
             $corridas = DB::table('diario_c')->select('*') //->where('fecha', '=', $fecha)
         ->whereRaw('STR_TO_DATE(CONCAT(fecha), "%Y-%m-%d") between ? AND ?', [$fecha->format('Y-m-d'), $fecha2->format('Y-m-d')])
         ->where('condicion_corrida','=', 'Disponible')
-        ->orderBy('hora', 'desc')
+        // ->orderBy('hora', 'asc')
         ->get(); 
         }
         //  \Log::info($corridas);
@@ -342,7 +342,7 @@ class CorridasController extends Controller
         });
 
         $filtroDate->values();
-        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->orderBy("hora", "desc")->get()
+        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->orderBy("hora", "asc")->get()
         ->map(function($corrida)use($filtroDate){
             $terminal = $filtroDate->filter(function($terminal)use($corrida){ return $terminal->id_diario_c == $corrida->id_diario_c; });
             return [
