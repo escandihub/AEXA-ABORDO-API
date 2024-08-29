@@ -1,6 +1,6 @@
 <div>
-    <div>
-        <div style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
+    <div wire:key='map-id-terminal-container'>
+        <div  wire:key='map-id-terminal' style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
     </div>
 
     @assets
@@ -92,11 +92,14 @@
             var layer = e.layer;
             drawnItems.addLayer(layer);
             if(type == 'circle'){
+                console.log('se ha creado el mapa');
                 // createCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius)
                 // Livewire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 sendMessage(e.layer._latlng.lat, e.layer._latlng.lng)
-                $wire.dispatch('new-circle', 
-                {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
+                $wire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius });
+                // $wire.dispatch('new-circle', 
+                // {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
+                // console.log('mapa actualizado');
             }
          console.log(e);
 
@@ -106,7 +109,7 @@
         L.marker([lat, log]).addTo(map)
     .bindPopup('Se ha agregado la ubicacion exitosamente .<br> GUARDADO.')
     .openPopup();
-        alert('se ha guardado la nueva ubicacion exitosamente')
+        // alert('se ha guardado la nueva ubicacion exitosamente')
      }
 
      map.on('draw:deletestart', function (event) {
