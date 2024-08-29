@@ -15,6 +15,9 @@ class PasajerosResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            "id" => $this->consecutivo_terminal,
+            "nombre" => $this->nombre,
+            "folio_empleado" => $this->folio_empleado,
             "number" => $this->numero_asiento,
             "abordo" => $this->abordo,
             "color" => $this->abordo ? 'red' : 'blue',

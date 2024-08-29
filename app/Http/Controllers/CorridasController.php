@@ -29,17 +29,22 @@ class CorridasController extends Controller
         $taquilla = $usuario->taquilla;
 
         //'2024-07-31'; #
-        $fecha_ = \Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
-        $fecha_2 = \Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
+        $fecha_ =\Carbon\CarbonImmutable::now(); # \Carbon\CarbonImmutable::now(); #\Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
+        //$fecha_2 =\Carbon\CarbonImmutable::parse('2024-08-26 23:00');  #\Carbon\CarbonImmutable::now(); #\Carbon\Carbon::parse('2024-08-19 23:30'); #\Carbon\Carbon::now()->format('Y-m-d');
         // \Log::info($fecha);
-        
+        $fecha_2 = $fecha_->copy();
         $inicioH = $fecha_->copy()->subHour(2); #Carbon::parse(""); //Carbon::now()->subHour(1);
         $finH = $fecha_2 ;# Carbon::now()->addHour(1);
         $fecha = $fecha_->copy()->subHour(1)->format('Y-m-d H:i');
-        $fecha2 = $fecha_2->copy()->addHour(2)->format('Y-m-d H:i');
-        \Log::info('---');
-        // \Log::info($fecha_);
+        $fecha2 = $fecha_2->copy()->addHour(2); #->format('Y-m-d H:i');
+        // \Log::info('---');
+        //  \Log::info($fecha2->format("H"));
         // \Log::info($fecha_2->copy()->format('Y-m-d'));
+
+        // SI EL HORARIO ACTUAL ES DE MADRUGADA REALIZAR UNA CONSULTA EL DIA ANTERIOR A LAS 23 HORAS
+        if($fecha_->format('H') >= 1 &&  $fecha_->format('H') <= 5){
+            $fecha_ = $fecha_->subDay(1)->setTime(21, 30, 00);
+        }
 
         /**
          * Se hace una subconsulta para acceder al hora:minutos
@@ -52,11 +57,11 @@ class CorridasController extends Controller
         
         $terminal = $request->user()->empleado->terminal;
 
-        \Log::info($terminal->abreviacion);
-        \Log::info($fecha);
-        \Log::info($fecha2);
-        \Log::info($inicioH->hour);
-        \Log::info($finH->hour);
+        // \Log::info($terminal->abreviacion);
+        // \Log::info($fecha);
+        // \Log::info($fecha2);
+        // \Log::info($inicioH->hour);
+        // \Log::info($finH->hour);
 
   /*      
         $ciudad = DB::table('diario_c')->select('diario_c.*')
@@ -68,13 +73,25 @@ class CorridasController extends Controller
             ->where("diario_c_ciudades.destino","!=",$terminal->abreviacion);
         })->orderBy('diario_c_ciudades.hora', 'asc')->get();
 */
-
-        $ciudad = DB::table('diario_c')->select("diario_c.*")
-        ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
-        ->where('origen', $terminal->abreviacion)
-        ->orderBy('hora', 'asc')
-        ->get();
-
+        $ciudad = null;
+        if ($fecha_->format('H') >= 23 || $fecha_->format('H') <= 2) {
+            $corida_hora = DB::table('diario_c')->select('id_diario_c')->whereRaw('(fecha = ? and hora >= ?) or (fecha = ? and hora <= ?)', [$fecha_->format("Y-m-d"), $fecha_->format("H"), $fecha2->format("Y-m-d"), $fecha2->format("H")])->get();
+            $ciudad = DB::table('diario_c')->select("diario_c.*")
+            ->whereIn('id_diario_c', $corida_hora->pluck('id_diario_c'))
+            ->where('origen', $terminal->abreviacion)
+            ->where('condicion_corrida','=', 'Disponible')
+            ->orderBy('hora', 'asc')
+            ->get();
+        }else {
+            $ciudad = DB::table('diario_c')->select("diario_c.*")
+            ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
+            ->where('origen', $terminal->abreviacion)
+            ->where('condicion_corrida','=', 'Disponible')
+            ->orderBy('hora', 'asc')
+            ->get();
+    
+        }
+       
         // ->orderBy('diario_c_ciudades.hora', 'desc')->get();
 
         // $corrida = DB::table('diario_c')->select("*")->joinSub($ciudad, 'ciudad', function($join)use($fecha){
@@ -257,36 +274,50 @@ class CorridasController extends Controller
     public function readCorridas($request = null){
     
 
-        $hoy = \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
+        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
-        $fecha2 = $hoy->copy()->addHour(2);
+        $fecha2 = $hoy->copy()->addHour(3);
 
         // $fecha = $hoy->format('Y-m-d');
         $fecha = $hoy->subHour(2);
         // SI EL HORARIO ACTUAL ES DE MADRUGADA REALIZAR UNA CONSULTA EL DIA ANTERIOR A LAS 23 HORAS
         if($hoy->format('H') >= 1 &&  $hoy->format('H') <= 5){
-            $fecha = $hoy->subDay(1)->setTime(23, 00, 00);
+            \Log::info('es de madrugada?');
+            $fecha = $hoy->subDay(1)->setTime(21, 30, 00);
         }
 
         $columnas = [];
         $result = '';
-        $terminal_user =  $request->user()->empleado->terminal->abreviacion;
-        \Log::info($fecha);
-        \Log::info($fecha2);
-
+        $terminal_user =  $request->user()->empleado->nombre_taquilla; #terminal->abreviacion;  #nombre_taquilla;
+        // \Log::info("fechas --- inter");
+        //  \Log::info($fecha);
+        //  \Log::info($fecha2);
+        // \Log::info($terminal_user);
+        if ($hoy->format('H') >= 23 || $hoy->format('H') <= 2) {
+        $corida_hora = DB::table('diario_c')->select('id_diario_c')->whereRaw('(fecha = ? and hora >= ?) or (fecha = ? and hora <= ?)', [$fecha->format("Y-m-d"), $fecha->format("H"), $fecha2->format("Y-m-d"), $fecha2->format("H")])->get();
+           
         $corridas = DB::table('diario_c')->select('*') //->where('fecha', '=', $fecha)
-        ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
+        ->whereIn('id_diario_c', $corida_hora->pluck('id_diario_c'))
+        // ->whereRaw('STR_TO_DATE(CONCAT(fecha, " ", hora), "%Y-%m-%d %H:%i") between ? AND ?', [$fecha, $fecha2])
         
         ->where('condicion_corrida','=', 'Disponible')
+        // ->orderBy('hora', 'asc')
         ->get(); 
-
+        }else{
+            $corridas = DB::table('diario_c')->select('*') //->where('fecha', '=', $fecha)
+        ->whereRaw('STR_TO_DATE(CONCAT(fecha), "%Y-%m-%d") between ? AND ?', [$fecha->format('Y-m-d'), $fecha2->format('Y-m-d')])
+        ->where('condicion_corrida','=', 'Disponible')
+        // ->orderBy('hora', 'asc')
+        ->get(); 
+        }
+        //  \Log::info($corridas);
         /**
          * Se hace el recorido de las corridas para obtener las columnas correspondientes
          * al usuario actual autenticado mediante un procedimiento almacenado.
          */
 
-        foreach ($corridas as $key => $corrida) {
-            $result =   DB::select("call getColumn(?,?,@val)", [$corrida->id_diario_c, "{$terminal_user} TERMINAL"]);
+        foreach ($corridas as $key => $corrida) {                                                  # TERMINAL  quite esa frase
+            $result =   DB::select("call getColumn(?,?,@val)", [$corrida->id_diario_c, "{$terminal_user}"]);
 
             if($result[0] instanceof stdClass){
                 // \Log::info(get_object_vars($result[0]));
@@ -297,7 +328,7 @@ class CorridasController extends Controller
         }
 
         $corridas_ = collect($columnas);
-
+        \Log::info($columnas);
        # se crean las fechas 
         $inicioH = $fecha; #$fecha1->subHour(5); #Carbon::now()->subHour(4);
         $finH = $fecha2; #$fecha2->addHour(6); #Carbon::now()->addHour(1);
@@ -311,7 +342,7 @@ class CorridasController extends Controller
         });
 
         $filtroDate->values();
-        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->get()
+        $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->orderBy("hora", "asc")->get()
         ->map(function($corrida)use($filtroDate){
             $terminal = $filtroDate->filter(function($terminal)use($corrida){ return $terminal->id_diario_c == $corrida->id_diario_c; });
             return [
@@ -341,9 +372,11 @@ class CorridasController extends Controller
     }
 
     function choseTyeOfquery(Request $request){
-        $usuario = $request->user()->empleado->terminal;
+        $usuario = $request->user()->empleado->terminal->abreviacion;
 
-        if($usuario->abreviacion == "TGZ" || $usuario->abreviacion == 'TAP'){
+        // \Log::info("-------NOM TAQUILLA");
+        // \Log::info($usuario->nombre_taquilla);
+        if($usuario == "TGZ" || $usuario == 'TAP'){
             return $this->index($request);
         }else{
             return $this->readCorridas($request);
