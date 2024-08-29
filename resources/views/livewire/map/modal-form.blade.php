@@ -3,7 +3,7 @@
 
 
     <div  class="relative z-10" aria-labelledby="modal-title" role="dialog"
-        aria-modal="true" >
+        aria-modal="true"  wire:key="modal-map-container">
         <!--
       Background backdrop, show/hide based on modal state.
   
