@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\API\Terminal as TerminalModel;
+use App\Models\API\Taquilla;
 
 use Livewire\Component;
 
@@ -12,7 +13,9 @@ class Terminal extends Component
 
     public function render()
     {
-        return view('livewire.terminal', ["terminales" => TerminalModel::all()]);
+        $terminal = Taquilla::select('usuarios.user', 'taquillas.terminal', 'taquillas.abreviacion', 'taquillas.id_taquillas')
+        ->join('usuarios', 'usuarios.id_usuario','=','taquillas.taquilla')->get();
+        return view('livewire.terminal', ["terminales" => $terminal]);
     }
 
     /**
@@ -23,6 +26,6 @@ class Terminal extends Component
     }
 
     public function closeMap(){
-
+        $this->dispatch('showNotification');
     }
 }
