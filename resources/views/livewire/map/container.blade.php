@@ -1,6 +1,7 @@
+{{-- <div :key="'mapa-' . rand()"> --}}
 <div>
-    <div wire:key='map-id-terminal-container'>
-        <div  wire:key='map-id-terminal' style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
+    <div >
+        <div style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
     </div>
 
     @assets
@@ -96,7 +97,9 @@
                 // createCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius)
                 // Livewire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 sendMessage(e.layer._latlng.lat, e.layer._latlng.lng)
+                $wire.dispatch('close-modal-map');
                 $wire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius });
+                $dispatch('show-noti', 'Se ha guardado exitosamente la nueva ubicacion');
                 // $wire.dispatch('new-circle', 
                 // {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 // console.log('mapa actualizado');

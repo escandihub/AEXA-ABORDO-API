@@ -6,7 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        {{-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800" /> --}}
+                        <img src="{{asset('assets/images/TITANIUM_COLOR.png')}}" alt="logo" srcset="" style="width: 150px; heighth: 100px">
                     </a>
                 </div>
 
