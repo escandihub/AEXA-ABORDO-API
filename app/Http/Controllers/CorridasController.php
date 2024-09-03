@@ -159,7 +159,7 @@ class CorridasController extends Controller
     public function update(Request $request, $id){
         $diario =  $request->diario_id;
 
-        $result =   DB::select("call updatePasajero(?, ?)", [$id, $diario]);
+        $result =   DB::select("call updatePasajero(?, ?, @val)", [$id, $diario]);
 
         if ($result[0]->valido) {
             return response()->json(["messaje" => "OK" ], 200);
