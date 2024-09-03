@@ -102,10 +102,9 @@
                 // createCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius)
                 // Livewire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 sendMessage(e.layer._latlng.lat, e.layer._latlng.lng)
-                // $wire.dispatch('close-modal-map');
+                $wire.dispatch('close-modal-map');
                 $wire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius });
-               
-                $dispatch('show-noti', {message: 'Se ha guardado exitosamente la nueva ubicacion'});
+                $dispatch('show-noti', 'Se ha guardado exitosamente la nueva ubicacion');
                 // $wire.dispatch('new-circle', 
                 // {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 // console.log('mapa actualizado');
