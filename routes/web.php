@@ -21,6 +21,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/terminales', Terminal::class)->name('terminales');
-Route::get('/map', Container::class)->name('map');
+// Route::get('/map', Container::class)->name('map');
 
 require __DIR__.'/auth.php';
