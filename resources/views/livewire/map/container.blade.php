@@ -1,7 +1,8 @@
-<div>
-    <div wire:key='map-id-terminal-container'>
-        <div  wire:key='map-id-terminal' style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
-    </div>
+{{-- <div :key="'mapa-' . rand()"> --}}
+<div  wire:ignore>
+    {{-- <div > --}}
+        <div style="width: 450px; height: 400px; position: relative; outline-style: none;" id="map"></div>
+    {{-- </div> --}}
 
     @assets
     <!-- Make sure you put this AFTER Leaflet's CSS -->
@@ -23,14 +24,14 @@
 
         let map = L.map('map').setView([lat, log], 15);
 
-        let marker = L.marker([lat , log]).addTo(map);
+        let marker = L.marker([lat , log]) //.addTo(map);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         const radio = $wire._radio || 50
-
+        // var gCirculos = L.LayerGroup();
         // dibuja el circulo 
         let circle = L.circle([lat, log], {
             color: 'red',
@@ -72,6 +73,8 @@
             }
         });
         map.addControl(drawControl);
+        drawnItems.addLayer(marker) // se agrega en drawnItems para poder manipularlo de manera dinamica 
+        drawnItems.addLayer(circle) // tambien en el circle para poder eliminar cuando se agegue uno nuevo
 
 
         function onMapClick(e) {
@@ -90,13 +93,19 @@
         map.on('draw:created', function (e) {
             let type = e.layerType
             var layer = e.layer;
-            drawnItems.addLayer(layer);
+            
+            drawnItems.clearLayers();
+
             if(type == 'circle'){
+                drawnItems.addLayer(layer);
                 console.log('se ha creado el mapa');
                 // createCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius)
                 // Livewire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 sendMessage(e.layer._latlng.lat, e.layer._latlng.lng)
+                // $wire.dispatch('close-modal-map');
                 $wire.dispatch('new-circle', {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius });
+               
+                $dispatch('show-noti', {message: 'Se ha guardado exitosamente la nueva ubicacion'});
                 // $wire.dispatch('new-circle', 
                 // {lat: e.layer._latlng.lat, log: e.layer._latlng.lng, radio: e.layer._mRadius })
                 // console.log('mapa actualizado');
