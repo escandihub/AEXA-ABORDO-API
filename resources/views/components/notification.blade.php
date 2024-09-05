@@ -4,11 +4,11 @@ message: 'Mensaje',
 mostrar: false ,
 get canShow() { return this.mostrar },
 toggle() { this.mostrar = ! this.mostrar },
-sentNotify() {  this.toggle();  setTimeout(() => this.mostrar = false, 5000)  }
+sentNotify($event) {  this.toggle(); this.message = $event.detail.message; setTimeout(() => this.mostrar = false, 5000)  }
 }"
-x-on:show-noti.window="sentNotify()"
+x-on:show-noti.window="sentNotify($event)"
  role="alert"
- class="fixed top-16 right-0"
+ class="fixed top-16 right-0 z-50"
  
 >
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
@@ -27,7 +27,7 @@ x-on:show-noti.window="sentNotify()"
             </svg>
             <span class="sr-only">Check icon</span>
         </div>
-        <div class="ms-3 text-sm font-normal">Se ha guardado exitosamente la nueva ubicacion.</div>
+        <div class="ms-3 text-sm font-normal" x-text="message"></div>
         <button @click="toggle()" type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
             <span class="sr-only" >cerrar</span>
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
