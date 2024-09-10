@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Terminal;
 use App\Livewire\Map\Container;
+use App\Livewire\VersionApp;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/terminales', Terminal::class)->name('terminales');
-Route::get('/map', Container::class)->name('map');
+Route::get('/app-traking', VersionApp::class)->name('app.abordo.traking');
+// Route::get('/map', Container::class)->name('map');
 
 require __DIR__.'/auth.php';

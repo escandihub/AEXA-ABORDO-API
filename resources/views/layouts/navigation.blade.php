@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('terminales')" :active="request()->routeIs('terminales')">
                         {{ __('Terminales') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('app.abordo.traking')" :active="request()->routeIs('app.abordo.traking')">
+                        {{ __('versiones app') }}
+                    </x-nav-link>
                 </div>
             </div>
 
