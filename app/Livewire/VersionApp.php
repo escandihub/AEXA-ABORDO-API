@@ -8,6 +8,7 @@ use App\Models\trakingApp;
 use Livewire\Attributes\Validate;
 use Livewire\WithFileUploads;
 
+
 class VersionApp extends Component
 {
     use WithFileUploads;
@@ -17,9 +18,28 @@ class VersionApp extends Component
         return view('livewire.version-app', [ 'versiones' => $trainking ]);
     }
 
-    #[Validate('required|')]
+    #[Validate('required')]
     public $name = '';
-    #[Validate('required|')]
+    #[Validate('required')]
     public $versionCode = '';
-    public $files;
+    #[Validate('required')]
+    public $file;
+
+
+    public function saveNewApp(){
+
+        $name_app = $this->name . 'prueba.' . $this->file->getClientOriginalExtension();
+        $name = $this->file->storeAs(path: 'updates', name: $name_app);
+
+        $c = trakingApp::create([
+            "nombre" => $this->name,
+            "versionCode" => $this->versionCode,
+            "versionName" => '1',
+            "active" => 1,
+            "in_process" => 1,
+            "comentarios" => "comentario test",
+            "path_app" => $name,
+        ]);
+        \Log::info($c);
+    }
 }

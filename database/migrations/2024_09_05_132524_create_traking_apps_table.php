@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('versionCode');
             $table->string('versionName');
-            $table->string('comentarios');
+            $table->string('comentarios')->nullable();
             $table->boolean('active');
             $table->boolean('in_process'); #por actulizar dispositivos
             $table->string('path_app');

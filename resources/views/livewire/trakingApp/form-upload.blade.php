@@ -11,7 +11,9 @@
                 </p> --}}
             </header>
     
-            <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+            {{-- {{ route('profile.update') }} --}}
+            {{-- <form method="post" action="saveNewApp" class="mt-6 space-y-6"> --}}
+            <form method="post" wire:submit="saveNewApp" class="mt-6 space-y-6">
                 @csrf
                 @method('patch')
     
@@ -27,8 +29,20 @@
                 </div>
                 <div>
                     <x-input-label for="uploadAPK" :value="__('Subir version')" />
-                    <x-file-attachment wire:model="files" :file="$files" mode="attachment" fileName="csv o exel" accept="*" />
+                    <x-file-attachment wire:model="file" :file="$file" mode="attachment" fileName="android app" accept="*" />
+                    <x-input-error class="mt-2" :messages="$errors->get('file')" />
+                        @error('file') <span class="error">{{ $message }}</span> @enderror 
                 </div>
+                <x-primary-button>{{ __('guardar') }}</x-primary-button>
+                @if (session('status') === 'profile-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600"
+                >Se ha guardado exitosamente la nueva app</p>
+            @endif
             </form>
         </div>
     </section>
