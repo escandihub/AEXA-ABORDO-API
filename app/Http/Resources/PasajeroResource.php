@@ -22,7 +22,8 @@ class PasajeroResource extends JsonResource
             "escala" => $this->escala,
             "status" => $this->status,
             "abordo" => $this->abordo,
-            "asiento" => $this->numero_asiento
+            "asiento" => $this->numero_asiento,
+            "tipo" => $this->tipo_descuento
         ];
     }
 }
