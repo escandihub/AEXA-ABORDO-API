@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('devices_trakings', function (Blueprint $table) {
             $table->id();
-            $table->boolean('updated');
+            $table->string('versionCode');
+            $table->string('versionName');
+            $table->boolean('updated')->nullable();
             $table->foreignId('device_id');
             $table->timestamps();
         });

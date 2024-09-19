@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id');
+            $table->foreignId('usuario_id')->nullable();
+            $table->string('identifier');
             $table->string('model');
             $table->string('plataform');
             $table->string('operatingSystem');
             $table->string('osVersion');
+            $table->string('diskFree');
             $table->boolean('isVirtual');
             $table->timestamps();
         });

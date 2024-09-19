@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class devicesTraking extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['device_id','versionCode', 'versionName', 'updated'];
 }

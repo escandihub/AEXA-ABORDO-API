@@ -11,6 +11,7 @@ use App\Http\Middleware\isPassengerValid;
 use App\Http\Middleware\VadilateLocation;
 use Illuminate\Routing\RouteGroup;
 use App\Http\Controllers\PasajerosController;
+use App\Http\Middleware\CheckDevice;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,6 +27,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class);
-Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class]);
+Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class, CheckDevice::class]);
 Route::get('corridas/all',[ CorridasController::class, 'getCorridas']); 
 Route::get('corridas/columna',[ CorridasController::class, 'readCorridas']); 
+# administracion del dispositivo
+// Route::post('device-info',[ CorridasController::class, 'readCorridas']); 
+// Route::post('app-updated/{app_id}',[ AppTraking::class, 'updateStatus']); 
