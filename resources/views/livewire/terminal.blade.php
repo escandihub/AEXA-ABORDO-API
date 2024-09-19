@@ -1,7 +1,4 @@
 <div>
-    <x-notification>
-
-    </x-notification>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Terminal') }}
@@ -38,18 +35,17 @@
                 <tr
                     class="odd:bg-black odd:dark:bg-gray-900 even:bg-blue-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $terminal->user }}
+                        {{ $terminal->nombre }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $terminal->terminal }}
+                        {{ $terminal->origen }}
                     </td>
                     <td class="px-6 py-4">
 
                         {{ $terminal->abreviacion }}
                     </td>
-                    <td class="hover:bg-grey-400">
-                       {{-- <button x-data x-on:click="$dispatch('show-noti')" >aaas</button> --}}
-                        <button wire:click="showMap({{ $terminal->id_taquillas }})" class="btn btn-primary btn-sm">Editar</button>
+                    <td class="">
+                        <button wire:click="showMap({{ $terminal->id_terminal }})" class="btn btn-primary btn-sm">Editar</button>
                         {{-- <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                         --}}
                     </td>

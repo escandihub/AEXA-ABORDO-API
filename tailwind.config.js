@@ -15,7 +15,6 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
-        darkMode: 'false',
     },
 
     plugins: [forms],
