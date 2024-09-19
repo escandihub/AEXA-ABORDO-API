@@ -376,7 +376,7 @@ class CorridasController extends Controller
 
         // \Log::info("-------NOM TAQUILLA");
         // \Log::info($usuario->nombre_taquilla);
-        if($usuario == "TGZ" || $usuario == 'TAP'){
+        if($usuario == "COM"){ # posiblemente en mxa y mxb sean unicamente origen
             return $this->index($request);
         }else{
             return $this->readCorridas($request);

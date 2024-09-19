@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Models\API\Terminal;
 use Livewire\Attributes\On; 
 use Illuminate\Support\Facades\Log;
+use App\Models\API\Taquilla;
 
 class Container extends Component
 {
@@ -24,12 +25,12 @@ class Container extends Component
 
     public function mount(){
 
-        // dd($this->idTer);
+      //  dd($this->idTer);
         
         // $terminal = Terminal::where('id_terminal', $this->idTer)->first();
-        $this->lat = $this->idTer->latitud;
-        $this->log = $this->idTer->longitud;
-        $this->_radio = $this->idTer->radio;
+         $this->lat = $this->idTer->latitud;
+         $this->log = $this->idTer->longitud;
+         $this->_radio = $this->idTer->radio;
     }
 
 

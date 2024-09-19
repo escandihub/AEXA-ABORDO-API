@@ -30,5 +30,9 @@ class Usuario extends Model
     {
         return $this->hasOne(Empleado::class, 'id_empleado', 'id_empleado');
     }
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'id', 'id_empleado');
+    }
     
 }

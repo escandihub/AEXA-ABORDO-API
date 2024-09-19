@@ -45,5 +45,5 @@ jobs:
           key: ${{ secrets.KEY_SSH }}
           port: ${{ secrets.PORT_SSH }}
           script: |
-            cd /home/wwgrup/abordo.aexa.api.grupoaexataller.com/alex_abordo_aexa
-            \cp -r .env abordo.aexa.api.grupoaexataller.com/.
+            cd /home/wwgrup/api.abordo.titanium.grupoaexataller.com/abordo_titanium_api
+            \cp -r .env abordo.aexa.api.grupoaexataller.com/.env
