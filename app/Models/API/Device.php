@@ -26,4 +26,8 @@ class Device extends Model
     {
         return $this->hasOne(devicesTraking::class);
     }
+
+    public function location() {
+        return $this->hasMany(DeviceLocation::class);
+    }
 }
