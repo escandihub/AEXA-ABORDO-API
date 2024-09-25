@@ -29,7 +29,12 @@ class ClienController extends Controller
     public function LoginPlainText(Request $request){
         $user = Usuario::where('user', $request->user)->first();
         return response()->json([
-            "user" => $user,
+            "upgradeable" => $request->upgradeable,
+            "user" => [
+                "nombre" => $user->user,
+                "status" => $user->status,
+                "terminal" => $user->taquilla->abreviacion
+            ],
             "token" => $user->createToken('omnibus', ["*"], now()->addMinute(30), $request->lat, $request->log)->plainTextToken,
             
         ], 200);
