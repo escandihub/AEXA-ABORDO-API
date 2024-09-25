@@ -15,4 +15,9 @@ class DevicesList extends Component
             "devices" => $devices
         ]);
     }
+
+    public function ListAccess($id){
+        $this->redirect('/devices/access', navigate: true);
+    }
+    
 }

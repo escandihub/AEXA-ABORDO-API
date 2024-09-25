@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Livewire\Terminal;
 use App\Livewire\Map\Container;
 use App\Livewire\VersionApp;
+use App\Livewire\Device\AccessList;
+use App\Livewire\DevicesList;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +25,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/terminales', Terminal::class)->name('terminales');
 Route::get('/app-traking', VersionApp::class)->name('app.abordo.traking');
+Route::get('/devices/access', AccessList::class)->name('device.access');
+Route::get('/devices', DevicesList::class)->name('device.list');
 // Route::get('/map', Container::class)->name('map');
 
 require __DIR__.'/auth.php';
