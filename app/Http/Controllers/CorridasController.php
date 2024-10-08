@@ -271,6 +271,7 @@ class CorridasController extends Controller
     }
 
     #Request $request
+    public $madrugada = false;
     public function readCorridas($request = null){
     
 
@@ -281,8 +282,9 @@ class CorridasController extends Controller
         // $fecha = $hoy->format('Y-m-d');
         $fecha = $hoy->subHour(2);
         // SI EL HORARIO ACTUAL ES DE MADRUGADA REALIZAR UNA CONSULTA EL DIA ANTERIOR A LAS 23 HORAS
-        if($hoy->format('H') >= 1 &&  $hoy->format('H') <= 5){
+        if($hoy->format('H') >= 00 &&  $hoy->format('H') <= 5){
             \Log::info('es de madrugada?');
+            $this->madrugada = true; 
             $fecha = $hoy->subDay(1)->setTime(21, 30, 00);
         }
 
@@ -334,13 +336,7 @@ class CorridasController extends Controller
         $finH = $fecha2; #$fecha2->addHour(6); #Carbon::now()->addHour(1);
         \Log::info($inicioH);
         \Log::info($finH);
-        $filtroDate = $corridas_->filter(function($c)use($inicioH, $finH) {
-            $date_corrida = Carbon::parse("{$c->fecha} {$c->hora}:{$c->minutos}");
-            #agregar filtro despues de hacer pruebas prod
-            // && $c->status != 'S'
-            return   $date_corrida->between($inicioH, $finH)  && $c->status != 'C' && $c->status != 'F';
-        });
-
+        $filtroDate = $this->lastFilter($corridas_, $fecha, $fecha2);
         $filtroDate->values();
         $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->orderBy("hora", "asc")->get()
         ->map(function($corrida)use($filtroDate){
@@ -381,5 +377,22 @@ class CorridasController extends Controller
         }else{
             return $this->readCorridas($request);
         }
+    }
+
+    /**
+     * Filtro de la collection de Laravel
+     * Solo mostrara el rango establecido y los estadus de cada corrida => cuando ya es de madrugada.
+     */
+    public function lastFilter($corridas_, $fecha, $fecha2) {
+       return $corridas_->filter(function($c)use($fecha, $fecha2) {
+            $date_corrida = Carbon::parse("{$c->fecha} {$c->hora}:{$c->minutos}");
+            #agregar filtro despues de hacer pruebas prod
+            // && $c->status != 'S'
+            if($this->madrugada){
+                return  $c->status != 'C' && $c->status != 'F';
+            }else{
+                return  $date_corrida->between($fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F';
+            }
+        });
     }
 }
