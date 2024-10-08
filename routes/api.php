@@ -27,8 +27,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::get('corrida/test',[ CorridasController::class, 'terminales']); 
 });
 
-Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class);
-Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class, CheckDevice::class, validateUpdate::class]);
+Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class); // validateUpdate::class
+Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class, CheckDevice::class,]);
 Route::get('corridas/all',[ CorridasController::class, 'getCorridas']); 
 Route::get('corridas/columna',[ CorridasController::class, 'readCorridas']); 
 # administracion del dispositivo
