@@ -48,7 +48,7 @@ return new class extends Migration
              OPEN corrida;
 
              -- read_loop: LOOP
-             FETCH corrida into v_terminal1,v_terminal2,v_terminal3,v_terminal4,v_terminal5,v_terminal6,v_terminal7,v_terminal8,v_terminal9,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal1,v_terminal20;
+             FETCH corrida into v_terminal1,v_terminal2,v_terminal3,v_terminal4,v_terminal5,v_terminal6,v_terminal7,v_terminal8,v_terminal9,v_terminal10,v_terminal11,v_terminal12,v_terminal13,v_terminal14,v_terminal15,v_terminal16,v_terminal17,v_terminal18,v_terminal19,v_terminal20;
              -- IF done THEN 
                 -- LEAVE read_loop;
             -- END IF;
