@@ -276,7 +276,7 @@ class CorridasController extends Controller
     
         $this->madrugada = false;
 
-        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
+        $hoy = \Carbon\CarbonImmutable::parse('2024-10-10 07:00');  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
         $fecha2 = $hoy->copy()->addHour(3);
 
@@ -285,13 +285,13 @@ class CorridasController extends Controller
         // SI EL HORARIO ACTUAL ES DE MADRUGADA REALIZAR UNA CONSULTA EL DIA ANTERIOR A LAS 23 HORAS
         if($hoy->format('H') >= 00 &&  $hoy->format('H') <= 3){
             \Log::info('es de madrugada?');
-            $this->madrugada = true; 
+            // $this->madrugada = true; 
             $fecha = $hoy->subDay(1)->setTime(21, 30, 00);
         }
 
         $columnas = [];
         $result = '';
-        $terminal_user =  $request->user()->empleado->nombre_taquilla; #terminal->abreviacion;  #nombre_taquilla;
+        $terminal_user =  "TON terminal"; //$request->user()->empleado->nombre_taquilla; #terminal->abreviacion;  #nombre_taquilla;
         // \Log::info("fechas --- inter");
         //  \Log::info($fecha);
         //  \Log::info($fecha2);
@@ -337,7 +337,7 @@ class CorridasController extends Controller
         $finH = $fecha2; #$fecha2->addHour(6); #Carbon::now()->addHour(1);
         \Log::info($inicioH);
         \Log::info($finH);
-        $filtroDate = $this->lastFilter($corridas_, $fecha, $fecha2);
+        $filtroDate = $this->lastFilter($corridas_, $hoy, $fecha2);
         $filtroDate->values();
         $diario = DB::table('diario_c')->selectRaw('diario_c.id_diario_c,diario_c.origen,diario_c.destino,diario_c.clase,diario_c.autobus,diario_c.capacidad,diario_c.disponibles,diario_c.fecha, diario_c.hora, diario_c.minutos')->whereIn('id_diario_c', $filtroDate->pluck('id_diario_c'))->orderBy("fecha", "asc")->get()
         ->map(function($corrida)use($filtroDate){
@@ -391,7 +391,7 @@ class CorridasController extends Controller
             #agregar filtro despues de hacer pruebas prod
             // && $c->status != 'S'
             // \Log::info($date_corrida);
-             return $this->comparative($date_corrida, $fecha, $fecha2);
+             return $this->comparative($date_corrida, $fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F';
             // return  $date_corrida->between($fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F';
             // if($this->madrugada){
             //     return  $c->status != 'C' && $c->status != 'F';
@@ -402,14 +402,17 @@ class CorridasController extends Controller
     }
 
     public function comparative($date, $fecha1, $fecha2){
-        $currentTime = new \DateTime($date->format('Y-m-d H:i'));
-        $startTime = new \DateTime($fecha1->format('Y-m-d H:i'));
-        $endTime = new \DateTime($fecha2->format('Y-m-d H:i'));
-
+        // $currentTime = new \DateTime($date->format('Y-m-d H:i'));
+        // $startTime = new \DateTime($fecha1->format('Y-m-d H:i'));
+        // $endTime = new \DateTime($fecha2->format('Y-m-d H:i'));
+        $currentTime = $date->format("H:i");
+        $startTime = $fecha1->subHour(1)->format("H:i");
+        $endTime =  $fecha1->addHour(1)->format("H:i");
+        //\Log::info('hoy: ' . $currentTime->format('Y-m-d H:i') . ">=" . 'start: ' .  $startTime->format('Y-m-d H:i') . "<=" . "end: " . $endTime->format('Y-m-d H:i'));
         // \Log::info('- comparativa -');
         // \Log::info($currentTime->format('H:i') . ">=" . $startTime->format('H:i') . "<=" . $endTime->format('H:i'));
         if($this->madrugada){
-            if ($currentTime >= $startTime  || $currentTime <= $endTime) {
+            if ($currentTime >= $startTime  && $currentTime <= $endTime) {
                 return true;
             }
         }else{
