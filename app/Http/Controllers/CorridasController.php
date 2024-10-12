@@ -343,7 +343,7 @@ class CorridasController extends Controller
         }
 
         $corridas_ = collect($columnas);
-        \Log::info($columnas);
+        //\Log::info($columnas);
        # se crean las fechas 
         $inicioH = $fecha; #$fecha1->subHour(5); #Carbon::now()->subHour(4);
         $finH = $fecha2; #$fecha2->addHour(6); #Carbon::now()->addHour(1);
@@ -446,7 +446,7 @@ class CorridasController extends Controller
     }
 
     function convertDate($date, $end){
-        \Log::info('---- : ' .  $date->format('Y-m-d H:i'));
+        //\Log::info('---- : ' .  $date->format('Y-m-d H:i'));
         if ($date->format("H") >= 0 && $date->format("H") <= 3 && $date->format("d") != $end->format("d")) {
             return $date->addDay(1);
         }
