@@ -3,6 +3,7 @@
 namespace App\Models\API;
 
 use App\Models\Diario;
+use App\Models\Documentation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,5 +31,12 @@ class Pasajero extends Model
     public function terminal()
     {
         return $this->belongsTo(Terminal::class, 'numero_terminal', 'id_terminal');
+    }
+    /**
+     * un pasajero puede tener uno o mucha documentacion 
+     */
+    public function document()
+    {
+        return $this->hasMany(Documentation::class, 'pasajero_id', 'id_pasajero');
     }
 }

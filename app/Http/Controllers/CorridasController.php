@@ -160,9 +160,18 @@ class CorridasController extends Controller
         $diario =  $request->diario_id;
 
         $result =   DB::select("call updatePasajero(?, ?, @val)", [$id, $diario]);
-
+        $pasajero = Pasajero::where('id_pasajero', $id)->first();
+        // \Log::info($pasajero);
         if ($result[0]->valido) {
-            return response()->json(["messaje" => "OK" ], 200);
+            return response()->json(["messaje" => "OK",
+            "pasajero" => [
+                "folio" => $pasajero->id_pasajero, // identificador unico de pasajero
+                "nombre" => $pasajero->nombre,
+                "id" =>  $pasajero->consecutivo_terminal, // folio
+                "tipo" => $pasajero->clase,
+                "asiento" => $pasajero->numero_asiento,
+            ]
+         ], 200);
         }
         return response()->json(["messaje" => "Ticket invalido" ], 400);
 
@@ -276,7 +285,7 @@ class CorridasController extends Controller
     
         $this->madrugada = false;
 
-        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
+        $hoy = \Carbon\CarbonImmutable::parse('2024-10-30 07:29');  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
         $fecha2 = $hoy->copy()->addHour(3);
 
@@ -419,7 +428,7 @@ class CorridasController extends Controller
         // $endTime = new \DateTime($fecha2->format('Y-m-d H:i'));
         $currentTime = $date;
         $startTime = $fecha1->copy()->subMinutes(30);
-        $endTime =  $fecha1->copy()->addMinutes(30);
+        $endTime =  $fecha1->copy()->addHour(4);
         //\Log::info('hoy: ' . $currentTime->format('Y-m-d H:i') . ">=" . 'start: ' .  $startTime->format('Y-m-d H:i') . "<=" . "end: " . $endTime->format('Y-m-d H:i'));
         // \Log::info('- comparativa -');
         // \Log::info($currentTime->format('H:i') . ">=" . $startTime->format('H:i') . "<=" . $endTime->format('H:i'));

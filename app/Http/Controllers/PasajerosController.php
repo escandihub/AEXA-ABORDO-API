@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\API\Pasajero;
 use App\Models\Diario;
 use App\Http\Resources\PasajerosResource;
+use App\Models\Documentation;
 use Illuminate\Support\Facades\DB;
 
 class PasajerosController extends Controller
@@ -48,5 +49,46 @@ class PasajerosController extends Controller
             ];
         });
         // ->having('terminal', '!=', "TGZ ONLINE")->get();
+    }
+
+    public function getInfo($id_pasajero){
+        $pasajero = Pasajero::find($id_pasajero);
+
+        return  response()->json([
+            "folio" => $pasajero->consecutivo_terminal,
+            "nombre" => $pasajero->nombre,
+            "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
+            "empresa" => $pasajero->empresa
+        ]);
+    }
+
+    public function saveDocumentation(Request $request){
+
+
+        \Log::info($request->all());
+
+        $pasajero_id = $request->pasajero_id;
+        
+        DB::beginTransaction();
+        try {
+            foreach ($request->document as $key => $doc) {
+                Documentation::create([
+                    "pasajero_id" => $request->pasajero_id,
+                    "type_id" => $doc["maleta"],
+                    "number_document" => 1
+                ]);
+            }             
+            
+            DB::commit();
+            return response()->json([
+                "status" => 200,
+                "message" => "se ha guardado con exito"
+            ], 200);
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage());
+            DB::rollBack();
+            //throw $th;
+        }
+        
     }
 }
