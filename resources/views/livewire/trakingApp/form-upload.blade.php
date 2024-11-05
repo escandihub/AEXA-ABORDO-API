@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <x-input-label for="uploadAPK" :value="__('Subir version')" />
-                    <x-file-attachment wire:model="file" :file="$file" mode="attachment" fileName="android app" accept="*" />
+                    <x-file-attachment wire:model="file" :file="$file" mode="attachment" fileName="android app" accept=".apk" />
                     <x-input-error class="mt-2" :messages="$errors->get('file')" />
                         @error('file') <span class="error">{{ $message }}</span> @enderror 
                 </div>

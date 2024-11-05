@@ -24,9 +24,11 @@ class validateUpdate
         if($request->app['versionName'] == $tracking->versionName){
             return $next($request->merge(['upgradeable' => false]));
         }
+        // base route - donde estara la descarga del apk 
+        // https://abordo.aexa.api.grupoaexataller.com/storage/updates/change_log.json
         return $next($request->merge(['upgradeable' => [
             'upgradeable' => true,
-            'url' => $tracking->path_app,
+            'url' => 'https://abordo.aexa.api.grupoaexataller.com/storage/' . $tracking->path_app,
             'nombre' => $tracking->nombre,
             'versionName' => $tracking->versionName
         ]]));
