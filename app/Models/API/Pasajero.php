@@ -3,6 +3,7 @@
 namespace App\Models\API;
 
 use App\Models\Diario;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,5 +31,12 @@ class Pasajero extends Model
     public function terminal()
     {
         return $this->belongsTo(Terminal::class, 'numero_terminal', 'id_terminal');
+    }
+
+    public function scopeAbordoUse(Builder $query, $inicio, $fin){
+
+    }
+
+    public function abordo() {
     }
 }
