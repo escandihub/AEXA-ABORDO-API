@@ -1,4 +1,4 @@
-<div x-data="ap" x-init="updateChart()">
+<div x-data="ap">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Monitoreo') }}
@@ -14,8 +14,8 @@
         </div>
     </div>
     <div class="max-w-7xl mx-auto overflow-x-auto shadow-md sm:rounded-lg">
-        {{-- @post-created.window="data = $event.detail.data" --}}
-        <div >
+         
+        <div @post-created.window="setChart($event.detail.data)">
             <span>filtro de la informacion</span>
             <x-date-piker />
             <canvas id="myChart" x-ref="canvas"></canvas>
@@ -34,28 +34,38 @@
             return {
                 SIabordo: [],
                 NOabordo: [],
-                label: [],
+                label: ["A","B","C"],
+                chart: null,
 
                 init(){
-                    console.log("WW")
-                    this.$watch('label', (e) => {
-                        console.log(e);
-                       
-                    });
+                    console.log("init alpine")
+                    // this.$watch('label', (e) => {
+                    //     console.log(e);
+                    // });
                     this.createChart()
+                },
+                setChart(data){
+                  this.transform(data)
+                    this.chart.data.datasets.forEach((dataset, index) => {
+                    dataset.data = index === 0 ? this.SIabordo :  this.NOabordo
+                    });
+                    //    this.chart.data.datasets[1].data = this.NOabordo
+                     this.chart.data.labels = this.label 
+                     //this.chart.update()
+                    console.log('se resive evento de otro listener xd ');
                 },
 
                 createChart(){
                   const  data = {
-                            labels: this.label,
+                            labels: [],
                             datasets: [{
                             label: '# de Abordo',
-                            data: this.SIabordo,
+                            data: [],
                             borderWidth: 1
                             },
                             {
                             label: '# de No abordo',
-                            data: this.NOabordo,
+                            data: [],
                             borderWidth: 1
                             }]
                         };
@@ -70,28 +80,14 @@
                                 // stacked: true  
                                 }
                             },
-                            interaction: {
-                            // Overrides the global setting
-                                mode: 'index'
-                            }
                         }
 
                     };
 
-                     const myChart = new Chart(
+                     this.chart = new Chart(
                         this.$refs.canvas,
                         config
                     );
-                },
-
-                updateChart(){
-                    this.$el.addEventListener('post-created', (event) => {
-                        // console.log(event.detail.data);
-                        
-                        this.transform(event.detail.data)
-                        console.log('se resive evento de otro listener xd ');
-                        
-                    })
                 },
 
                 transform(abordo){
@@ -105,90 +101,25 @@
                     if(item.Abordo === "NO ABORODO"){
                         accumulator[origen].no_abordo += item.cantidad
                     }else{
-                            accumulator[origen].abordo += item.cantidad
+                        accumulator[origen].abordo += item.cantidad
                         }
                         return accumulator
-                    }, {})
+                    }, {});
 
                     const output = Object.values(group);
-                    console.log(output);
-                    
 
                     this.label = output.map(data => data.origen)
                     this.SIabordo = output.map(data => data.abordo)
                     this.NOabordo = output.map(data => data.no_abordo)
-                }
+                    return 0;
+                },
 
             }  
         })
-    // });
 
-
-     //const ctx = document.getElementById('myChart');
-    // let abordo = $wire.abordo 
-
-    Livewire.on('post-created', ({ data }) => {
+//Livewire.on('post-created', ({ data }) => {
         //console.log(data);
        // create(data)
-})
-
-
-   
-    
-    function create(abordo){
-        const group = abordo.reduce((accumulator, item)  => {
-        const origen = item.origen
-
-        if(!accumulator[origen]){
-            accumulator[origen] = {origen: origen, abordo: 0, no_abordo: 0}
-        }
-
-        if(item.Abordo === "NO ABORODO"){
-            accumulator[origen].no_abordo += item.cantidad
-        }else{
-            accumulator[origen].abordo += item.cantidad
-        }
-        return accumulator
-    }, {})
-
-    const output = Object.values(group);
-
-    const label = output.map(data => data.origen)
-    const SIabordo = output.map(data => data.abordo)
-    const NOabordo = output.map(data => data.no_abordo)
-
-    console.log(SIabordo);
-    
-    
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: label,
-        datasets: [{
-          label: '# de Abordo',
-          data: SIabordo,
-          borderWidth: 1
-        },
-        {
-          label: '# de No abordo',
-          data: NOabordo,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-            // x: {
-            //  stacked: true   
-            // },
-          y: {
-            beginAtZero: true,
-            // stacked: true  
-          }
-        }
-      }
-    });
-    }
-
-   
+//})s   
 </script>
 @endscript
