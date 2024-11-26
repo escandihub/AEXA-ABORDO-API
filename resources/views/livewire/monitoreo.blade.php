@@ -29,7 +29,6 @@
 
 @script
 <script>
-    // document.addEventListener('alpine:init', () => {
         Alpine.data('ap', () => { 
             return {
                 SIabordo: [],
@@ -38,7 +37,7 @@
                 chart: null,
 
                 init(){
-                    console.log("init alpine")
+                    console.log("WW")
                     // this.$watch('label', (e) => {
                     //     console.log(e);
                     // });
@@ -75,6 +74,9 @@
                         data: data,
                         options: {
                             scales: {
+                                // x: {
+                                // stacked: true   
+                                // },
                             y: {
                                 sbeginAtZero: true,
                                 // stacked: true  
@@ -117,9 +119,5 @@
             }  
         })
 
-//Livewire.on('post-created', ({ data }) => {
-        //console.log(data);
-       // create(data)
-//})s   
 </script>
 @endscript
