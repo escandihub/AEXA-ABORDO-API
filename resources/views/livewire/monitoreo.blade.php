@@ -19,6 +19,7 @@
             <span>filtro de la informacion</span>
             <x-date-piker />
             <canvas id="myChart" x-ref="canvas"></canvas>
+             <canvas id="myChart2" x-ref="canvas2"></canvas> 
         </div>
 
     </div>
@@ -33,8 +34,10 @@
             return {
                 SIabordo: [],
                 NOabordo: [],
+                hora: [],
                 label: ["A","B","C"],
                 chart: null,
+                chart2: null,
 
                 init(){
                     console.log("WW")
@@ -85,35 +88,83 @@
                         }
 
                     };
+                    const  data2 = {
+                            labels: [],
+                            datasets: [{
+                            label: 'Arr Si abordo',
+                            data: [],
+                            borderWidth: 1
+                            },
+                            {
+                            label: '# arr de No abordo',
+                            data: [],
+                            borderWidth: 1
+                            }]
+                        };
+                    const config2 = {
+                        type: 'line',
+                        data: data2,
+                        options: {}
+
+                    };
 
                      this.chart = new Chart(
                         this.$refs.canvas,
                         config
+                    );
+                     this.chart2 = new Chart(
+                        this.$refs.canvas2,
+                        config2
                     );
                 },
 
                 transform(abordo){
                     const group = abordo.reduce((accumulator, item)  => {
                     const origen = item.origen
+                    const time = `${item.hora}:${item.minutos}`
 
                     if(!accumulator[origen]){
-                        accumulator[origen] = {origen: origen, abordo: 0, no_abordo: 0}
+                        accumulator[origen] = {origen: origen, abordo: 0, no_abordo: 0, usagebyHour: {}}
                     }
 
+                    if(!accumulator[origen].usagebyHour[time]){
+                            accumulator[origen].usagebyHour[time] = {
+                            abordo: 0,
+                            no_abordo: 0
+                            }
+                        }
+
                     if(item.Abordo === "NO ABORODO"){
+                        accumulator[origen].usagebyHour[time].no_abordo += item.cantidad
                         accumulator[origen].no_abordo += item.cantidad
                     }else{
                         accumulator[origen].abordo += item.cantidad
+                        accumulator[origen].usagebyHour[time].abordo += item.cantidad
                         }
                         return accumulator
                     }, {});
 
                     const output = Object.values(group);
-
+                    console.log(output);
+                    
+                    this.setNewChart(output)
                     this.label = output.map(data => data.origen)
                     this.SIabordo = output.map(data => data.abordo)
                     this.NOabordo = output.map(data => data.no_abordo)
                     return 0;
+                },
+
+                setNewChart(abordo){
+                    const times = Object.keys(abordo[0].usagebyHour) // labels
+                    const si_abordo = Object.entries(abordo[0].usagebyHour).map(([key, value]) => value.abordo) 
+                    const no_abordo = Object.entries(abordo[0].usagebyHour).map(([key, value]) => value.no_abordo) 
+                    // const no_abordo = abordo[0].usagebyHour.map(data => no_abordo)
+                    console.log(times)
+                    console.log(si_abordo)
+                    console.log(no_abordo)
+                    this.chart2.data.labels  = times
+                    this.chart2.data.datasets[0].data = si_abordo
+                    this.chart2.data.datasets[1].data = no_abordo
                 },
 
             }  
