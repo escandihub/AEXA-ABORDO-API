@@ -27,7 +27,9 @@
                 </select>
             </div>
            
+            <h2> Grafica de uso por hora </h2>
              <canvas id="myChart2" x-ref="canvas2"></canvas> 
+             <h2> Grafica de uso por fecha </h2>
              <canvas id="myChart3" x-ref="canvas3"></canvas> 
         </div>
 
