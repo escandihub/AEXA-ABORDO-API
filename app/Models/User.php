@@ -44,4 +44,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id', 'id', 'id');
+
+    }
+
+    public function role()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id', 'id', 'id');
+
+    }
+
+    public function isAdmin() {
+        return $this->role()->first()->name;
+    }
 }
