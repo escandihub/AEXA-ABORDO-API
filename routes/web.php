@@ -26,8 +26,10 @@ Route::middleware('auth','can:isAdmin')->group(function () {
     Route::get('/devices/access', AccessList::class)->name('device.access');
     Route::get('/devices', DevicesList::class)->name('device.list');
 });
-Route::get('/monitoreo', Monitoreo::class)->name('device.monitoreo');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/monitoreo', Monitoreo::class)->name('device.monitoreo');
+});
 
 // Route::get('/map', Container::class)->name('map');
 
