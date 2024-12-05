@@ -418,8 +418,8 @@ class CorridasController extends Controller
         // $startTime = new \DateTime($fecha1->format('Y-m-d H:i'));
         // $endTime = new \DateTime($fecha2->format('Y-m-d H:i'));
         $currentTime = $date;
-        $startTime = $fecha1->copy()->subMinutes(30);
-        $endTime =  $fecha1->copy()->addMinutes(30);
+        $startTime = $fecha1->copy()->subHour(3);
+        $endTime =  $fecha1->copy()->addHour(2);
         //\Log::info('hoy: ' . $currentTime->format('Y-m-d H:i') . ">=" . 'start: ' .  $startTime->format('Y-m-d H:i') . "<=" . "end: " . $endTime->format('Y-m-d H:i'));
         // \Log::info('- comparativa -');
         // \Log::info($currentTime->format('H:i') . ">=" . $startTime->format('H:i') . "<=" . $endTime->format('H:i'));
