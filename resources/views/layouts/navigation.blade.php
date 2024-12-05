@@ -29,7 +29,7 @@
                         {{ __('Lista de Dispositivos') }}
                     </x-nav-link>
                     @endcan
-                    <x-nav-link :href="route('device.monitoreo')" :active="request()->routeIs('device.monitoreo')" wire:navigate >
+                    <x-nav-link :href="route('monitoreo')" :active="request()->routeIs('monitoreo')" wire:navigate >
                         {{ __('Monitoreo') }}
                     </x-nav-link>
                 </div>
@@ -87,7 +87,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('device.monitoreo')" :active="request()->routeIs('device.monitoreo')">
+            <x-responsive-nav-link :href="route('monitoreo')" :active="request()->routeIs('monitoreo')">
                 {{ __('Monitoreo') }}
             </x-responsive-nav-link>
         </div>
