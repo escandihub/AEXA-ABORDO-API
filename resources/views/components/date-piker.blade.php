@@ -1,15 +1,17 @@
 <div x-data="app" x-cloak>
-		<div class="z-40 mx-auto px-4 py-2 md:py-10">
-			<div>
-				<span class="font-bold my-1 text-gray-700 block">Results (would normally be hidden)</span>
+		<div class="z-40 mx-auto px-4 py-2 md:py-10 flex ">
+			<div class=" shadow-lg rounded-md px-5 py-5">
+				{{-- <span class="font-bold my-1 text-gray-700 block">Results (would normally be hidden)</span>
 				<input type="text" name="date_from" x-model="dateFromYmd">
-				<input type="text" name="date_to" x-model="dateToYmd">
-				<label for="datepicker" class="font-bold mt-3 mb-1 text-gray-700 block">Select Date Range</label>
+				<input type="text" name="date_to" x-model="dateToYmd"> --}}
+				<label for="datepicker" class="font-bold text-gray-700 block">Seleccione el rango de fechas a analizar</label>
+				<hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
 				<div class="relative" @keydown.escape="closeDatepicker()" @click.outside="closeDatepicker()">
-					<div class="inline-flex items-center border rounded-md mt-3 bg-gray-200">
+					<div class="fafaflex items-center gap-2 border rounded-md mt-3 bg-gray-200">
 						<input type="text" @click="endToShow = 'from'; init(); showDatepicker = true" x-model="outputDateFromValue" :class="{'font-semibold': endToShow == 'from' }" class="focus:outline-none border-0 p-2 w-40 rounded-l-md border-r border-gray-300"/>
-						<div class="inline-block px-2 h-full">to</div>
+						<div class="inline-block px-2 h-full">a</div>
 						<input type="text" @click="endToShow = 'to'; init(); showDatepicker = true" x-model="outputDateToValue" :class="{'font-semibold': endToShow == 'to' }" class="focus:outline-none border-0 p-2 w-40 rounded-r-md border-l border-gray-300"/>
+						<button @click="cleanSearch()">limpiar</button>
 					</div>
 					<div 
 						class="bg-white mt-2 rounded-lg shadow p-4 absolute" 
@@ -27,7 +29,7 @@
 								<div>
 									<button 
 										type="button"
-										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full" 
+										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800" 
 										@click="if (month == 0) {year--; month=11;} else {month--;} getNoOfDays()">
 										<svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -35,7 +37,7 @@
 									</button>
 									<button 
 										type="button"
-										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full" 
+										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800" 
 										@click="if (month == 11) {year++; month=0;} else {month++;}; getNoOfDays()">
 										<svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -73,6 +75,10 @@
 										></div>
 									</div>
 								</template>
+								<div>
+									<button @click="showDatepicker = false" class="px-2 py-1 border border-gray-300 hover:border-gray-500 rounded-md">Cancel</button>
+									<button @click="searchDate();" @click="outputDateValues(); showDatepicker = false" class="px-2 py-1 border border-blue-600 bg-blue-500 hover:bg-blue-300 text-white rounded-md">OK</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -84,7 +90,7 @@
 	</div>
 
 	<script>
-		const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octobre', 'Noviembre', 'Dicembre'];
+		const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octobre', 'Noviembre', 'Diciembre'];
 		const DAYS = ['Dom', 'Lun', 'Mar', 'Mi', 'Jue', 'Vie', 'Sab'];
 
 		document.addEventListener('alpine:init', () => {
@@ -191,16 +197,21 @@
 				},
 			  
 				outputDateValues() {
+					let options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
 					if (this.dateFrom) {
-						this.outputDateFromValue = this.dateFrom.toDateString();
+						this.outputDateFromValue = this.dateFrom.toLocaleDateString("es-ES", options);
 						this.dateFromYmd = this.convertToYmd(this.dateFrom);
 					}
 					if (this.dateTo) {
-						this.outputDateToValue = this.dateTo.toDateString();
+						this.outputDateToValue = this.dateTo.toLocaleDateString("es-ES", options);
 						this.dateToYmd = this.convertToYmd(this.dateTo);
 					}
 
-                    Livewire.dispatch('new-date', { start: this.dateFromYmd, end: this.dateToYmd })
+                   
+				},
+				searchDate(){
+					this.outputDateValues()
+					Livewire.dispatch('new-date', { start: this.dateFromYmd, end: this.dateToYmd })
 				},
 
 				setDateValues() {
@@ -270,7 +281,18 @@
 				closeDatepicker() {
 					this.endToShow = '';
 					this.showDatepicker = false;
-				}
+				},
+				cleanSearch(){
+					//this.getDateValue()
+					this.selecting = !this.selecting 
+					this.dateToValue = ''
+					this.dateFromValue = ''
+					this.endToShow = ''
+					this.outputDateFromValue = ""
+					this.outputDateToValue = ""
+					this.dateFrom = null
+					this.dateTo = null
+				},
 			}))
 		})
 	</script>
