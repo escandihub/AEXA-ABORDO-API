@@ -16,6 +16,7 @@
     <div class="max-w-7xl mx-auto overflow-x-auto shadow-md sm:rounded-lg">
          
         <div @post-created.window="setChart($event.detail.data)">
+            <canvas id="chart2text" x-ref="canvas2text"></canvas>
             <span>filtro de la informacion</span>
             <x-date-piker />
             <canvas id="myChart" x-ref="canvas"></canvas>
@@ -37,12 +38,14 @@
 </div>
 @assets
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 @endassets
 
 @script
 <script>
     let chart2 = null;
     let chart3 = null;
+    let chart2text = null;
         Alpine.data('ap', () => { 
             return {
                 SIabordo: [],
@@ -52,7 +55,7 @@
                 chart: null,
                 charts : [],
                 selected: null,
-                abordo: null,
+                abordo: [],
 
                 init(){
                     console.log("WW")
@@ -87,25 +90,31 @@
                             {
                             label: '# de No abordo',
                             data: [],
-                            borderWidth: 1
+                            borderWidth: 1,
+                            datalabels: {
+                            color: 'white'
+                        },
                             }]
                         };
 
                     const config = {
                         type: 'bar',
                         data: data,
+                        plugins: [ChartDataLabels],
                         options: {
                             scales: {
-                                // x: {
-                                // stacked: true   
-                                // },
+                                x: {
+                                  stacked: true, 
+                                 },
                             y: {
                                 sbeginAtZero: true,
-                                // stacked: true  
+                                stacked: true,  
+                                labels: {
+                                render: 'percentage'
+                            }
                                 }
                             },
                         }
-
                     };
                     const  data2 = {
                             labels: [],
@@ -127,10 +136,10 @@
 
                     };
                     const  data3 = {
-                            labels: [],
+                            labels: ["a"],
                             datasets: [{
                             label: ' Si abordo',
-                            data: [],
+                            data: [1],
                             borderWidth: 1
                             },
                             {
@@ -157,6 +166,49 @@
                     chart3 = new Chart(
                         this.$refs.canvas3,
                         config3
+                    );
+
+                    const dataText = {
+                            labels: ["A","B","C","34E"],
+                            datasets: [{
+                            label: '# de Abordo',
+                            data: [2,3,4,5],
+                            borderWidth: 1
+                            },
+                            {
+                            label: '# de No abordo',
+                            data: [2,3,4,5],
+                            borderWidth: 1
+                            }]
+                        };
+                    const configT = {
+                        type: 'bar',
+                        data: dataText,
+                        options: {
+                            scales: {
+                                 x: {
+                                 stacked: true,
+                                
+                                    title: {
+                                        display: true,
+                                        text: 'Días de la Semana'
+                                    },
+                                    // labels: this.label.
+                                 },
+                            y: {
+                                //sbeginAtZero: true,
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: "Numero de pasajeros"
+                                }
+                                },
+                            }
+                        } 
+                    };
+                    chart2text = new Chart(
+                        this.$refs.canvas2text,
+                        configT
                     );
                 },
 
@@ -195,11 +247,19 @@
                         return accumulator
                     }, {});
 
-                    const output = Object.values(group);
-                    console.log(output);
+                    const pre = Object.values(group);
+                    
+                    const output = pre.map(abordo => ({
+                        ...abordo,
+                        ["porcentaje"]: Math.trunc(abordo['abordo'] / (abordo['abordo'] + abordo['no_abordo']) * 100) 
+                    }));
+                    // console.log(addPercentaje);
+                    
                     this.abordo = output
                     // this.renderChart(output, chart2)
-                    this.label = output.map(data => data.origen)
+                    //console.log(this.abordo);
+                    // map(v => `${v} \n ${this.abordo[1].porcentaje}%`)
+                    this.label = output.map(data =>  `${data.origen} \n ${data.porcentaje}%`)
                     this.SIabordo = output.map(data => data.abordo)
                     this.NOabordo = output.map(data => data.no_abordo)
                     return 0;
