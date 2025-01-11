@@ -51,13 +51,18 @@ class PasajerosController extends Controller
         // ->having('terminal', '!=', "TGZ ONLINE")->get();
     }
 
-    public function getInfo($id_pasajero){
-        $pasajero = Pasajero::find($id_pasajero);
-
+    public function getInfo($pasajero_id){
+        $pasajero = Pasajero::find($pasajero_id);
+        $bus = DB::table('diario_c')->select('autobus')->where('id_diario_c', $pasajero->id_diario_c)->first();
         return  response()->json([
+            "id" => $pasajero->id_pasajero,
+            "id_diario" => $pasajero->id_diario_c,
             "folio" => $pasajero->consecutivo_terminal,
             "nombre" => $pasajero->nombre,
+            "hora"  => "{$pasajero->hora}:{$pasajero->minutos}", 
             "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
+            "asiento" => $pasajero->numero_asiento,
+            "bus" => $bus->autobus,
             "empresa" => $pasajero->empresa
         ]);
     }
@@ -73,8 +78,8 @@ class PasajerosController extends Controller
         try {
             foreach ($request->document as $key => $doc) {
                 Documentation::create([
-                    "pasajero_id" => $request->pasajero_id,
-                    "type_id" => $doc["maleta"],
+                    "pasajero_id" => $request->id,
+                    "type_id" => $doc,
                     "number_document" => 1
                 ]);
             }             

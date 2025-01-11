@@ -11,6 +11,8 @@ class Documentation extends Model
 
     protected $fillable = [
         'pasajero_id',
+        'status',
+        'documenter_by',
         'type_id',
         'number_document',
     ];
