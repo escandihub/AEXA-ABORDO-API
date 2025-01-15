@@ -29,7 +29,7 @@ class ClienController extends Controller
     public function LoginPlainText(Request $request){
         $user = Usuario::where('user', $request->user)->first();
         return response()->json([
-            "upgradeable" => $request->upgradeable,
+            "upgradeable" => false, //$request->upgradeable,
             "user" => [
                 "nombre" => $user->user,
                 "status" => $user->status,
