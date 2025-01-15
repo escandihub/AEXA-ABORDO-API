@@ -13,7 +13,12 @@ class Documentation extends Model
         'pasajero_id',
         'status',
         'documenter_by',
+        'uuid',
         'type_id',
         'number_document',
     ];
+
+    public function type() {
+        return $this->belongsTo(DocumentationType::class, 'type_id', 'id');
+    }
 }
