@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PasajeroDocumentacionCollection;
 use Illuminate\Http\Request;
 use App\Models\API\Pasajero;
 use App\Models\Diario;
 use App\Http\Resources\PasajerosResource;
+use App\Http\Resources\Passanger;
 use App\Models\Documentation;
 use Illuminate\Support\Facades\DB;
 
@@ -79,7 +81,8 @@ class PasajerosController extends Controller
             foreach ($request->document as $key => $doc) {
                 Documentation::create([
                     "pasajero_id" => $request->id,
-                    "type_id" => $doc,
+                    "type_id" => $doc['type'],
+                    "uuid" => $doc['uuid'],
                     "number_document" => 1
                 ]);
             }             
@@ -95,5 +98,18 @@ class PasajerosController extends Controller
             //throw $th;
         }
         
+    }
+
+    function getDocumentation($pasajero_id) {
+        $pasajero = Pasajero::find($pasajero_id);
+
+        return response()->json([
+            "pasajero" => new Passanger($pasajero),
+            "documents" => PasajeroDocumentacionCollection::collection($pasajero->document)->resolve()
+        ], 200);
+    }
+    
+    function updateDocument($pasajero){
+        $pasajero = Pasajero::find($pasajero->id);
     }
 }
