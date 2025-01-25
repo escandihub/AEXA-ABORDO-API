@@ -109,7 +109,25 @@ class PasajerosController extends Controller
         ], 200);
     }
     
-    function updateDocument($pasajero){
-        $pasajero = Pasajero::find($pasajero->id);
+    function updateDocumentation(Request $request, $pasajero){
+        \Log::info($request);
+        $pasajero = Pasajero::find($pasajero);
+
+        DB::beginTransaction();
+        try {
+            foreach ($request->all() as $key => $doc) {
+                Documentation::find($doc["id"])->update(["status" => $doc["status"]]);
+            }             
+            
+            DB::commit();
+            return response()->json([
+                "status" => 200,
+                "message" => "se ha guardado con exito"
+            ], 200);
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage());
+            DB::rollBack();
+            //throw $th;
+        }
     }
 }

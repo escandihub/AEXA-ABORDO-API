@@ -28,7 +28,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     // Route::get('corrida/test',[ CorridasController::class, 'terminales']); 
 });
-
+Route::get('pasajero_equipaje/documents/{pasajero_id}',[ PasajerosController::class, 'getDocumentation']); 
+Route::put('pasajero/documents/{pasajero_id}',[ PasajerosController::class, 'updateDocumentation']); 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class); // validateUpdate::class
 Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class, CheckDevice::class, validateUpdate::class]);
 Route::get('corridas/all',[ CorridasController::class, 'getCorridas']); 
