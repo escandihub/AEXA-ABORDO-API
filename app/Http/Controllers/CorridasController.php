@@ -285,7 +285,7 @@ class CorridasController extends Controller
     
         $this->madrugada = false;
 
-        $hoy = \Carbon\CarbonImmutable::parse('2024-10-30 07:29');  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
+        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
         $fecha2 = $hoy->copy()->addHour(3);
 
@@ -344,7 +344,12 @@ class CorridasController extends Controller
             $result =   DB::select("call getColumn(?,?,@val)", [$corrida->id_diario_c, "{$terminal_user}"]);
 
             if($result[0] instanceof stdClass){
-                // \Log::info(get_object_vars($result[0]));
+                 //\Log::info(get_object_vars($result[0]));
+                 \Log::build([
+                    'driver' => 'single',
+                    'path' => storage_path("logs/{$terminal_user}.log"),
+                  ])->info(get_object_vars($result[0]));
+                  
                 if(property_exists($result[0], 'terminal')){
                     $columnas[] = $result[0];
                 }
