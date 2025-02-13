@@ -35,7 +35,7 @@ class ClienController extends Controller
                 "status" => $user->status,
                 "terminal" => $user->taquilla->abreviacion
             ],
-            "token" => $user->createToken('omnibus', ["*"], now()->addMinute(30), $request->lat, $request->log)->plainTextToken,
+            "token" => $user->createToken('omnibus', ["*"], now()->addMinute(90), $request->lat, $request->log)->plainTextToken,
             
         ], 200);
 
