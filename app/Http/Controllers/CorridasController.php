@@ -159,7 +159,7 @@ class CorridasController extends Controller
     public function update(Request $request, $id){
         $diario =  $request->diario_id;
         $user =  $request->user()->id_usuario;
-        \Log::info($user);
+
         $result =   DB::select("call TEMP_update_pasajero(?, ?, ?, @val)", [$id, $diario, $user]);
 
         if ($result[0]->valido) {
@@ -337,6 +337,10 @@ class CorridasController extends Controller
 
             if($result[0] instanceof stdClass){
                 // \Log::info(get_object_vars($result[0]));
+                   \Log::build([
+                    'driver' => 'single',
+                    'path' => storage_path("logs/{$terminal_user}.log"),
+                  ])->info(get_object_vars($result[0]));
                 if(property_exists($result[0], 'terminal')){
                     $columnas[] = $result[0];
                 }
