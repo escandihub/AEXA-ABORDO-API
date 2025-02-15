@@ -75,12 +75,14 @@ class PasajerosController extends Controller
         \Log::info($request->all());
 
         $pasajero_id = $request->pasajero_id;
-        
+        $user = $request->user()->id_usuario; // se agrega quien documenta
+
         DB::beginTransaction();
         try {
             foreach ($request->document as $key => $doc) {
                 Documentation::create([
                     "pasajero_id" => $request->id,
+                    "documenter_by" => $user,
                     "type_id" => $doc['type'],
                     "uuid" => $doc['uuid'],
                     "number_document" => 1
