@@ -160,7 +160,7 @@ class CorridasController extends Controller
         $diario =  $request->diario_id;
         $user =  $request->user()->id_usuario;
 
-        $result =   DB::select("call TEMP_update_pasajero(?, ?, ?, @val)", [$id, $diario, $user]);
+        $result =   DB::select("call update_pasajero(?, ?, ?, @val)", [$id, $diario, $user]);
 
         if ($result[0]->valido) {
             return response()->json(["messaje" => "OK" ], 200);
