@@ -13,9 +13,11 @@ class Documentation extends Model
         'pasajero_id',
         'status',
         'documenter_by',
+        'delivery_by',
         'uuid',
         'type_id',
         'number_document',
+        'delivery_at'
     ];
 
     public function type() {
