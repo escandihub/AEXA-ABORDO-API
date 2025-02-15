@@ -214,7 +214,7 @@
 
                 transform(abordo){
                     const group = abordo.reduce((accumulator, item)  => {
-                    const origen = item.origen
+                    const origen = item.terminal
                     const time = `${item.hora}:${item.minutos}`
                     const date = item.fecha_salida
 
