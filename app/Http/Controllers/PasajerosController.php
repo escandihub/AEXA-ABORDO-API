@@ -112,13 +112,21 @@ class PasajerosController extends Controller
     }
     
     function updateDocumentation(Request $request, $pasajero){
-        \Log::info($request);
+        
         $pasajero = Pasajero::find($pasajero);
+        $user = $request->user()->id_usuario; 
+        $now = \Carbon\Carbon::now();
 
         DB::beginTransaction();
         try {
             foreach ($request->all() as $key => $doc) {
-                Documentation::find($doc["id"])->update(["status" => $doc["status"]]);
+                if ($doc["status"] === "entregado") {
+                    Documentation::find($doc["id"])->update([
+                        "status" => $doc["status"],
+                        "delivery_by" => $user,
+                        "delivery_at" => $now
+                    ]);
+                }
             }             
             
             DB::commit();
