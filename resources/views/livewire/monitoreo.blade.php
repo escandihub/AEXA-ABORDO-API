@@ -16,7 +16,7 @@
     <div class="max-w-7xl mx-auto overflow-x-auto shadow-md sm:rounded-lg">
          
         <div @post-created.window="setChart($event.detail.data)">
-            <canvas id="chart2text" x-ref="canvas2text"></canvas>
+             {{-- <canvas id="chart2text" x-ref="canvas2text"></canvas> --}}
             <span>filtro de la informacion</span>
             <x-date-piker />
             <canvas id="myChart" x-ref="canvas"></canvas>
