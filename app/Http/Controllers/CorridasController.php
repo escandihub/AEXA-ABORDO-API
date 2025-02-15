@@ -337,10 +337,11 @@ class CorridasController extends Controller
 
             if($result[0] instanceof stdClass){
                 // \Log::info(get_object_vars($result[0]));
-                   \Log::build([
+                \Log::build([
                     'driver' => 'single',
                     'path' => storage_path("logs/{$terminal_user}.log"),
                   ])->info(get_object_vars($result[0]));
+                  
                 if(property_exists($result[0], 'terminal')){
                     $columnas[] = $result[0];
                 }
