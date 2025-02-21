@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PasajeroDocumentacionCollection;
 use Illuminate\Http\Request;
 use App\Models\API\Pasajero;
 use App\Models\Diario;
 use App\Http\Resources\PasajerosResource;
+use App\Http\Resources\Passanger;
+use App\Models\Documentation;
 use Illuminate\Support\Facades\DB;
 
 class PasajerosController extends Controller
@@ -48,5 +51,93 @@ class PasajerosController extends Controller
             ];
         });
         // ->having('terminal', '!=', "TGZ ONLINE")->get();
+    }
+
+    public function getInfo($pasajero_id){
+        $pasajero = Pasajero::find($pasajero_id);
+        $bus = DB::table('diario_c')->select('autobus')->where('id_diario_c', $pasajero->id_diario_c)->first();
+        return  response()->json([
+            "id" => $pasajero->id_pasajero,
+            "id_diario" => $pasajero->id_diario_c,
+            "folio" => $pasajero->consecutivo_terminal,
+            "nombre" => $pasajero->nombre,
+            "hora"  => "{$pasajero->hora}:{$pasajero->minutos}", 
+            "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
+            "asiento" => $pasajero->numero_asiento,
+            "bus" => $bus->autobus,
+            "empresa" => $pasajero->empresa
+        ]);
+    }
+
+    public function saveDocumentation(Request $request){
+
+
+        \Log::info($request->all());
+
+        $pasajero_id = $request->pasajero_id;
+        $user = $request->user()->id_usuario; // se agrega quien documenta
+
+        DB::beginTransaction();
+        try {
+            foreach ($request->document as $key => $doc) {
+                Documentation::create([
+                    "pasajero_id" => $request->id,
+                    "documenter_by" => $user,
+                    "type_id" => $doc['type'],
+                    "uuid" => $doc['uuid'],
+                    "number_document" => 1
+                ]);
+            }             
+            
+            DB::commit();
+            return response()->json([
+                "status" => 200,
+                "message" => "se ha guardado con exito"
+            ], 200);
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage());
+            DB::rollBack();
+            //throw $th;
+        }
+        
+    }
+
+    function getDocumentation($pasajero_id) {
+        $pasajero = Pasajero::find($pasajero_id);
+
+        return response()->json([
+            "pasajero" => new Passanger($pasajero),
+            "documents" => PasajeroDocumentacionCollection::collection($pasajero->document)->resolve()
+        ], 200);
+    }
+    
+    function updateDocumentation(Request $request, $pasajero){
+        
+        $pasajero = Pasajero::find($pasajero);
+        $user = $request->user()->id_usuario; 
+        $now = \Carbon\Carbon::now();
+
+        DB::beginTransaction();
+        try {
+            foreach ($request->all() as $key => $doc) {
+                if ($doc["status"] === "entregado") {
+                    Documentation::find($doc["id"])->update([
+                        "status" => $doc["status"],
+                        "delivery_by" => $user,
+                        "delivery_at" => $now
+                    ]);
+                }
+            }             
+            
+            DB::commit();
+            return response()->json([
+                "status" => 200,
+                "message" => "se ha guardado con exito"
+            ], 200);
+        } catch (\Throwable $th) {
+            \Log::info($th->getMessage());
+            DB::rollBack();
+            //throw $th;
+        }
     }
 }

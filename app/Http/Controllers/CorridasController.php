@@ -162,21 +162,21 @@ class CorridasController extends Controller
 
         $result =   DB::select("call update_pasajero(?, ?, ?, @val)", [$id, $diario, $user]);
 
+        //$result =   DB::select("call updatePasajero(?, ?, @val)", [$id, $diario]);
+        $pasajero = Pasajero::where('id_pasajero', $id)->first();
+        // \Log::info($pasajero);
         if ($result[0]->valido) {
-            return response()->json(["messaje" => "OK" ], 200);
+            return response()->json(["messaje" => "OK",
+            "pasajero" => [
+                "folio" => $pasajero->id_pasajero, // identificador unico de pasajero
+                "nombre" => $pasajero->nombre,
+                "id" =>  $pasajero->consecutivo_terminal, // folio
+                "tipo" => $pasajero->clase,
+                "asiento" => $pasajero->numero_asiento,
+            ]
+         ], 200);
         }
         return response()->json(["messaje" => "Ticket invalido" ], 400);
-
-        // $pasajero = Pasajero::find($id);
-        // if(!$pasajero->abordo){
-        //     try {
-        //         $result =   DB::select("call updatePasajero(?, ?, @val)", [$id, $diario]);
-        //     } catch (\Throwable $th) {
-        //         \Log::info($th->getMessage());
-        //     }
-        // return response()->json(["messaje" => "OK" ], 200);
-        // }
-        // return response()->json(["messaje" => "Ticket invalido" ], 400);
     }
 
     public function a_abordar($pasajeros, $empleado){
@@ -185,91 +185,9 @@ class CorridasController extends Controller
         });
     }
 
-    /**
-     * Se obtiene la lista de terminales que pasara el autobus
-     */
-    public function terminales(){
-        // $terminales = ["TGZ", "CIN", "CER", "ARR","TON", "PIJ","MAP","ESC", "HUI", "TAP", "SNC", "OCO", "PAL", "CIR","MAD","PQR","AGU","PTE","TGR","ORT","TIL","LIB","CND","CHN","DME","VAL","SNM","ECE","LCR","JIQ","LAF","OCZ","TGP","PTO","PTI","PTR","TPR","PR5","HHE"];
-        // $condiciones = [];
-        // foreach($terminales as $terminal){
-        //     $condiciones[] = ["$terminal", ">", "0"];
-        // }
-        $fecha = "2024-07-30"; # \Carbon\Carbon::now()->format('Y-m-d');
-        $inicioH = Carbon::now()->subHour(1);
-        $finH = Carbon::now()->addHour(1);
 
-        $usuario = "ARR";
-        
-        $corridas = DB::table('diario_c_ciudades')->where('id_diario_c', 427109)
-        // ->where('diario_c_ciudades.fecha', $fecha)
-        // ->whereBetween('diario_c_ciudades.hora', [$inicioH->hour, $finH->hour])
-        ->get();
-        $cols = [];
-        $model = (new DiarioCiudad());
-        $columnObjects = DB::select("SHOW COLUMNS FROM {$model->getTable()}");
-        
-        $columnNames = array_map(fn ($column) => $column->Field, $columnObjects);
 
-        $trueColums = collect($columnNames)->filter(function ($column) use ($corridas){
-            return $corridas->contains(function($corrida) use ($column){
-                if(is_int($corrida->{$column})){
-                    return $corrida->{$column} === 1;
-                }
-            });
-        });
 
-        return $trueColums;
-    }
-
-    public function renderCiudad($user = "ARR"){
-
-        $fecha = "2024-07-30"; # \Carbon\Carbon::now()->format('Y-m-d');
-        $inicioH =  "03:00"; # Carbon::now()->subHour(1);
-        $finH = "05:00"; #Carbon::now()->addHour(1);
-        $corridas = DB::table('diario_c')->select('diario_c.*')
-        ->join('diario_c_terminales', function(JoinClause $join)use ($fecha, $inicioH, $finH){
-            $join->on('diario_c_terminales.id_diario_c', "=", "diario_c.id_diario_c");
-        });
-    }
-
-    public function isCity($corrida): Array{
-        $model = (new DiarioCiudad());
-        $columnObjects = DB::select("SHOW COLUMNS FROM {$model->getTable()}");
-        
-        $columnNames = array_map(fn ($column) => $column->Field, $columnObjects);
-
-        return collect($columnNames)->filter(function ($column) use ($corrida){
-            return $corrida->contains(function($corrida) use ($column){
-                if(is_int($corrida->{$column})){
-                    return $corrida->{$column} === 1;
-                }
-            });
-        })->value->all();
-    }
-
-    public function getCorridas(Request $request){
-        $user = "TON"; //$request->user()->empleado->terminal->abreviacion;
-        $fecha =  \Carbon\Carbon::now()->format('Y-m-d');
-        $inicioH =   Carbon::now()->subHour(4);
-        $finH = Carbon::now()->addHour(1);
-
-        \Log::info($inicioH->hour);
-        \Log::info($finH->hour);
-
-        $lista = DB::table('pasajeros')->selectRaw('distinct pasajeros.id_diario_c, pasajeros.hora as "pHora", pasajeros.minutos as "pMinutos"')->where('origen', '=', $user)
-        ->whereNotIn('status', ['Z','C'])
-        ->where('fecha_salida', '=', $fecha);
-
-        $corridas = DB::table('diario_c')->select('diario_c.*', "filterCorrida.pHora", "filterCorrida.pMinutos")
-        ->joinSub($lista, 'filterCorrida', function(JoinClause $join)use($fecha){
-            $join->on("diario_c.id_diario_c", "=", "filterCorrida.id_diario_c");
-        })->where('diario_c.fecha', $fecha)->get()->filter(function($corrida)use($inicioH, $finH){
-            $date = Carbon::parse("{$corrida->pHora}:{$corrida->pMinutos}");
-            return $date->between($inicioH, $finH);
-        });
-
-        return CorridaResource::collection($corridas, 2)->resolve();
-    }
 
     #Request $request
     public $madrugada = false;
@@ -405,24 +323,19 @@ class CorridasController extends Controller
      */
     public function lastFilter($corridas_, $fecha, $fecha2) {
        return $corridas_->filter(function($c)use($fecha, $fecha2) {
-            $date_corrida = Carbon::parse("{$c->fecha} {$c->hora}:{$c->minutos}");
-            #agregar filtro despues de hacer pruebas prod
-            // && $c->status != 'S'
-            // \Log::info($date_corrida);
-             return $this->comparative($date_corrida, $fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F' &&  $c->status != 'S' ;
-            // return  $date_corrida->between($fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F';
-            // if($this->madrugada){
-            //     return  $c->status != 'C' && $c->status != 'F';
-            // }else{
-            //     return  $date_corrida->between($fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F';
-            // }
+        try {
+            $h = trim($c->hora);
+            $m = trim($c->minutos);
+            $date_corrida = Carbon::parse("{$c->fecha} {$h}:{$m}");
+            return $this->comparative($date_corrida, $fecha, $fecha2)  &&  $c->status != 'C' && $c->status != 'F' &&  $c->status != 'S' ;
+        } catch (\Exception $th) {
+            \Log::info($th->getMessage());
+          return $c->status != 'C' && $c->status != 'F' &&  $c->status != 'S' ;
+        }
         });
     }
 
     public function comparative($date, $fecha1, $fecha2){
-        // $currentTime = new \DateTime($date->format('Y-m-d H:i'));
-        // $startTime = new \DateTime($fecha1->format('Y-m-d H:i'));
-        // $endTime = new \DateTime($fecha2->format('Y-m-d H:i'));
         $currentTime = $date;
         $startTime = $fecha1->copy()->subHour(3);
         $endTime =  $fecha1->copy()->addHour(2);

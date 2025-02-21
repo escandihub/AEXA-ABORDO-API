@@ -4,6 +4,7 @@ namespace App\Models\API;
 
 use App\Models\Diario;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use App\Models\Documentation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,11 +33,11 @@ class Pasajero extends Model
     {
         return $this->belongsTo(Terminal::class, 'numero_terminal', 'id_terminal');
     }
-
-    public function scopeAbordoUse(Builder $query, $inicio, $fin){
-
-    }
-
-    public function abordo() {
+    /**
+     * un pasajero puede tener uno o mucha documentacion 
+     */
+    public function document()
+    {
+        return $this->hasMany(Documentation::class, 'pasajero_id', 'id_pasajero');
     }
 }
