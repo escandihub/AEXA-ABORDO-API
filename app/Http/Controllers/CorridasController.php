@@ -306,11 +306,11 @@ class CorridasController extends Controller
     }
 
     function choseTyeOfquery(Request $request){
-        $usuario = $request->user()->empleado->terminal->abreviacion;
+        $usuario = $request->user()->empleado->nombre_taquilla;
 
         // \Log::info("-------NOM TAQUILLA");
         // \Log::info($usuario->nombre_taquilla);
-        if($usuario == "TGZ" || $usuario == 'TAP'){
+        if($usuario == "TGZ TERMINAL" || $usuario == 'TAP TERMINAL'){
             return $this->index($request);
         }else{
             return $this->readCorridas($request);
