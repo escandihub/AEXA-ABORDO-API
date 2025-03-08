@@ -83,7 +83,7 @@ class PasajerosController extends Controller
                 Documentation::create([
                     "pasajero_id" => $request->id,
                     "documenter_by" => $user,
-                    "type_id" => $doc['type'],
+                    "type_id" => $doc['id'],
                     "uuid" => $doc['uuid'],
                     "number_document" => 1
                 ]);
