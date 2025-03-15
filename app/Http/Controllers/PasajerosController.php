@@ -56,17 +56,23 @@ class PasajerosController extends Controller
     public function getInfo($pasajero_id){
         $pasajero = Pasajero::find($pasajero_id);
         $bus = DB::table('diario_c')->select('autobus')->where('id_diario_c', $pasajero->id_diario_c)->first();
-        return  response()->json([
-            "id" => $pasajero->id_pasajero,
-            "id_diario" => $pasajero->id_diario_c,
-            "folio" => $pasajero->consecutivo_terminal,
-            "nombre" => $pasajero->nombre,
-            "hora"  => "{$pasajero->hora}:{$pasajero->minutos}", 
-            "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
-            "asiento" => $pasajero->numero_asiento,
-            "bus" => $bus->autobus,
-            "empresa" => $pasajero->empresa
-        ]);
+        if($bus){
+            return  response()->json([
+                "id" => $pasajero->id_pasajero,
+                "id_diario" => $pasajero->id_diario_c,
+                "folio" => $pasajero->consecutivo_terminal,
+                "nombre" => $pasajero->nombre,
+                "hora"  => "{$pasajero->hora}:{$pasajero->minutos}", 
+                "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
+                "asiento" => $pasajero->numero_asiento,
+                "bus" => $bus->autobus,
+                "empresa" => $pasajero->empresa
+            ]);
+        }
+        return response()->json([
+            "status" => "no encontrado",
+            "message" => "pasajero no encontrado"
+        ], 400);
     }
 
     public function saveDocumentation(Request $request){
