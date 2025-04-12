@@ -18,6 +18,10 @@ class ListDocs extends Component
     #[Url] 
     public ?string $fecha = "";
 
+    public ?bool $showDetails = false; 
+
+    public $passangerDocs = NULL;
+
     public function render()
     {
         $values = $this->getDocuments();
@@ -48,7 +52,7 @@ class ListDocs extends Component
         // ->groupBy('pasajero_id')
         // ->get();
         \Log::info($this->origen);  
-        return mDocument::whereDate('created_at', \Carbon\Carbon::today())
+        return mDocument::whereDate('created_at', \Carbon\Carbon::yesterday())
         ->join('pasajeros', 'pasajeros.id_pasajero', 'documentations.pasajero_id')
         ->select(DB::raw('documentations.id, documentations.pasajero_id, documentations.documenter_by,documentations.status, documentations.created_at, pasajeros.origen,
         pasajeros.destino, pasajeros.nombre, count(pasajero_id) AS nMaletas,  CONCAT(pasajeros.hora,":", pasajeros.minutos) AS horario'))
@@ -69,5 +73,22 @@ class ListDocs extends Component
      */
     private function Terminales(){
         return DB::table('terminales')->select('id_terminal','abreviacion')->groupBy('abreviacion')->get();
+    }
+
+    public function showMore(){
+        $this->showDetails = !$this->showDetails;
+    }
+    public function getMaletas($pasajero_id){
+        
+        $this->passangerDocs = mDocument::where('pasajero_id', $pasajero_id)
+        ->join('pasajeros', 'pasajeros.id_pasajero', 'documentations.pasajero_id')
+        ->join('diario_c', 'pasajeros.id_diario_c', 'diario_c.id_diario_c')
+        ->join('documentation_types', 'documentation_types.id', 'documentations.type_id')
+        ->select("documentations.uuid", "documentations.status", "documentations.created_at","documentations.delivery_at",
+        "pasajeros.nombre", "pasajeros.origen","pasajeros.numero_asiento","diario_c.autobus","diario_c.clase", "documentation_types.name")
+        ->get();
+        $this->showDetails = !$this->showDetails;
+        \Log::info($this->passangerDocs);
+        // return $maletas;
     }
 }

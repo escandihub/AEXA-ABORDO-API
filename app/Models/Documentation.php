@@ -23,4 +23,8 @@ class Documentation extends Model
     public function type() {
         return $this->belongsTo(DocumentationType::class, 'type_id', 'id');
     }
+    public function passanger()
+    {
+        return $this->belongsTo(User::class, 'pasajero_id', 'id_pasajero');
+    }
 }

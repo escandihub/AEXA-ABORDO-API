@@ -7,6 +7,7 @@ use App\Livewire\VersionApp;
 use App\Livewire\Device\AccessList;
 use App\Livewire\DevicesList;
 use App\Livewire\Monitoreo;
+use App\Livewire\Documentation\ListDocs;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,7 @@ Route::middleware('auth','can:isAdmin')->group(function () {
     Route::get('/app-traking', VersionApp::class)->name('app.abordo.traking');
     Route::get('/devices/access', AccessList::class)->name('device.access');
     Route::get('/devices', DevicesList::class)->name('device.list');
+    Route::get('/documentos', ListDocs::class)->name('documentos.list');
 });
 
 Route::middleware('auth')->group(function () {
