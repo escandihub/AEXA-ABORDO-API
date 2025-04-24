@@ -164,6 +164,7 @@ class CorridasController extends Controller
 
         //$result =   DB::select("call updatePasajero(?, ?, @val)", [$id, $diario]);
         $pasajero = Pasajero::where('id_pasajero', $id)->first();
+        $bus = Diario::find($diario);
         // \Log::info($pasajero);
         if ($result[0]->valido) {
             return response()->json(["messaje" => "OK",
@@ -173,6 +174,9 @@ class CorridasController extends Controller
                 "id" =>  $pasajero->consecutivo_terminal, // folio
                 "tipo" => $pasajero->clase,
                 "asiento" => $pasajero->numero_asiento,
+                "hora" => "{$pasajero->hora}:{$pasajero->minutos}",
+                "bus" =>  $bus->autobus,
+                "ruta" => "{$pasajero->origen} - {$pasajero->destino}",
             ]
          ], 200);
         }
@@ -195,7 +199,7 @@ class CorridasController extends Controller
     
         $this->madrugada = false;
 
-        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-08-20 01:00'); 
+        $hoy = \Carbon\CarbonImmutable::parse('2024-07-30 11:00');  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-07-30 11:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
         $fecha2 = $hoy->copy()->addHour(3);
 
