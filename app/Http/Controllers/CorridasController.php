@@ -171,7 +171,8 @@ class CorridasController extends Controller
             "pasajero" => [
                 "folio" => $pasajero->id_pasajero, // identificador unico de pasajero
                 "nombre" => $pasajero->nombre,
-                "id" =>  $pasajero->consecutivo_terminal, // folio
+                "folio" =>  $pasajero->consecutivo_terminal, // folio
+                "id" => $pasajero->id_pasajero,
                 "tipo" => $pasajero->clase,
                 "asiento" => $pasajero->numero_asiento,
                 "hora" => "{$pasajero->hora}:{$pasajero->minutos}",
