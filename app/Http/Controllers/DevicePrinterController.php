@@ -52,13 +52,13 @@ class DevicePrinterController extends Controller
         $device = DeviceLocation::where('user_id', $usuario->id_usuario)->first();
         $dispositivo = $device->device;
 
-        // $dispositivo = $dispositivo->printer;
-
-        if ($dispositivo) {
-            return response()->json(
-                $dispositivo->printers()->wherePivot('is_default', true)->first(),
-                200
-            );
+        if($dispositivo->printers()->count() === 0) {
+            return response()->json(['message' => 'no hay impresora vinculada'], 404);
         }
+
+        return response()->json(
+            $dispositivo->printers()->wherePivot('is_default', true)->first(),
+            200
+        );
     }
 }
