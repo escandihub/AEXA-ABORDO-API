@@ -30,4 +30,16 @@ class Device extends Model
     public function location() {
         return $this->hasMany(DeviceLocation::class);
     }
+    public function printers() {
+        return $this->belongsToMany(Printer::class)
+         ->withPivot('is_default')
+            ->withTimestamps();
+    }
+    // Método para asociar una impresora
+    public function associatePrinter(Printer $printer, $isDefault = false)
+    {
+        $this->printers()->syncWithoutDetaching([
+            $printer->id => ['is_default' => $isDefault]
+        ]);
+    }
 }

@@ -31,4 +31,9 @@ class Usuario extends Model
         return $this->hasOne(Empleado::class, 'id_empleado', 'id_empleado');
     }
     
+    public function access()
+    {
+        return $this->belongsTo(DeviceLocation::class, 'user_id', 'id_usuario');
+    }
+    
 }
