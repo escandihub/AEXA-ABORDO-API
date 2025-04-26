@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\API\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\API\Device;
 
 class ClienController extends Controller
 {
@@ -28,6 +29,10 @@ class ClienController extends Controller
 
     public function LoginPlainText(Request $request){
         $user = Usuario::where('user', $request->user)->first();
+        \Log::info($user);
+        $exist = Device::where('identifier', $request->device['identifier'])->first();
+        $exist->location()->create(['user_id' => $user->id_usuario, 'latitud' => $request->lat, 'longitud' => $request->log]);
+
         return response()->json([
             "upgradeable" => $request->upgradeable,
             "user" => [

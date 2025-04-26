@@ -27,7 +27,7 @@ class CheckDevice
                 $traking = $device->trakingDevice()->create($request->app);
                 $device->location()->create(['latitud' => $request->lat, 'longitud' => $request->log]);
             }else{
-                $exist->location()->create(['latitud' => $request->lat, 'longitud' => $request->log]);
+                //$exist->location()->create(['latitud' => $request->lat, 'longitud' => $request->log]);
             }
            
               

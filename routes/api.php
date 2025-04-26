@@ -11,6 +11,7 @@ use App\Http\Middleware\isPassengerValid;
 use App\Http\Middleware\VadilateLocation;
 use Illuminate\Routing\RouteGroup;
 use App\Http\Controllers\PasajerosController;
+use App\Http\Controllers\DevicePrinterController;
 use App\Http\Middleware\CheckDevice;
 use App\Http\Middleware\validateUpdate;
 
@@ -30,6 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //documentacion
     Route::get('pasajero_equipaje/documents/{pasajero_id}',[ PasajerosController::class, 'getDocumentation']); 
     Route::put('pasajero/documents/{pasajero_id}',[ PasajerosController::class, 'updateDocumentation']); 
+    Route::post('impresora/asignar', [DevicePrinterController::class, 'asignacion']);
+    Route::get('impresora', [DevicePrinterController::class, 'getPrinter']);
 });
 
 Route::post('register',[ ClienController::class, 'register'])->middleware(RegisterClientAPI::class); // validateUpdate::class
