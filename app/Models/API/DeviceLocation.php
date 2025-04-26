@@ -13,5 +13,11 @@ class DeviceLocation extends Model
         'device_id',
         'latitud',
         'longitud',
+        'user_id'
     ];
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class, 'device_id', 'id');
+    }
 }
