@@ -111,10 +111,16 @@ class PasajerosController extends Controller
     function getDocumentation($pasajero_id) {
         $pasajero = Pasajero::find($pasajero_id);
 
-        return response()->json([
-            "pasajero" => new Passanger($pasajero),
-            "documents" => PasajeroDocumentacionCollection::collection($pasajero->document)->resolve()
-        ], 200);
+        if($pasajero->document()->count() > 0){
+            return response()->json([
+                "pasajero" => new Passanger($pasajero),
+                "documents" => PasajeroDocumentacionCollection::collection($pasajero->document)->resolve()
+            ], 200);
+        }else{
+            return response()->json([
+                "message" => "No se encuentra maletas."
+            ], 404);
+        }
     }
     
     function updateDocumentation(Request $request, $pasajero){
