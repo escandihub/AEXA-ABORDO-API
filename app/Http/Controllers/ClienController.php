@@ -32,6 +32,7 @@ class ClienController extends Controller
         \Log::info($user);
         $exist = Device::where('identifier', $request->device['identifier'])->first();
         $exist->location()->create(['user_id' => $user->id_usuario, 'latitud' => $request->lat, 'longitud' => $request->log]);
+        $expires_in = now()->addHours(12);
 
         return response()->json([
             "upgradeable" => $request->upgradeable,
@@ -40,7 +41,8 @@ class ClienController extends Controller
                 "status" => $user->status,
                 "terminal" => $user->taquilla->abreviacion
             ],
-            "token" => $user->createToken('omnibus', ["*"], now()->addHours(12), $request->lat, $request->log)->plainTextToken,
+            "token" => $user->createToken('omnibus', ["*"], $expires_in , $request->lat, $request->log)->plainTextToken,
+            "expires_in" => $expires_in
             
         ], 200);
 
