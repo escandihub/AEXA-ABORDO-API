@@ -12,8 +12,10 @@ class selectOperador extends Component
      * Create a new component instance.
      */
     public $operadores;
-    public function __construct($operadores)
+    public $default;
+    public function __construct($operadores, $default = 'No Asignado')
     {
+        $this->default = $default;
         $this->operadores = $operadores;
     }
     

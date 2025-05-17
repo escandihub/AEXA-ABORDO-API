@@ -18,27 +18,38 @@ class Operadores extends Component
                     'id' => 1,
                     'nombre' => 'Juan Perez',
                     'telefono' => '1234567890',
-                    'email' => ''], [
-                        'id' => 2,
-                        'nombre' => 'Juan Perez 1',
-                        'telefono' => '1234567890',
-                        'email' => '']
-                        , [
-                            'id' => 3,
-                            'nombre' => 'Juan Perez 2',
-                            'telefono' => '1234567890',
-                            'email' => '']
-            ]
+                    'email' => ''
+                ],
+                [
+                    'id' => 2,
+                    'nombre' => 'Juan Perez 1',
+                    'telefono' => '1234567890',
+                    'email' => ''
+                ],
+                [
+                    'id' => 3,
+                    'nombre' => 'Juan Perez 2',
+                    'telefono' => '1234567890',
+                    'email' => ''
+                ],
+                [
+                    'id' => 4,
+                    'nombre' => 'MANUEL DE JESUS MENDEZ',
+                    'telefono' => '123456117890',
+                    'email' => ''
+                ]
+            ],
+
         ]);
     }
 
     public function query()
-    {   
+    {
         $now = \Carbon\CarbonImmutable::now();
-         $corrida = DB::table('diario_c')->where('fecha', $now->format('Y-m-d') )->where('condicion_corrida', 'Disponible')
-        ->select('fecha','hora', 'minutos','origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
-        ->orderBy('fecha')
-        ->get();
+        $corrida = DB::table('diario_c')->where('fecha', $now->format('Y-m-d'))->where('condicion_corrida', 'Disponible')
+            ->select('fecha', 'hora', 'minutos', 'origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
+            ->orderBy('fecha')
+            ->get();
 
         \Log::info($corrida);
         return $corrida;

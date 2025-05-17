@@ -134,7 +134,7 @@
                                             {{-- <h4 class="text-gray-700 dark:text-gray-200">{{  $corrida->fecha }}</h4> --}}
                                             <p class="text-gray-500 dark:text-gray-400"> {{ $corrida->operador1 }}</p>
                                          <section class="z-10"> 
-                                            <x-nomina.select-operador :operadores="$operadores"/>
+                                            <x-nomina.select-operador :operadores="$operadores" :default="$corrida->operador1"/>
                                          </section>
                                             
                                         </div>
