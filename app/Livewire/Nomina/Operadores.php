@@ -5,6 +5,7 @@ namespace App\Livewire\Nomina;
 use Illuminate\Support\Facades\DB;
 
 use Livewire\Component;
+use App\Exports\CorridasPorConductorSheet;
 
 class Operadores extends Component
 {
@@ -35,6 +36,18 @@ class Operadores extends Component
                 [
                     'id' => 4,
                     'nombre' => 'MANUEL DE JESUS MENDEZ',
+                    'telefono' => '123456117890',
+                    'email' => ''
+                ],
+                [
+                    'id' => 5,
+                    'nombre' => 'SAMUEL DOMINGUEZ URBINA',
+                    'telefono' => '123456117890',
+                    'email' => ''
+                ],
+                [
+                    'id' => 6,
+                    'nombre' => 'FRANCISCO JAVIER OJEDA GONZALEZ',
                     'telefono' => '123456117890',
                     'email' => ''
                 ]
@@ -71,4 +84,9 @@ ORDER BY hora ASC
 
 select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2" limit 1
      */
+    public function generateReport(){
+        $datos = $this->query()->toArray();
+
+        return \Excel::download(new CorridasPorConductorSheet($datos), 'operadores.xlsx');
+    }
 }
