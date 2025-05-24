@@ -13,7 +13,7 @@
     <input type="text" placeholder="Buscar nombre" class="w-full p-2 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
         x-model="language" @input="operadores = findByNombre(language)">
 </li>
-            <template x-for="operador in filteredOperadores" :key="operador.id">
+            <template x-for="operador in operadores" :key="operador.id">
                 <li class="cursor-pointer select-none p-2 hover:bg-gray-200" @click="setLanguage(operador.nombre)">
                     <span x-text="operador.nombre"></span>
                 </li>
@@ -46,6 +46,7 @@
                 this.open = false;
             },
             findByNombre(nombre) {
+        
                 return this.operadores.reduce((result, operador) => {
                     if (operador.nombre.toLowerCase().includes(nombre.toLowerCase())) {
                         result.push(operador);
