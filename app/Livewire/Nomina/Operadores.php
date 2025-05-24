@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 use Livewire\Component;
 use App\Exports\CorridasPorConductorSheet;
+use App\Exports\OperadoresExport;
 
 class Operadores extends Component
 {
@@ -59,12 +60,12 @@ class Operadores extends Component
     public function query()
     {
         $now = \Carbon\CarbonImmutable::now();
-        $corrida = DB::table('diario_c')->where('fecha', $now->format('Y-m-d'))->where('condicion_corrida', 'Disponible')
+        $corrida = DB::table('diario_c')->whereBetween('fecha', ["2025-05-20", $now->format('Y-m-d')])->where('condicion_corrida', 'Disponible')
             ->select('fecha', 'hora', 'minutos', 'origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
             ->orderBy('fecha')
             ->get();
 
-        \Log::info($corrida);
+        // \Log::info($corrida);
         return $corrida;
         /**
          * SELECT fecha, hora, origen, destino, autobus, operador1, operador2, id_diario_c FROM diario_c
@@ -85,8 +86,11 @@ ORDER BY hora ASC
 select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2" limit 1
      */
     public function generateReport(){
-        $datos = $this->query()->toArray();
-
-        return \Excel::download(new CorridasPorConductorSheet($datos), 'operadores.xlsx');
+        $datos = $this->query();
+        $Formating = new CorridasPorConductorSheet($datos);
+        // dd($datos);
+        $array = $Formating->array();
+        
+        return \Excel::download(new OperadoresExport($array, [$Formating->header, $Formating->subheader]), 'operadores.xlsx');
     }
 }

@@ -200,7 +200,7 @@ class CorridasController extends Controller
     
         $this->madrugada = false;
 
-        $hoy = \Carbon\CarbonImmutable::now();  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-07-30 11:00'); 
+        $hoy = \Carbon\CarbonImmutable::parse('2024-07-30 11:00');  # \Carbon\CarbonImmutable::now(); #\Carbon\CarbonImmutable::parse('2024-07-30 11:00'); 
         // $fecha2 = \Carbon\Carbon::parse('2024-08-19 23:30')->addHour(2);
         $fecha2 = $hoy->copy()->addHour(3);
 
