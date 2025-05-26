@@ -13,7 +13,7 @@ class selectOperador extends Component
      */
     public $operadores;
     public $default;
-    public function __construct($operadores, $default = 'No Asignado')
+    public function __construct($operadores, $default)
     {
         $this->default = $default;
         $this->operadores = $operadores;
@@ -26,5 +26,16 @@ class selectOperador extends Component
     public function render(): View|Closure|string
     {
         return view('components.nomina.select-operador');
+    }
+
+    /**
+     * Update the default operador.
+     *
+     * @param  string  $corrida - Como saber si es operador1 o operador2
+     * @return void
+     */
+    public function updateOperador($operador)
+    {
+        $this->default = $operador;
     }
 }
