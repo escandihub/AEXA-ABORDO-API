@@ -10,26 +10,22 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
+class CorridasPorConductorSheet // WithHeadings
 {
     protected $datos;
 
     protected Collection $data;
-    protected array $headings;
+    public array $header;
+    public array $subheader;
 
 
-   public function __construct(Collection $data)
+    public function __construct(Collection $data)
     {
         $this->data = $data;
         // $this->headings = $headings;
     }
 
-    public function headings(): array
-    {
-        return $this->headings;
-    }
-
-      public function collection()
+    public function collection()
     {
         // Excluye las primeras 2 filas (nombres operadores y subencabezados) porque ya las tiene en `headings()`
         return $this->data->slice(2)->values();
@@ -38,9 +34,9 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
 
 
 
-    public function array(): array
+    public function array()
     {
-        $operadores = collect($this->datos)
+        $operadores = $this->data
             ->flatMap(function ($item) {
                 return collect(['operador1', 'operador2'])->map(function ($key) use ($item) {
                     // Log::info($item['fecha']);
@@ -63,16 +59,47 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
             })
             ->groupBy('nombre')
             ->map(function ($items) {
-                return $items->pluck('data');
+                return $items->pluck('data')->groupBy('fecha');;
             });
-       // dd($operadores->all());
-        // Ordenar por nombre
-        // Ordenar por nombre de operador
-        $operadores = collect($operadores->sortKeys()->all());
-        // Agrupar operadores en bloques de 2
-        $ops = $operadores->chunk(2);
 
+        // Paso 2: Obtener rango de fechas
+        $fechas = $this->data->pluck('fecha')->filter()->unique()->sort();
+        $minFecha = $fechas->min();
+        $maxFecha = $fechas->max();
+        // dd($minFecha, $maxFecha);
+
+        if (!$minFecha || !$maxFecha) {
+            // No hay fechas, retornar estructura vacía
+            return collect([]);
+        }
+        $rangoFechas = collect();
+
+        for ($date = \Carbon\Carbon::parse($minFecha); $date->lte($maxFecha); $date->addDay()) {
+            $rangoFechas->push($date->toDateString());
+        }
+         
+        // Paso 3: Mapear datos para que cada operador tenga todas las fechas del rango
+        $operadores = $operadores->map(function ($viajes) use ($rangoFechas) {
+            //  (puede haber más de uno por fecha)
+            // Para cada fecha del rango, agrega todos los viajes de esa fecha (o un registro vacío si no hay)
+            return $rangoFechas->flatMap(function ($fecha) use ( $viajes) {
+            if ($viajes->has($fecha)) {
+                // Puede haber varios viajes en la misma fecha
+                return $viajes[$fecha]->all();
+            }
+            // Si no hay viajes para esa fecha, agrega un registro vacío
+            return [[
+                'fecha' => $fecha,
+                'ruta' => '',
+                'precio' => 0,
+            ]];
+            })->values();
+        });
+
+        // Ordenar por nombre
+        $operadores = collect($operadores->sortKeys()->all());
         $resultado = collect();
+
 
         // 1. Encabezado con nombre del operador (cada 3 columnas)
         $filaNombres = [];
@@ -80,8 +107,9 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
             $filaNombres[] = $nombre;
             $filaNombres[] = '';
             $filaNombres[] = '';
+            $filaNombres[] = ''; // Espacio para el nombre del operador
         }
-        $resultado->push($filaNombres);
+       // $resultado->push($filaNombres);
 
         // 2. Subencabezado (Fecha, Ruta, Monto)
         $subencabezado = [];
@@ -89,9 +117,12 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
             $subencabezado[] = 'Fecha';
             $subencabezado[] = 'Ruta';
             $subencabezado[] = 'Monto';
+            $subencabezado[] = ''; // Espacio para separar columnas
         }
-        $this->headings = $subencabezado;
-        $resultado->push($subencabezado);
+        $this->header = $filaNombres;
+        $this->subheader = $subencabezado;
+
+        //$resultado->push($subencabezado);
 
 
         // 3. Cuerpo de datos
@@ -104,10 +135,13 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
                 $viaje = $data[$i] ?? null;
 
                 if ($viaje) {
+
                     $fila[] = $viaje['fecha'];
                     $fila[] = $viaje['ruta'];
                     $fila[] = '$' . number_format($viaje['precio'], 2);
+                    $fila[] = ''; // Espacio para separar columnas
                 } else {
+                    $fila[] = '';
                     $fila[] = '';
                     $fila[] = '';
                     $fila[] = '';
@@ -122,50 +156,14 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
 
         foreach ($operadores as $data) {
             $total = collect($data)->sum('precio');
-            $filaTotales[] = 'Total';
             $filaTotales[] = '';
+            $filaTotales[] = 'Total';
             $filaTotales[] = '$' . number_format($total, 2);
+            $filaTotales[] = '';
         }
 
         $resultado->push($filaTotales);
-
-        return $resultado->toArray();
-        /*
-        return  $ops->each(function ($bloque) use (&$resultado) {
-            $nombres = $bloque->keys()->all();
-            $datos = $bloque->values()->all();
-
-            $maxFilas = collect($datos)->map->count()->max();
-
-            for ($i = 0; $i < $maxFilas; $i++) {
-                $fila = [];
-
-                foreach ($datos as $opIndex => $opData) {
-                    if ($i === 0) {
-                        // Título con nombre del operador
-                        $fila[] = $nombres[$opIndex];
-                        $fila[] = '';
-                        $fila[] = '';
-                    }
-
-                    $corrida = $opData[$i] ?? null;
-                    if ($corrida) {
-                        $fila[] = $corrida['fecha'];
-                        $fila[] = $corrida['ruta'];
-                        $fila[] = '$' . number_format($corrida['precio'], 2);
-                    } else {
-                        $fila[] = '';
-                        $fila[] = '';
-                        $fila[] = '';
-                    }
-                }
-
-                $resultado->push($fila);
-            }
-
-            // espacio entre bloques
-            $resultado->push([]);
-        })->toArray(); */
+        return $resultado;
     }
 
 
@@ -174,34 +172,5 @@ class CorridasPorConductorSheet implements FromCollection, WithHeadings, WithSty
         // Aquí puedes implementar la lógica para calcular el precio de la ruta
         // Por ahora, retornamos un valor fijo
         return 100.00;
-    }
-
-     public function styles(Worksheet $sheet)
-    {
-        $columnCount = count($this->headings[0]);
-
-        $columnLetters = range('A', chr(64 + $columnCount));
-        $lastCol = end($columnLetters);
-        $rowCount = $this->data->count() + 2; // +2 porque usamos `headings()`
-
-        return [
-            // Cabecera principal (operadores)
-            '1' => [
-                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => '4F81BD']],
-                'alignment' => ['horizontal' => 'center'],
-            ],
-            // Subencabezados (fecha, ruta, monto)
-            '2' => [
-                'font' => ['bold' => true],
-                'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'D9E1F2']],
-                'alignment' => ['horizontal' => 'center'],
-            ],
-            // Totales (última fila)
-            $rowCount => [
-                'font' => ['bold' => true],
-                'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'FCE4D6']],
-            ],
-        ];
     }
 }
