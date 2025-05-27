@@ -1,23 +1,22 @@
 <div x-data="{ darkMode: false }" :class="{ 'dark': darkMode }" class="py-12 bg-blend-lighten bg-slate-300">
 
     {{-- Botón para alternar entre modos claro y oscuro --}}
-    <div class="container mx-auto mb-4">
+    {{-- <div class="container mx-auto mb-4">
         <button @click="darkMode = !darkMode" class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
             <span x-text="darkMode ? 'Modo Claro' : 'Modo Oscuro'"></span>
         </button>
-    </div>
+    </div> --}}
 
     {{-- inicia otro bloque chido --}}
     <section class="container px-4 mx-auto">
         <div class="sm:flex sm:items-center sm:justify-between">
             <div>
                 <div class="flex items-center gap-x-3">
-                    <h2 class="text-lg font-medium text-gray-800 dark:text-white">Customers</h2>
     
-                    <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">240 vendors</span>
+                    {{-- <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">240 vendors</span> --}}
                 </div>
     
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in the last 12 months.</p>
+                {{-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">These companies have purchased in the last 12 months.</p> --}}
             </div>
     
             <div class="flex items-center mt-4 gap-x-3">
@@ -36,29 +35,29 @@
                     <span>Generar reporte</span>
                 </button>
     
-                <button class="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600">
+                {{-- <button class="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600 dark:hover:bg-blue-500 dark:bg-blue-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
     
                     <span>Add vendor</span>
-                </button>
+                </button> --}}
             </div>
         </div>
     
         <div class="mt-6 md:flex md:items-center md:justify-between">
             <div class="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
-                <button class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm dark:bg-gray-800 dark:text-gray-300">
-                    View all
+                <button wire:click="$set('filter', 'all')"  class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 bg-gray-100 sm:text-sm dark:bg-gray-800 dark:text-gray-300">
+                   Todos
                 </button>
     
-                <button class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
-                    Monitored
+                <button wire:click="$set('filter', 'now')" class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
+                    Ahora
                 </button>
     
-                <button class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
+                {{-- <button class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
                     Unmonitored
-                </button>
+                </button> --}}
             </div>
     
             <div class="relative flex items-center mt-4 md:mt-0">
@@ -68,7 +67,7 @@
                     </svg>
                 </span>
     
-                <input type="text" placeholder="Search" class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                <input wire:model.lazy='search' type="text" placeholder="Buscar" class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
             </div>
         </div>
     
@@ -92,7 +91,7 @@
                                     </th>
     
                                     <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                        Horario
+                                        Autobus
                                     </th>
     
                                     <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -101,7 +100,7 @@
     
                                     <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Autobuses</th>
     
-                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Operador 's</th>
+                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Acciones</th>
     
                                     <th scope="col" class="relative py-3.5 px-4">
                                         <span class="sr-only">Edit</span>
@@ -112,10 +111,12 @@
                                 @foreach ($corridas as $corrida)
                                 <tr>
                                     <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                                        <div>
+                                        <div class="flex flex-col items-center gap-x-3">
+                                            <div>
                                             <h2 class="font-medium text-gray-800 dark:text-white "><span>{{ $corrida->origen }} - <span class="text-green-400"> {{ $corrida->destino }}
                                             </span></span></h2>
-                                            <p class="text-sm font-normal text-gray-600 dark:text-gray-400">{{ $corrida->clase }}</p>
+                                            </div>
+                                            <span class="text-sm inline px-3 py-1 font-normal rounded-full text-blue-600 bg-gray-800">{{ $corrida->clase }}</span>
                                         </div>
                                     </td>
                                     <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
@@ -124,6 +125,9 @@
                                         </div>
                                     </td>
                                     <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                                        <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                                            {{ $corrida->fecha }}
+                                        </div>
                                         <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                             {{  $corrida->hora }}: {{ $corrida->minutos }}
                                         </div>
@@ -140,19 +144,13 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="">
-                                            <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="">
-                                            <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1256&q=80" alt="">
-                                            <img class="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="">
-                                            <p class="flex items-center justify-center w-6 h-6 -mx-1 text-xs text-blue-600 bg-blue-100 border-2 border-white rounded-full">+4</p>
-                                        </div>
+                                        
                                     </td>
     
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                        <div class="w-48 h-1.5 bg-blue-200 overflow-hidden rounded-full">
+                                        {{-- <div class="w-48 h-1.5 bg-blue-200 overflow-hidden rounded-full">
                                             <div class="bg-blue-500 w-2/3 h-1.5"></div>
-                                        </div>
+                                        </div> --}}
                                     </td>
     
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
@@ -170,33 +168,7 @@
                 </div>
             </div>
         </div>
-    
-        <div class="mt-6 sm:flex sm:items-center sm:justify-between ">
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-                Page <span class="font-medium text-gray-700 dark:text-gray-100">1 of 10</span> 
-            </div>
-    
-            <div class="flex items-center mt-4 gap-x-4 sm:mt-0">
-                <a href="#" class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                    </svg>
-    
-                    <span>
-                        previous
-                    </span>
-                </a>
-    
-                <a href="#" class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                    <span>
-                        Next
-                    </span>
-    
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                    </svg>
-                </a>
-            </div>
-        </div>
+        {{ $corridas->links() }}
+
     </section>
 </div>
