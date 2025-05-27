@@ -171,6 +171,21 @@ class CorridasPorConductorSheet // WithHeadings
     {
         // Aquí puedes implementar la lógica para calcular el precio de la ruta
         // Por ahora, retornamos un valor fijo
+        if($origen === 'TGZ' && $destino === 'TAP' ||
+           $origen === 'TAP' && $destino === 'TGZ') {
+            return 445.00;
+        } elseif ($origen === 'TGZ' && $destino === 'PAL' ||
+                  $origen === 'PAL' && $destino === 'TGZ') {
+            return 465.00;
+        } elseif ($origen === 'TGZ' && $destino === 'TON' ||
+                  $origen === 'TON' && $destino === 'TGZ') {
+            return 445.00;
+        } elseif ($origen === 'TAP' && $destino === 'ARR' ||
+                  $origen === 'ARR' && $destino === 'TAP') {
+            return 445.00;
+        }elseif ($origen === 'C' && $destino === 'D') {
+            return 100.00;
+        }
         return 100.00;
     }
 }
