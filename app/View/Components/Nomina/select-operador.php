@@ -13,9 +13,12 @@ class selectOperador extends Component
      */
     public $operadores;
     public $default;
-    public function __construct($operadores, $default)
+    public $diario;
+    public function __construct($operadores, $default, $diario = "")
     {
+        \Log::info($diario);
         $this->default = $default;
+        $this->diario = $diario;
         $this->operadores = $operadores;
     }
     

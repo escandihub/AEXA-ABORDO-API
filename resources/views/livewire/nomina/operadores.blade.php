@@ -46,6 +46,7 @@
                 <button wire:click="$set('filter', 'now')" class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
                     Ahora
                 </button>
+                <input type="date" wire:model="date" class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
     
                 {{-- <button class="px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">
                     Unmonitored
@@ -90,7 +91,7 @@
                                         Fecha
                                     </th>
     
-                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Autobuses</th>
+                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Operador 1</th>
     
                                     <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Acciones</th>
     
@@ -130,7 +131,7 @@
                                             {{-- <h4 class="text-gray-700 dark:text-gray-200">{{  $corrida->fecha }}</h4> --}}
                                             <p class="text-gray-500 dark:text-gray-400"> {{ $corrida->operador1 }}</p>
                                          <section class="z-10"> 
-                                            <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" :operadores="$operadores" :default="$corrida->operador1"/>
+                                            <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" :operadores="$operadores" :default="$corrida->operador1" :diario="$corrida->id_diario_c" />
                                          </section>
                                             
                                         </div>

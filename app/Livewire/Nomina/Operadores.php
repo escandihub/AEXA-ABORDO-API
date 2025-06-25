@@ -12,6 +12,9 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use App\Exports\CorridasPorConductorSheet;
 use App\Exports\OperadoresExport;
+use PhpParser\Node\Stmt\TryCatch;
+use Livewire\Attributes\On; 
+use App\Http\Controllers\OperadoresService\GetRelation;
 
 class Operadores extends Component
 {
@@ -21,58 +24,24 @@ class Operadores extends Component
     public ?string $filter = 'all';
     #[Url]
     public ?string $search = '';
+    #[Url]
+    public ?string $date = '';
 
     public function render()
     {
         // $this->query();
         return view('livewire.nomina.operadores', [
             'corridas' =>  $this->filters()->paginate(10),
-            'operadores' => [
-                [
-                    'id' => 1,
-                    'nombre' => 'Juan Perez',
-                    'telefono' => '1234567890',
-                    'email' => ''
-                ],
-                [
-                    'id' => 2,
-                    'nombre' => 'Juan Perez 1',
-                    'telefono' => '1234567890',
-                    'email' => ''
-                ],
-                [
-                    'id' => 3,
-                    'nombre' => 'Juan Perez 2',
-                    'telefono' => '1234567890',
-                    'email' => ''
-                ],
-                [
-                    'id' => 4,
-                    'nombre' => 'MANUEL DE JESUS MENDEZ',
-                    'telefono' => '123456117890',
-                    'email' => ''
-                ],
-                [
-                    'id' => 5,
-                    'nombre' => 'SAMUEL DOMINGUEZ URBINA',
-                    'telefono' => '123456117890',
-                    'email' => ''
-                ],
-                [
-                    'id' => 6,
-                    'nombre' => 'FRANCISCO JAVIER OJEDA GONZALEZ',
-                    'telefono' => '123456117890',
-                    'email' => ''
-                ]
-            ],
+            'operadores' => $this->getOperadores(),
 
         ]);
     }
 
     public function query()
     {
-        $now = \Carbon\CarbonImmutable::now();
-        $corrida = DB::table('diario_c')->whereBetween('fecha', ["2025-05-20", $now->format('Y-m-d')])->where('condicion_corrida', 'Disponible')
+        $now = \Carbon\CarbonImmutable::now(); // $now->format('Y-m-d')
+        $corrida = DB::table('diario_c')->whereBetween('fecha', ["2025-05-01", "2025-05-15"])->where('condicion_corrida', 'Disponible')
+            ->where('clase', '!=', 3)
             ->select('fecha', 'hora', 'minutos', 'origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
             ->orderBy('fecha');
 
@@ -123,4 +92,45 @@ select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2"
 
         return \Excel::download(new OperadoresExport($array, [$Formating->header, $Formating->subheader]), 'operadores.xlsx');
     }
+
+    private function getOperadores(){
+        $operadores = resolve(GetRelation::class);
+
+        $v = $operadores->operadores();
+        \Log::info($v);
+        return $v;
+    }
+
+     #[On('name-selected')] 
+    public function updateOperador($diario_c_id, $full_name_operador1, $full_name_operador2 = ""){
+        // Aquí puedes implementar la lógica para actualizar el operador
+        // Por ejemplo, podrías hacer una llamada a un servicio o actualizar la base de datos directamente
+       // \Log::info("Actualizando operador con ID: $diario_c_id, operador1: $full_name_operador1, operador2: $full_name_operador2");
+        try {
+            $this->validate([
+                'full_name_operador1' => 'required|string|max:255',
+                'full_name_operador2' => 'nullable|string|max:255',
+            ]);
+
+            $update = DB::table('diario_c')
+            ->where('id_diario_c', $diario_c_id)
+            ->update([
+                'operador1' => $full_name_operador1,
+                'operador2' => $full_name_operador2
+            ]);
+
+            \Log::info("Actualizando operador con ID: $diario_c_id, operador1: $full_name_operador1, operador2: $full_name_operador2");
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejo de errores de validación
+            \Log::error("Error de validación: " . $e->getMessage());
+            return false;
+        }
+        
+        // Actualización ficticia
+        return true;
+    }
 }
+/**
+ * trigger en la base de datos 
+ * para ver cuantas corridas si fueron actualizadas 
+ */
