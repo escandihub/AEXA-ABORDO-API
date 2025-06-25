@@ -114,7 +114,8 @@ select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2"
                 'operador1' => $full_name_operador1,
                 'operador2' => $full_name_operador2
             ]);
-*/
+*/  
+            $this->dispatch('task-updated', message: 'Operador actualizado correctamente.');
             \Log::info("Actualizando operador con ID: $diario, operador1: $name, operador2: $full_name_operador2");
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejo de errores de validación

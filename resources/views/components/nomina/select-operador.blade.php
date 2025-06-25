@@ -73,6 +73,7 @@
                 // envia el nombre del operador seleccionado
                 console.log('Nombre seleccionado:', name);
                 console.log('diario c:', this.diario);
+                this.$dispatch('task-updating',  { message: 'Actualizando Operador...'});
                  this.$dispatch('name-selected', {
                     diario: this.diario,
                      name: name,
