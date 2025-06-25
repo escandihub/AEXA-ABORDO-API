@@ -48,6 +48,7 @@ class CorridasPorConductorSheet // WithHeadings
                             'nombre' => $nombre,
                             'data' => [
                                 'fecha' => $item->fecha, //$item['fecha'],
+                                'autobus' => $item->autobus, 
                                 'ruta' =>   "{$item->origen} - {$item->destino}", //"{$item['origen']} - {$item['destino']}",
                                 'precio' => $this->priceRoute($item->origen, $item->destino),
                             ],
@@ -90,6 +91,7 @@ class CorridasPorConductorSheet // WithHeadings
             // Si no hay viajes para esa fecha, agrega un registro vacío
             return [[
                 'fecha' => $fecha,
+                'autobus' => '',
                 'ruta' => '',
                 'precio' => 0,
             ]];
@@ -107,6 +109,7 @@ class CorridasPorConductorSheet // WithHeadings
             $filaNombres[] = $nombre;
             $filaNombres[] = '';
             $filaNombres[] = '';
+            $filaNombres[] = '';
             $filaNombres[] = ''; // Espacio para el nombre del operador
         }
        // $resultado->push($filaNombres);
@@ -115,6 +118,7 @@ class CorridasPorConductorSheet // WithHeadings
         $subencabezado = [];
         foreach ($operadores as $data) {
             $subencabezado[] = 'Fecha';
+            $subencabezado[] = '# Autobús';
             $subencabezado[] = 'Ruta';
             $subencabezado[] = 'Monto';
             $subencabezado[] = ''; // Espacio para separar columnas
@@ -135,13 +139,15 @@ class CorridasPorConductorSheet // WithHeadings
                 $viaje = $data[$i] ?? null;
 
                 if ($viaje) {
-
+                    // dd($viaje);
                     $fila[] = $viaje['fecha'];
+                     $fila[] = $viaje['autobus'];
                     $fila[] = $viaje['ruta'];
                     $fila[] = '$' . number_format($viaje['precio'], 2);
                     $fila[] = ''; // Espacio para separar columnas
                 } else {
                     $fila[] = '';
+                     $fila[] = '';
                     $fila[] = '';
                     $fila[] = '';
                     $fila[] = '';
@@ -157,6 +163,7 @@ class CorridasPorConductorSheet // WithHeadings
         foreach ($operadores as $data) {
             $total = collect($data)->sum('precio');
             $filaTotales[] = '';
+             $filaTotales[] = '';
             $filaTotales[] = 'Total';
             $filaTotales[] = '$' . number_format($total, 2);
             $filaTotales[] = '';
