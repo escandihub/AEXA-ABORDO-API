@@ -15,8 +15,8 @@
                     x-model="language" @input="operadores = findByNombre(language)">
             </li>
             <template x-for="operador in operadores" :key="operador.id">
-                <li class="cursor-pointer select-none p-2 hover:bg-gray-200" @click="setLanguage(operador.nombre)">
-                    <span x-text="operador.nombre"></span>
+                <li class="cursor-pointer select-none p-2 hover:bg-gray-200" @click="setLanguage(operador.Nombre)">
+                    <span x-text="operador.Nombre"></span>
                 </li>
             </template>
         </ul>
@@ -30,11 +30,12 @@
             language: '',
             operadores: @json($operadores),
             filteredOperadores: @json($operadores),
+            diario: @js($diario),
             watch: {
                 language(val) {
                     console.log('Language changed:', val);
                     this.operadores = this.operadores.filter((operador) => {
-                        return operador.nombre.toLowerCase().includes(val.toLowerCase());
+                        return operador.Nombre.toLowerCase().includes(val.toLowerCase());
                     });
                 },
             },
@@ -52,16 +53,29 @@
             setLanguage(val) {
                 this.language = val;
                 this.open = false;
+                this.nameSelected(val);
             },
-            findByNombre(nombre) {
-        
+            findByNombre(textoFind) {
+                 console.log('Buscando por nombre:', textoFind);
                 return this.operadores.reduce((result, operador) => {
-                    if (operador.nombre.toLowerCase().includes(nombre.toLowerCase())) {
+                console.log('Buscando operador:', operador.Nombre);
+                if(NoNull)
+                const nombre = operador.Nombre.toLowerCase();
+                
+                    if (nombre.includes(textoFind.toLowerCase())) {
                         result.push(operador);
                     }
                     return result;
                 }, []);
             },
+            nameSelected(name) {
+                // envia el nombre del operador seleccionado
+                console.log('Nombre seleccionado:', name);
+                console.log('diario c:', this.diario);
+                // this.$dispatch('name-selected', {
+                //     name: name,
+                // });
+            }
         }));
     });
 </script>
