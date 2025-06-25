@@ -97,29 +97,25 @@ select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2"
         $operadores = resolve(GetRelation::class);
 
         $v = $operadores->operadores();
-        \Log::info($v);
+        // dd($v);
         return $v;
     }
 
      #[On('name-selected')] 
-    public function updateOperador($diario_c_id, $full_name_operador1, $full_name_operador2 = ""){
+    public function updateOperador($diario, $name, $full_name_operador2 = ""){
         // Aquí puedes implementar la lógica para actualizar el operador
         // Por ejemplo, podrías hacer una llamada a un servicio o actualizar la base de datos directamente
        // \Log::info("Actualizando operador con ID: $diario_c_id, operador1: $full_name_operador1, operador2: $full_name_operador2");
         try {
-            $this->validate([
-                'full_name_operador1' => 'required|string|max:255',
-                'full_name_operador2' => 'nullable|string|max:255',
-            ]);
-
+/*
             $update = DB::table('diario_c')
             ->where('id_diario_c', $diario_c_id)
             ->update([
                 'operador1' => $full_name_operador1,
                 'operador2' => $full_name_operador2
             ]);
-
-            \Log::info("Actualizando operador con ID: $diario_c_id, operador1: $full_name_operador1, operador2: $full_name_operador2");
+*/
+            \Log::info("Actualizando operador con ID: $diario, operador1: $name, operador2: $full_name_operador2");
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejo de errores de validación
             \Log::error("Error de validación: " . $e->getMessage());

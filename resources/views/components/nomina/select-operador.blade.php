@@ -15,8 +15,8 @@
                     x-model="language" @input="operadores = findByNombre(language)">
             </li>
             <template x-for="operador in operadores" :key="operador.id">
-                <li class="cursor-pointer select-none p-2 hover:bg-gray-200" @click="setLanguage(operador.Nombre)">
-                    <span x-text="operador.Nombre"></span>
+                <li class="cursor-pointer select-none p-2 hover:bg-gray-200" @click="setLanguage(operador.nombre)">
+                    <span x-text="operador.nombre"></span>
                 </li>
             </template>
         </ul>
@@ -58,9 +58,10 @@
             findByNombre(textoFind) {
                  console.log('Buscando por nombre:', textoFind);
                 return this.operadores.reduce((result, operador) => {
-                console.log('Buscando operador:', operador.Nombre);
-                if(NoNull)
-                const nombre = operador.Nombre.toLowerCase();
+                    console.log('Operador actual:', operador);
+                // console.log('Buscando operador:', operador.nombre);
+
+                let nombre = operador.nombre.toLowerCase();
                 
                     if (nombre.includes(textoFind.toLowerCase())) {
                         result.push(operador);
@@ -72,9 +73,10 @@
                 // envia el nombre del operador seleccionado
                 console.log('Nombre seleccionado:', name);
                 console.log('diario c:', this.diario);
-                // this.$dispatch('name-selected', {
-                //     name: name,
-                // });
+                 this.$dispatch('name-selected', {
+                    diario: this.diario,
+                     name: name,
+                 });
             }
         }));
     });
