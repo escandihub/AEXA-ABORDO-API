@@ -94,14 +94,14 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'sqlsrv' => [
+        'sqlsrv_intelisis' => [
             'driver' => 'sqlsrv',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
+            // 'url' => env('DB_HOST_INTELISIS'),
+            'host' => env('DB_HOST_INTELISIS', 'localhost'),
+            'port' => env('DB_PORT_INTELISIS', '1433'),
+            'database' => env('DB_DATABASE_INTELISIS', 'laravel'),
+            'username' => env('DB_USERNAME_INTELISIS', 'root'),
+            'password' => env('DB_PASSWORD_INTELISIS', ''),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
