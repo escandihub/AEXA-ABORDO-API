@@ -8,6 +8,7 @@
     </div> --}}
 
     {{-- inicia otro bloque chido --}}
+    <x-loading-notification />
     <section class="container px-4 mx-auto">
         <div class="sm:flex sm:items-center sm:justify-between">
             <div>
@@ -65,8 +66,8 @@
         </div>
     
         <div class="flex flex-col mt-6">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:mx-2 sm:w-full md:w-full lg:-mx-6">
+                <div class="inline-block min-w-full py-2 align-middle sm:w-full md:w-full lg:px-8 2xl:px-16">
                     <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-800">
@@ -106,7 +107,7 @@
                                     <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                         <div class="flex flex-col items-center gap-x-3">
                                             <div>
-                                            <h2 class="font-medium text-gray-800 dark:text-white "><span>{{ $corrida->origen }} - <span class="text-green-400"> {{ $corrida->destino }}
+                                            <h2 class="font-medium text-gray-800 dark:text-white "><span> {{ $corrida->id_diario_c }} -- {{ $corrida->origen }} - <span class="text-green-400"> {{ $corrida->destino }}
                                             </span></span></h2>
                                             </div>
                                             <span class="text-sm inline px-3 py-1 font-normal rounded-full text-blue-600 bg-gray-800">{{ $corrida->clase }}</span>
@@ -131,7 +132,9 @@
                                             {{-- <h4 class="text-gray-700 dark:text-gray-200">{{  $corrida->fecha }}</h4> --}}
                                             <p class="text-gray-500 dark:text-gray-400"> {{ $corrida->operador1 }}</p>
                                          <section class="z-10"> 
-                                            <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" :operadores="$operadores" :default="$corrida->operador1" :diario="$corrida->id_diario_c" />
+                                            <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" 
+                                                :operadores="$operadores" :default="$corrida->operador1"
+                                                :diario=" $corrida->id_diario_c" />
                                          </section>
                                             
                                         </div>
