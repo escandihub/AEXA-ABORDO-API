@@ -1,5 +1,65 @@
-<main>
-    <div x-data="select" class="relative w-[30rem]" @click.outside="open = false">
+@props([
+    'operadores' => [],
+    'default' => '',
+    'diario' => NULL,
+])
+<main
+ key="diario-{{ $diario }}"
+ data-diario-id="{{ $diario }}"
+>
+    <div x-data="{
+            // Datos del componente
+            diario_id: {{ $diario }},
+            default: '{{ $default }}',
+            operadores: @js($operadores),
+            
+            // Estado del componente
+            open: false,
+            language: '{{ $default }}',
+            searchTerm: '{{ $default }}',
+            filteredOperadores: @js($operadores),
+            
+            // Métodos
+            init() {
+                console.log('Iniciado con diario ID:', this.diario_id);
+            },
+            
+            toggle() {
+                this.open = !this.open;
+                if (this.open) {
+                    this.searchTerm = '';
+                    this.language = '';
+                    this.filteredOperadores = [...this.operadores];
+                    this.$nextTick(() => this.$refs.searchBox?.focus());
+                }
+            },
+            
+            filterOperadores() {
+                if (this.searchTerm === '') {
+                    this.filteredOperadores = [...this.operadores];
+                    return;
+                }
+                this.filteredOperadores = this.operdaores.filter(op => 
+                    op.nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
+                );
+            },
+            
+            setLanguage(val) {
+                this.language = val;
+                this.searchTerm = val;
+                this.open = false;
+                this.nameSelected(val);
+            },
+            
+            nameSelected(name) {
+                console.log('Seleccionado:', name, 'Diario:', this.diario_id);
+                this.$dispatch('task-updating', { message: 'Actualizando...' });
+                this.$dispatch('name-selected', {
+                    diario: this.diario_id,
+                    name: name
+                });
+            }
+        }" class="relative w-[30rem]" @click.outside="open = false">
         <button @click="toggle" :class="(open) && 'ring-blue-600'" @click="$refs.searchBox.focus()"
             class="flex w-full items-center justify-between rounded-md bg-white p-2 ring-1 ring-gray-300">
             <span x-text="(language == '') ? 'Selecionar operador' : language"></span>
@@ -10,6 +70,7 @@
             x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2">
             <li>
+                <p>{{ $diario }}</p>
                 <input type="text" x-ref="searchBox" text="{{ $default }}" placeholder="Buscar nombre"
                     class="w-full p-2 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
                     x-model="language" @input="operadores = findByNombre(language)">
@@ -25,12 +86,11 @@
 
 <script>
     document.addEventListener("alpine:init", () => {
-        Alpine.data("select", () => ({
+        Alpine.data("select", (operadores, defaultValue, diario) => ({
             open: false,
-            language: '',
-            operadores: @json($operadores),
-            filteredOperadores: @json($operadores),
-            diario: @js($diario),
+            language: defaultValue,
+            operadores: operadores,
+            id_diario: diario,
             watch: {
                 language(val) {
                     console.log('Language changed:', val);
@@ -72,10 +132,10 @@
             nameSelected(name) {
                 // envia el nombre del operador seleccionado
                 console.log('Nombre seleccionado:', name);
-                console.log('diario c:', this.diario);
+                console.log('diario c:', this.id_diario);
                 this.$dispatch('task-updating',  { message: 'Actualizando Operador...'});
                  this.$dispatch('name-selected', {
-                    diario: this.diario,
+                    diario: this.id_diario,
                      name: name,
                  });
             }
