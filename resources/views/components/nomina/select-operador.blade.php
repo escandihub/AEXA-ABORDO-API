@@ -22,6 +22,15 @@
             // Métodos
             init() {
                 console.log('Iniciado con diario ID:', this.diario_id);
+
+                $watch('diario_id', (val) => {
+                   console.log('Diario ID cambiado:', val);
+                });
+            },
+
+            cambiar(){
+             this.$nextTick(() => this.$refs.searchBox?.focus());
+            this.diario_id =  this.$refs.id_diario?.value
             },
             
             toggle() {
@@ -52,7 +61,8 @@
             },
             
             nameSelected(name) {
-                console.log('Seleccionado:', name, 'Diario:', this.diario_id);
+            {{-- this.cambiar(); --}}
+                console.log('Seleccionado:', name, 'Diario:', this.diario_id );
                 this.$dispatch('task-updating', { message: 'Actualizando...' });
                 this.$dispatch('name-selected', {
                     diario: this.diario_id,
@@ -70,7 +80,8 @@
             x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2">
             <li>
-                <p>{{ $diario }}</p>
+                <input hidden x-ref="id_diario" value="{{ $diario }}">{{ $diario }}</input>
+                <button @click="cambiar">cambio we</button>
                 <input type="text" x-ref="searchBox" text="{{ $default }}" placeholder="Buscar nombre"
                     class="w-full p-2 border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
                     x-model="language" @input="operadores = findByNombre(language)">
@@ -85,6 +96,14 @@
 </main>
 
 <script>
+        document.addEventListener('livewire:navigated', () => {
+        // This forces Alpine to re-scan the entire DOM for x-data components.
+        // Use with caution, as it can be less performant than Alpine's default behavior.
+        // It's usually a last resort if components aren't initializing properly.
+        // window.Alpine.discoverUninitialized(); // For Alpine v2
+        window.Alpine.start(); // For Alpine v3 (less likely needed as it's typically auto-started)
+    });
+
     document.addEventListener("alpine:init", () => {
         Alpine.data("select", (operadores, defaultValue, diario) => ({
             open: false,
