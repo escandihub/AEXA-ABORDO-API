@@ -10,6 +10,8 @@ use App\Livewire\Monitoreo;
 use App\Livewire\Nomina\Operadores;
 use App\Livewire\Documentation\ListDocs;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\ShowAbordo;
+use App\Livewire\OpenPay\PaymentLinkGenerator;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,8 +31,9 @@ Route::middleware('auth','can:isAdmin')->group(function () {
     Route::get('/devices', DevicesList::class)->name('device.list');
     Route::get('/documentos', ListDocs::class)->name('documentos.list');
     Route::get('/operaciones', Operadores::class)->name('operadores.list');
+     Route::get('/abordaje', ShowAbordo::class)->name('abordo.list');
 });
-
+Route::get('/paygenerator', PaymentLinkGenerator::class)->name('pay.make');
 Route::middleware('auth')->group(function () {
     Route::get('/monitoreo', Monitoreo::class)->name('monitoreo');
 });
