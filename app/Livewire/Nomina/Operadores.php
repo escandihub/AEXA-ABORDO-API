@@ -18,7 +18,7 @@ use App\Http\Controllers\OperadoresService\GetRelation;
 
 class Operadores extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
 
     #[Url]
     public ?string $filter = 'all';
@@ -52,6 +52,10 @@ class Operadores extends Component
         WHERE fecha between '2025-04-16' and '2025-04-30' and condicion_corrida = "Disponible"
         ORDER BY fecha DESC, operador1 DESC
          */
+    }
+    public function updatingFilter()
+    {
+        $this->resetPage();
     }
 
     private function filters()
@@ -107,16 +111,19 @@ select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2"
         // Por ejemplo, podrías hacer una llamada a un servicio o actualizar la base de datos directamente
        // \Log::info("Actualizando operador con ID: $diario_c_id, operador1: $full_name_operador1, operador2: $full_name_operador2");
         try {
-/*
+
+            /*
             $update = DB::table('diario_c')
-            ->where('id_diario_c', $diario_c_id)
+            ->where('id_diario_c', $diario)
             ->update([
-                'operador1' => $full_name_operador1,
-                'operador2' => $full_name_operador2
-            ]);
-*/  
+                'operador1' => $name,
+                // 'operador2' => $full_name_operador2
+            ]); */
+
+            // \Log::info("Operador actualizado: $name, $diario");
+
             $this->dispatch('task-updated', message: 'Operador actualizado correctamente.');
-            \Log::info("Actualizando operador con ID: $diario, operador1: $name, operador2: $full_name_operador2");
+            \Log::info("Actualizando la corrida ID: $diario, operador1: $name, operador2: $full_name_operador2");
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejo de errores de validación
             \Log::error("Error de validación: " . $e->getMessage());
