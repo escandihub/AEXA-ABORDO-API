@@ -19,6 +19,13 @@ class GetRelation
             ->where("Empresa", "AEXPR")
             ->where("Estatus", "ALTA")
             ->orWhere("Estatus", "alta")
-            ->get();
+            ->get()->filter(fn ($operador) => $operador->Nombre != "")->values()->map(function ($operador) {
+                return [
+                    'id' => $operador->id,
+                    'nombre' => $operador->Nombre,
+                    'empresa' => $operador->Empresa,
+                    'estatus' => $operador->Estatus,
+                ];
+            })->toArray();
     }
 }
