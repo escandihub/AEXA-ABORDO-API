@@ -9,6 +9,8 @@
 
     {{-- inicia otro bloque chido --}}
     <x-loading-notification />
+
+    
     <section class="container px-4 mx-auto">
         <div class="sm:flex sm:items-center sm:justify-between">
             <div>
@@ -68,7 +70,14 @@
         <div class="flex flex-col mt-6">
             <div class="-mx-4 -my-2 overflow-x-auto sm:mx-2 sm:w-full md:w-full lg:-mx-6">
                 <div class="inline-block min-w-full py-2 align-middle sm:w-full md:w-full lg:px-8 2xl:px-16">
-                    <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                    <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg relative">
+                        {{-- Loading overlay específico para el contenido de la tabla --}}
+                        <div wire:loading class="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                            <div class="flex flex-col justify-center items-center p-4 rounded-lg h-full shadow-lg opacity-25 ">
+                                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
+                                <p class="mt-3 text-white font-medium">Actualizando operador...</p>
+                            </div>
+                        </div>
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
@@ -132,9 +141,16 @@
                                             {{-- <h4 class="text-gray-700 dark:text-gray-200">{{  $corrida->fecha }}</h4> --}}
                                             <p class="text-gray-500 dark:text-gray-400"> {{ $corrida->operador1 }}</p>
                                          <section class="z-10"> 
-                                            <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" 
+                                            {{-- <x-nomina.select-operador id="operador-{{ $corrida->id_diario_c }}" 
                                                 :operadores="$operadores" :default="$corrida->operador1"
-                                                :diario=" $corrida->id_diario_c" />
+                                                :diario=" $corrida->id_diario_c" /> --}}
+                                                <livewire:components.operador-selector 
+                                                    :operadores="$operadores" 
+                                                    :diario="$corrida->id_diario_c"
+                                                    :default="$corrida->operador1"
+                                                    {{-- key="selector-{{ $corrida->id_diario_c }}" --}}
+                                                    wire:key="diario-{{ $corrida->id_diario_c }}"
+                                                     />
                                          </section>
                                             
                                         </div>
