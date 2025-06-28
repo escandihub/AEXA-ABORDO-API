@@ -34,6 +34,7 @@ Route::middleware('auth','can:isAdmin')->group(function () {
      Route::get('/abordaje', ShowAbordo::class)->name('abordo.list');
 });
 Route::get('/paygenerator', PaymentLinkGenerator::class)->name('pay.make');
+Route::get('/pagos', App\Livewire\OpenPay\PaymentTableComponent::class);
 Route::middleware('auth')->group(function () {
     Route::get('/monitoreo', Monitoreo::class)->name('monitoreo');
 });
