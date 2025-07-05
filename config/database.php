@@ -108,6 +108,25 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+        'openpay' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL'),
+            'host' => env('OPENPAY_DB_HOST', '127.0.0.1'),
+            'port' => env('DB_POPENPAY_DB_PORTORT', '3306'),
+            'database' => env('OPENPAY_DB_DATABASE', 'laravel'),
+            'username' => env('OPENPAY_DB_USERNAME', 'root'),
+            'password' => env('OPENPAY_DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('OPENPAY_DB_COLLATION', 'utf8mb4_0900_ai_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
 
     ],
 
