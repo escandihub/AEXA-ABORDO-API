@@ -4,16 +4,30 @@ namespace App\Livewire\OpenPay;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use App\Services\CustomerService;
+use App\Services\PaymentService;
+
 
 class PaymentLinkGenerator extends Component
 {
      public $monto = '';
+     public $name = '';
+     public $lastname = '';
+     public $email = '';
+     public $phone = '';
     public $descripcion = '';
     public $generatedLink = '';
     public $showLink = false;
 
+    private $customerService;
+    private $paymentService;
+
     protected $rules = [
         'monto' => 'required|numeric|min:0.01',
+        'name' => 'required|string',
+        'lastname' => 'required|string',
+        'email' => 'email',
+        'phone' => 'required|numeric',
         'descripcion' => 'required|string|min:3|max:255',
     ];
 
@@ -25,6 +39,12 @@ class PaymentLinkGenerator extends Component
         'descripcion.min' => 'La descripción debe tener al menos 3 caracteres',
         'descripcion.max' => 'La descripción no puede exceder 255 caracteres',
     ];
+
+    public function boot(CustomerService $customerService, PaymentService $paymentService)
+    {
+        $this->customerService = $customerService;
+        $this->paymentService = $paymentService;
+    }
 
       public function generateLink()
     {
@@ -47,14 +67,21 @@ class PaymentLinkGenerator extends Component
                 'order_id' => 'ORD-' . uniqid() . '-' . time(),
                 'send_email' => false,
                 'customer' => [
-                    'name' => 'Cliente',
-                    'last_name' => 'Openpay',
-                    'phone_number' => '5555555555',
-                    'email' => 'cliente@ejemplo.com'
+                    'name' => $this->name,
+                    'last_name' => $this->lastname,
+                    'phone_number' => $this->phone,
+                    'email' => $this->email,
                 ],
                 'redirect_url' => url()->current(),
                 'expiration_date' => now()->addDays(7)->format('Y-m-d H:i'),
             ];
+
+            $cliente = $this->customerService->getOrCreateCustomer([
+                'name' => $this->name,
+                'lastname' => $this->lastname,
+                'phone' => $this->phone,
+                'email' => $this->email,
+            ]);
 
             // Llamada a la API de Openpay
             $response = Http::withBasicAuth($privateKey, '')
@@ -64,7 +91,21 @@ class PaymentLinkGenerator extends Component
                 $data = $response->json();
                 $this->generatedLink = $data['checkout_link'];
                 $this->showLink = true;
-                
+
+                $this->paymentService->createPayment([
+                    'openpay_id' => $data['id'],
+                    'customer_id' => $cliente->id,
+                    'amount' => $this->monto,
+                    'description' => $this->descripcion,
+                    'order_id' => $data['order_id'],
+                    'currency' => 'MXN',
+                    'iva' => 0.00, // Asumiendo que no se aplica IVA
+                    'status' => $data['status'],
+                    'checkout_link' => $data['checkout_link'],
+                    'creation_date' => now(),
+                    'expiration_date' => now()->addDays(7),
+                ]);
+
                 // Guardar información adicional del checkout
                 session()->put('openpay_checkout', [
                     'id' => $data['id'],

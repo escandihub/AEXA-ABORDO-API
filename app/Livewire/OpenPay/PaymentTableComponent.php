@@ -3,10 +3,11 @@
 namespace App\Livewire\OpenPay;
 
 use Livewire\Component;
+use App\Models\Openpay\payment;
 
 class PaymentTableComponent extends Component
 {
-    public $payments = [];
+   // public $payments = [];
     public $filteredPayments = [];
     public $selectedPayment = null;
     public $showPaymentStatus = false;
@@ -125,9 +126,18 @@ class PaymentTableComponent extends Component
         $this->selectedPayment = null;
     }
 
+    public function query(){
+        return payment::query()
+        ->joinCustomer();
+        // ->where('payments.creation_date', '=', now());
+
+    }
+
 
     public function render()
     {
-        return view('livewire.open-pay.payment-table-component');
+        return view('livewire.open-pay.payment-table-component', [
+            'payments' => $this->query()->get(),
+        ]);
     }
 }
