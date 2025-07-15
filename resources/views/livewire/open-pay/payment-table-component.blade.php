@@ -144,7 +144,7 @@
 
                         {{-- Cuerpo de la tabla --}}
                         <tbody class="divide-y divide-gray-100">
-                            @forelse($filteredPayments as $payment)
+                            @forelse($payments as $payment)
                             <tr
                                 class="hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-blue-50/50 transition-all duration-300 group">
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -164,12 +164,12 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-semibold text-green-600">${{
-                                        number_format($payment['monto'], 2) }}</div>
+                                        number_format($payment['amount'], 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-600 max-w-xs truncate"
                                         title="{{ $payment['descripcion'] }}">
-                                        {{ $payment['descripcion'] }}
+                                        {{ $payment['description'] }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
