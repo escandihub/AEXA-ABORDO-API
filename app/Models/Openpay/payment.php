@@ -11,6 +11,8 @@ class payment extends Model
 
     protected $table = 'payments';
 
+    protected $connection = 'openpay';
+
     protected $fillable = [
         'openpay_id',
         'customer_id',
@@ -24,4 +26,29 @@ class payment extends Model
         'creation_date',
         'expiration_date'
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(customer::class, 'customer_id');
+    }
+
+    public function scopeFilterByCustomer($query, $customerId)
+    {
+        return $query->where('customer_id', $customerId);
+    }
+
+    public function scopeFilterByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+    public function scopeFilterByDateRange($query, $startDate, $endDate)
+    {
+        return $query->whereBetween('creation_date', [$startDate, $endDate]);
+    }
+    public function scopeJoinCustomer($query)
+    {
+        return $query->join('customers', 'payments.customer_id', '=', 'customers.id')
+        ->selectRaw("payments.*, CONCAT(customers.name, ' ', customers.last_name) AS cliente");
+            // ->select('payments.*', "customers.name as cliente", 'customers.phone_number', 'customers.email as customer_email');
+    }
 }

@@ -9,6 +9,7 @@ class customer extends Model
 {
     use HasFactory;
     protected $table = 'customers';
+    protected $connection = 'openpay';
 
     protected $fillable = [
         'name',
