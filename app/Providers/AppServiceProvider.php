@@ -8,6 +8,8 @@ use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use App\Services\CustomerService;
+use App\Services\PaymentService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +18,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(CustomerService::class, function ($app) {
+            return new CustomerService();
+        });
+        $this->app->singleton(PaymentService::class, function ($app) {
+            return new PaymentService();
+        });
     }
 
     /**
