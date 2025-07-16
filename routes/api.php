@@ -39,6 +39,11 @@ Route::post('register',[ ClienController::class, 'register'])->middleware(Regist
 Route::post('login',[ ClienController::class, 'LoginPlainText'])->middleware([LoginUser::class, CheckDevice::class, validateUpdate::class]);
 Route::get('corridas/all',[ CorridasController::class, 'getCorridas']); 
 Route::get('corridas/columna',[ CorridasController::class, 'readCorridas']); 
+
+//webhooks
+Route::post('webhook/openpay', [App\Http\Controllers\openPay\OpenPayWebhookController::class, 'handleWebhook'])
+    ->name('openpay.webhook');
+    // ->middleware('auth:sanctum');
 # administracion del dispositivo
 // Route::post('device-info',[ CorridasController::class, 'readCorridas']); 
 // Route::post('app-updated/{app_id}',[ AppTraking::class, 'updateStatus']); 

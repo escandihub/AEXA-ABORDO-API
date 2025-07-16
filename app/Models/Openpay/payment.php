@@ -18,12 +18,16 @@ class payment extends Model
         'customer_id',
         'amount',
         'description',
+        'authorization',
+        'method',
+        'operation_type',
         'order_id',
         'currency',
         'iva',
         'status',
         'checkout_link',
         'creation_date',
+        'processed_at',
         'expiration_date'
     ];
 
