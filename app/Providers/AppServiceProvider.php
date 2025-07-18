@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use App\Services\CustomerService;
 use App\Services\PaymentService;
+use App\Services\OpenPayWebhookService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(PaymentService::class, function ($app) {
             return new PaymentService();
+        });
+        $this->app->singleton(OpenPayWebhookService::class, function ($app) {
+            return new OpenPayWebhookService();
         });
     }
 
