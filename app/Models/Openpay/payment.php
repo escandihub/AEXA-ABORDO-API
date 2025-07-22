@@ -9,7 +9,7 @@ class payment extends Model
 {
     use HasFactory;
 
-    protected $table = 'payments';
+    protected $table = 'payments_buttons';
 
     protected $connection = 'openpay';
 

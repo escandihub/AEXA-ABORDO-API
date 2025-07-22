@@ -10,9 +10,15 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions';
+
+    protected $connection = 'openpay';
+
+
     protected $fillable = [
         'transaction_id',
         'customer_id',
+        'order_id',
         'method',
         'status',
         'amount',
