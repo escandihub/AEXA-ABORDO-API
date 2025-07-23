@@ -12,6 +12,9 @@ use App\Services\CustomerService;
 use App\Services\PaymentService;
 use App\Services\OpenPayWebhookService;
 
+use App\Services\TransactionService;
+use App\Services\PaymentServices\ErrorHandler;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
             return new PaymentService();
         });
         $this->app->singleton(OpenPayWebhookService::class, function ($app) {
-            return new OpenPayWebhookService();
+            return new OpenPayWebhookService($app->make(TransactionService::class), $app->make(ErrorHandler::class));
         });
     }
 

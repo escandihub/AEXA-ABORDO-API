@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\Transaction;
+use App\Models\Openpay\Transaction;
+use App\Models\Openpay\CardPayment;
+use App\Models\Openpay\StorePayment;
+use App\Models\Openpay\BankTransfer;
 use App\Models\PaymentCard;
 use App\Models\Openpay\payment;
 use Illuminate\Http\Request;
@@ -11,13 +14,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+use App\Services\TransactionService;
+use App\Services\PaymentServices\ErrorHandler;
+
 class OpenPayWebhookService
 {
+
+     public function __construct(
+        private TransactionService $transactionService,
+        private ErrorHandler $errorHandler
+    ) {}
     /**
      * Process incoming OpenPay webhook
      */
     public function processWebhook(array $payload): bool
     {
+        \Log::info('Processing OpenPay webhook', ['payload' => $payload]);
         try {
             DB::beginTransaction();
 
@@ -39,7 +51,7 @@ class OpenPayWebhookService
                     break;
                 
                 case 'charge.created':
-                    $this->handleChargeCreated($payload);
+                    $this->transactionService->handleChargeCreated($payload);
                     break;
                 
                 case 'payout.created':
@@ -87,31 +99,14 @@ class OpenPayWebhookService
         $transactionData = $payload['transaction'];
         \Log::info('OpenPay Webhook charge succeeded', ['transaction' => $transactionData]);
         // Update or create transaction record
-        $transaction = payment::updateOrCreate(
-            ['order_id' => $transactionData['order_id']],
-            [
-                'amount' => $transactionData['amount'],
-                'authorization' => $transactionData['authorization'] ?? null,
-                'method' => $transactionData['method'],
-                'operation_type' => $transactionData['operation_type'],
-                'transaction_type' => $transactionData['transaction_type'],
-                'status' => $transactionData['status'],
-                'description' => $transactionData['description'] ?? null,
-                'order_id' => $transactionData['order_id'] ?? null,
-                'error_message' => $transactionData['error_message'] ?? null,
-                'processed_at' => Carbon::parse($payload['event_date']),
-                'openpay_created_at' => Carbon::parse($transactionData['creation_date']),
-                // 'webhook_type' => $payload['type']
-            ]
-        );
-
+        $this->transactionService->updateTransactionSuccess($payload);
         // Handle card information if present
         // if (isset($transactionData['card'])) {
         //     $this->processCardData($transactionData['card'], $transaction);
         // }
 
         // Trigger any business logic for successful charge
-        $this->onChargeSucceeded($transaction, $payload);
+       // $this->onChargeSucceeded($transaction, $payload);
     }
 
     /**
@@ -120,25 +115,10 @@ class OpenPayWebhookService
     protected function handleChargeFailed(array $payload): void
     {
         $transactionData = $payload['transaction'];
-        
-        $transaction = payment::updateOrCreate(
-            ['openpay_id' => $transactionData['id']],
-            [
-                'amount' => $transactionData['amount'],
-                'method' => $transactionData['method'],
-                'operation_type' => $transactionData['operation_type'],
-                'transaction_type' => $transactionData['transaction_type'],
-                'status' => $transactionData['status'],
-                'description' => $transactionData['description'] ?? null,
-                'order_id' => $transactionData['order_id'] ?? null,
-                'error_message' => $transactionData['error_message'] ?? null,
-                'processed_at' => Carbon::parse($payload['event_date']),
-                'openpay_created_at' => Carbon::parse($transactionData['creation_date']),
-                // 'webhook_type' => $payload['type']
-            ]
-        );
-
-        $this->onChargeFailed($transaction, $payload);
+        \Log::error('OpenPay Webhook charge failed', ['transaction' => $transactionData]);
+        // new \Exception($transactionData['error_message'] ?? 'Charge failed'), 
+        $this->errorHandler->handle($payload);
+        //$this->onChargeFailed($transaction, $payload);
     }
 
     /**
@@ -160,29 +140,11 @@ class OpenPayWebhookService
         $this->onChargeCancelled($transaction, $payload);
     }
 
-    /**
-     * Handle charge created webhook
+    
+
+    /** e
+     * end create payment method
      */
-    protected function handleChargeCreated(array $payload): void
-    {
-        $transactionData = $payload['transaction'];
-        
-        payment::updateOrCreate(
-            ['openpay_id' => $transactionData['id']],
-            [
-                'amount' => $transactionData['amount'],
-                'method' => $transactionData['method'],
-                'operation_type' => $transactionData['operation_type'],
-                'transaction_type' => $transactionData['transaction_type'],
-                'status' => $transactionData['status'],
-                'description' => $transactionData['description'] ?? null,
-                'order_id' => $transactionData['order_id'] ?? null,
-                'processed_at' => Carbon::parse($payload['event_date']),
-                'openpay_created_at' => Carbon::parse($transactionData['creation_date']),
-                // 'webhook_type' => $payload['type']
-            ]
-        );
-    }
 
     /**
      * Handle payout webhooks
@@ -289,7 +251,7 @@ class OpenPayWebhookService
         // Add your business logic here
         Log::info('Charge cancelled', ['transaction_id' => $transaction->id]);
     }
-    protected function endPointVerification(array $payload): void
+    protected function endPointVerification(array $payload): bool
     {
         // Handle verification endpoint logic
         Log::info('Verification endpoint hit', ['payload' => $payload]);
@@ -298,5 +260,7 @@ class OpenPayWebhookService
         if (isset($payload['verification_code'])) {
             Log::info('Verification code received', ['code' => $payload['verification_code']]);
         }
+
+        return true; // Indicate successful processing
     }
 }
