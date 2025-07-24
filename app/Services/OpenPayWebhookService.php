@@ -16,13 +16,15 @@ use Carbon\Carbon;
 
 use App\Services\TransactionService;
 use App\Services\PaymentServices\ErrorHandler;
+use App\Services\PaymentServices\UpdateTransaction;
 
 class OpenPayWebhookService
 {
 
      public function __construct(
         private TransactionService $transactionService,
-        private ErrorHandler $errorHandler
+        private ErrorHandler $errorHandler,
+        private UpdateTransaction $updateTransaction
     ) {}
     /**
      * Process incoming OpenPay webhook
@@ -39,15 +41,16 @@ class OpenPayWebhookService
             // Process based on webhook type
             switch ($webhookType) {
                 case 'charge.succeeded':
-                    $this->handleChargeSucceeded($payload);
+                    //$this->handleChargeSucceeded($payload);
+                    $this->updateTransaction->HandleTransactionSuccess($payload);
                     break;
                 
                 case 'charge.failed':
-                    $this->handleChargeFailed($payload);
+                    $this->handleChargeLogs($payload);
                     break;
                 
                 case 'charge.cancelled':
-                    $this->handleChargeCancelled($payload);
+                     $this->handleChargeLogs($payload);
                     break;
                 
                 case 'charge.created':
@@ -55,19 +58,25 @@ class OpenPayWebhookService
                     break;
                 
                 case 'payout.created':
-                    $this->handlePayoutCreated($payload);
+                    $this->errorHandler->handle($payload);
                     break;
                 
                 case 'payout.succeeded':
-                    $this->handlePayoutSucceeded($payload);
+                    $this->errorHandler->handle($payload);
                     break;
                 
                 case 'payout.failed':
-                    $this->handlePayoutFailed($payload);
+                    $this->errorHandler->handle($payload);
                     break;
-                
+                // contracargo 
                 case 'chargeback.created':
-                    $this->handleChargebackCreated($payload);
+                    $this->errorHandler->handle($payload);
+                    break;
+                case 'chargeback.accepted':
+                    $this->errorHandler->handle($payload);
+                    break;
+                case 'chargeback.pending':
+                    $this->errorHandler->handle($payload);
                     break;
                 case 'verification':
                     $this->endPointVerification($payload);
@@ -99,20 +108,13 @@ class OpenPayWebhookService
         $transactionData = $payload['transaction'];
         \Log::info('OpenPay Webhook charge succeeded', ['transaction' => $transactionData]);
         // Update or create transaction record
-        $this->transactionService->updateTransactionSuccess($payload);
-        // Handle card information if present
-        // if (isset($transactionData['card'])) {
-        //     $this->processCardData($transactionData['card'], $transaction);
-        // }
-
-        // Trigger any business logic for successful charge
-       // $this->onChargeSucceeded($transaction, $payload);
+        
     }
 
     /**
-     * Handle charge failed webhook
+     * Handle charge failed|Cancelled|tries webhook
      */
-    protected function handleChargeFailed(array $payload): void
+    protected function handleChargeLogs(array $payload): void
     {
         $transactionData = $payload['transaction'];
         \Log::error('OpenPay Webhook charge failed', ['transaction' => $transactionData]);
@@ -136,8 +138,6 @@ class OpenPayWebhookService
                 // 'webhook_type' => $payload['type']
             ]
         );
-
-        $this->onChargeCancelled($transaction, $payload);
     }
 
     
@@ -229,28 +229,6 @@ class OpenPayWebhookService
         // return hash_equals($signature, $expectedSignature);
     }
 
-    /**
-     * Business logic hooks - customize these methods for your application
-     */
-    protected function onChargeSucceeded(payment $transaction, array $payload): void
-    {
-        // Add your business logic here
-        // For example: send confirmation email, update order status, etc.
-        Log::info('Charge succeeded', ['transaction_id' => $transaction->id]);
-    }
-
-    protected function onChargeFailed(payment $transaction, array $payload): void
-    {
-        // Add your business logic here
-        // For example: notify customer, update order status, etc.
-        Log::info('Charge failed', ['transaction_id' => $transaction->id]);
-    }
-
-    protected function onChargeCancelled(payment $transaction, array $payload): void
-    {
-        // Add your business logic here
-        Log::info('Charge cancelled', ['transaction_id' => $transaction->id]);
-    }
     protected function endPointVerification(array $payload): bool
     {
         // Handle verification endpoint logic
