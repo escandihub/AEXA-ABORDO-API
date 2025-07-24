@@ -18,6 +18,7 @@ class TransactionService
 {
     /**
      * Handle charge created webhook init
+     * a transaction clould be card, bank transfer and store payment
      */
     public function handleChargeCreated(array $payload): Transaction
     {
@@ -108,101 +109,5 @@ class TransactionService
             'store_name' => $paymentMethod['store_name'] ?? null,
             'expires_at' => $paymentMethod['expires_at'] ?? null,
         ]);
-    }
-
-     /**
-     * Actualizar transacción cuando el pago es exitoso
-     */
-    public function updateTransactionSuccess(array $webhookData): Transaction
-    {
-        return DB::transaction(function () use ($webhookData) {
-            $transaction = Transaction::where('transaction_id', $webhookData['transaction']['id'])->firstOrFail();
-
-            $transaction->update([
-                'status' => $webhookData['transaction']['status'],
-                'metadata' => $webhookData['transaction']['metadata'] ?? null,
-            ]);
-
-            $this->updatePaymentMethodSuccess($transaction, $webhookData);
-
-            // Disparar eventos/notificaciones
-            // ** FUTURAS IMPLEMENTACIONES **
-            //$this->handleSuccessfulPayment($transaction);
-
-            // Actualizar el método de pago si es necesario
-            if (isset($webhookData['payment_method'])) {
-                $this->createPaymentMethod($transaction, $webhookData['payment_method']);
-            }
-
-            return $transaction;
-        });
-    }
-
-    /**
-     * Actualizar método de pago específico cuando es exitoso
-     */
-    private function updatePaymentMethodSuccess(Transaction $transaction, array $webhookData): void
-    {
-        $paymentMethod = $webhookData['transaction']['method'] ?? [];
-        
-        match ($transaction->method) {
-            'card' => $this->updateCardPaymentSuccess($transaction, $webhookData),
-            'bank_transfer' => $this->updateBankTransferSuccess($transaction, $webhookData),
-            'store' => $this->updateStorePaymentSuccess($transaction, $webhookData),
-        };
-    }
-    /**
-     * Actualizar pago con tarjeta exitoso
-     */
-    private function updateCardPaymentSuccess(Transaction $transaction,  array $webhookData): void
-    {
-        $cardPayment = $transaction->cardPayment;
-        $cardData = $webhookData['transaction']['card'];
-        if ($cardPayment) {
-            $cardPayment->update([
-                'type' => $cardData['type'] ?? $cardPayment->type,
-                'brand' => $cardData['brand'] ?? $cardPayment->brand,
-                'card_number' => $cardData['card_number'] ?? $cardPayment->card_number,
-                'holder_name' => $cardData['holder_name'] ?? $cardPayment->holder_name,
-                'authorization' => $webhookData['transaction']['authorization'] ?? $cardPayment->authorization,
-                'expiration_month' => $cardData['expiration_month'] ?? $cardPayment->expiration_month,
-                'expiration_year' => $cardData['expiration_year'] ?? $cardPayment->expiration_year,
-            ]);
-        }
-    }
-
-    /**
-     * Actualizar transferencia bancaria exitosa
-     */
-    private function updateBankTransferSuccess(Transaction $transaction, array $webhookData): void
-    {
-        $bankTransfer = $transaction->bankTransfer;
-        if ($bankTransfer) {
-            $bankTransfer->update([
-                // 'reference' => $paymentMethod['receiving_account_number'] ?? $webhookData['reference'] ?? $bankTransfer->reference,
-                // Actualizar otros campos específicos de SPEI si vienen en el webhook
-            ]);
-        }
-    }
-
-    /**
-     * Actualizar pago en tienda exitoso
-     */
-    private function updateStorePaymentSuccess(Transaction $transaction, array $webhookData): void
-    {
-        $storePayment = $transaction->storePayment;
-        if ($storePayment) {
-            $storePayment->update([
-                // 'store_name' => $webhookData['payment_method']['store'] ?? $paymentMethod['store'] ?? $storePayment->store_name,
-                // Agregar timestamp de cuando se pagó en tienda
-            ]);
-        }
-    }
-
-    private function logErrorTransaction(array $webhookData): void
-    {
-        // Aquí puedes implementar la lógica para registrar errores de transacción
-        // Por ejemplo, guardar en una tabla de logs o enviar una notificación
-        return "OK";
     }
 }
