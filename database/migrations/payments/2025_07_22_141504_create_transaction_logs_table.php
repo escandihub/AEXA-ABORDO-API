@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transaction_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
-            $table->enum('status', ['failed', 'success', 'pending', 'cancelled'])->default('failed');
+            $table->enum('status', ['in_progress','completed','refunded','chargeback_pending','chargeback_accepted','chargeback_adjustment','charge_pending','cancelled','failed'])->default('failed');
             $table->text('error_message')->nullable();
             $table->json('error_details')->nullable(); // Para detalles adicionales del error
             $table->string('gateway_response_code')->nullable(); // Código de respuesta del gateway openpay
