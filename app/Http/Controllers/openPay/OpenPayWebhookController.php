@@ -51,7 +51,7 @@ class OpenPayWebhookController extends Controller
                 return response('OK', HttpResponse::HTTP_OK);
             } else {
                 Log::error('OpenPay Webhook processing failed', ['payload' => $payload]);
-                return response('Internal Server Error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
+                return response()->json(['status' => 'success'], 200); // only json response
             }
         } catch (\Exception $e) {
             Log::error('OpenPay Webhook error', [
