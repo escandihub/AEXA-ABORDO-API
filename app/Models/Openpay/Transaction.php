@@ -86,4 +86,24 @@ class Transaction extends Model
     {
         return $query->where('status', $status);
     }
+     public function logs()
+    {
+        return $this->hasMany(TransactionLog::class);
+    }
+
+    /**
+     * Relación para obtener solo los logs de fallos
+     */
+    public function failedLogs()
+    {
+        return $this->hasMany(TransactionLog::class)->where('status', 'failed');
+    }
+    /**
+     * scope para agrupar transacciones y relacionar con logs
+     */
+    public function scopeWithLogs($query){
+        return $query->with(['logs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+    }
 }
