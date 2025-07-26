@@ -57,9 +57,9 @@ class TransactionLog extends Model
      * Método estático para crear un log de fallo
      */
     public static function logFailure(
-        int $transactionId, 
-        string $errorMessage, 
-        array $errorDetails = null, 
+        int $transactionId,
+        string $errorMessage,
+        array $errorDetails = null,
         string $gatewayCode = null,
         float $amount = null
     ): self {
@@ -80,13 +80,13 @@ class TransactionLog extends Model
     {
         $summary = "Error en transacción #{$this->transaction_id}";
         $summary .= " - {$this->error_message}";
-        
+
         if ($this->gateway_response_code) {
             $summary .= " (Código: {$this->gateway_response_code})";
         }
-        
+
         $summary .= " - {$this->created_at->format('d/m/Y H:i:s')}";
-        
+
         return $summary;
     }
 }

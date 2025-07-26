@@ -15,6 +15,7 @@ use App\Services\OpenPayWebhookService;
 use App\Services\TransactionService;
 use App\Services\PaymentServices\ErrorHandler;
 use App\Services\PaymentServices\UpdateTransaction;
+use App\Services\PaymentServices\TransactionStatusService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(CustomerService::class, function ($app) {
             return new CustomerService();
+        });
+        $this->app->singleton(TransactionStatusService::class, function ($app) {
+            return new TransactionStatusService();
         });
         $this->app->singleton(PaymentService::class, function ($app) {
             return new PaymentService();
