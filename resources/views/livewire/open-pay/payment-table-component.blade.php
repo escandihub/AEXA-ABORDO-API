@@ -114,7 +114,7 @@
                         @endif
                     </div>
                 </div>
-
+                @livewire('components.pay.modal-logs')
                 {{-- Tabla responsiva --}}
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -198,6 +198,11 @@
                                     <span wire:loading.remove wire:target="consultarPago('{{ $payment['order_id'] }}')"> Consultar</span>
                                     <span wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')">Consultando pago...</span>
                                 </button>
+                                </div>
+                                <div>
+                                    {{-- @click="$dispatch('openPaymentLogsModal')" --}}
+                                    <button wire:click="consultaLogs('{{ $payment['order_id'] }}')">logs</button> 
+                                    {{-- <button @click="$dispatch('openPaymentLogsModal')">logs</button> --}}
                                 </div>
 </td>
                             </tr>
