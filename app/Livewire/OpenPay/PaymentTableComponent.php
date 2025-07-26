@@ -4,10 +4,13 @@ namespace App\Livewire\OpenPay;
 
 use Livewire\Component;
 use App\Models\Openpay\payment;
+use App\Models\Openpay\Transaction;
+use App\Services\PaymentServices\TransactionStatusService;
+
 
 class PaymentTableComponent extends Component
 {
-   // public $payments = [];
+    public $payments = [];
     public $filteredPayments = [];
     public $selectedPayment = null;
     public $showPaymentStatus = false;
@@ -17,61 +20,15 @@ class PaymentTableComponent extends Component
     public $statusFilter = '';
     public $dateFilter = '';
 
-    public function mount()
+    private $transactionStatusService;
+
+    public function mount(TransactionStatusService $transactionStatusService)
     {
+       $this->transactionStatusService = $transactionStatusService;
         // Datos de ejemplo - reemplaza con tu lógica de base de datos
-        $this->payments = [
-            [
-                'id' => 1,
-                'cliente' => 'Juan Pérez',
-                'fecha' => '2024-06-15',
-                'monto' => 1500.00,
-                'descripcion' => 'Servicio de consultoría',
-                'pagado' => true
-            ],
-            [
-                'id' => 2,
-                'cliente' => 'María González',
-                'fecha' => '2024-06-20',
-                'monto' => 2800.50,
-                'descripcion' => 'Desarrollo web',
-                'pagado' => false
-            ],
-            [
-                'id' => 3,
-                'cliente' => 'Carlos Ruiz',
-                'fecha' => '2024-06-22',
-                'monto' => 750.00,
-                'descripcion' => 'Mantenimiento sistema',
-                'pagado' => true
-            ],
-            [
-                'id' => 4,
-                'cliente' => 'Ana López',
-                'fecha' => '2024-06-25',
-                'monto' => 3200.00,
-                'descripcion' => 'Aplicación móvil',
-                'pagado' => false
-            ],
-            [
-                'id' => 5,
-                'cliente' => 'Roberto Silva',
-                'fecha' => '2024-06-10',
-                'monto' => 1250.75,
-                'descripcion' => 'Diseño gráfico',
-                'pagado' => true
-            ],
-            [
-                'id' => 6,
-                'cliente' => 'Carmen Morales',
-                'fecha' => '2024-06-27',
-                'monto' => 4500.00,
-                'descripcion' => 'E-commerce completo',
-                'pagado' => false
-            ],
-        ];
-        
+       
         $this->applyFilters();
+
     }
 
     public function updatedSearchName()
@@ -116,8 +73,38 @@ class PaymentTableComponent extends Component
 
     public function consultarPago($paymentId)
     {
-        $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
+        \Log::info("Consultando pago con ID: {$paymentId}");
+        // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
+        $this->selectedPayment = Transaction::where('order_id', $paymentId)->first();;
+        \Log::info("Pago consultado: ", ['payment' => $this->selectedPayment]);
         $this->showPaymentStatus = true;
+    }
+    public function consultaLogs($orderId){
+        try {
+            $logs = Transaction::where('order_id', $orderId)->get();
+            $logs = $logs->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'transaction_id' => $log->transaction_id,
+                    'status' => $log->status,
+                    'amount' => $log->amount,
+                    'currency' => $log->currency,
+                    'method' => $log->method,
+                    'error_message' => $log->error_message,
+                    'error_details' => $log->error_details,
+                    'gateway_response_code' => $log->gateway_response_code,
+                    'attempted_amount' => $log->attempted_amount,
+                    'created_at' => $log->created_at,
+                    'updated_at' => $log->updated_at,
+                    'logs' => $log->logs()->get()
+                ];
+            })->toArray(); 
+
+            \Log::info($logs);
+            $this->dispatch('open-logs-modal', $logs);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     public function cerrarModal()
@@ -136,6 +123,18 @@ class PaymentTableComponent extends Component
 
     public function render()
     {
+        $this->payments = $this->query()->get()->map(function ($payment) {
+            return [
+                'id' => $payment->id,
+                'cliente' => $payment->cliente,
+                'amount' => $payment->amount,
+                'fecha' => $payment->created_at->format('Y-m-d'),
+                'description' => $payment->description,
+                'status' => $payment->status,
+                'order_id' => $payment->order_id,
+            ];
+        })->toArray();
+
         return view('livewire.open-pay.payment-table-component', [
             'payments' => $this->query()->get(),
         ]);
