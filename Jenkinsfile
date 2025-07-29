@@ -10,7 +10,7 @@ pipeline{
         APP_PORT = '8000'
 
         // Credenciales (configurar en Jenkins)
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
+        // DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
         ENV_FILE = credentials('laravel-env-file')
     }
 
