@@ -5,7 +5,7 @@ pipeline{
         // Define any environment variables here
         MY_ENV_VAR = 'example_value'
         DOCKER_IMAGE = 'laravel-app'
-        DOCKER_TAG = "${BUILD_NUMBER}"
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'laravel-app-container'
         APP_PORT = '8000'
 
@@ -27,7 +27,7 @@ pipeline{
                 script {
                     echo 'Configuracion variable de entrono...'
                     sh 'cp $ENV_FILE .env'
-                    echo "Build Number: ${BUILD_NUMBER}"
+                    echo "Build Number: ${env.BUILD_NUMBER}"
                     echo "Branch: ${env.BRANCH_NAME} ?: 'openpay'"
                 }
             }
