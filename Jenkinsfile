@@ -1,7 +1,7 @@
 pipeline{
     agent any
 
-    enviroment {
+    environment {
         // Define any environment variables here
         MY_ENV_VAR = 'example_value'
         DOCKER_IMAGE = 'laravel-app'
