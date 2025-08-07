@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Openpay\Transaction;
 use App\Services\PaymentServices\Interfaces\Updated;
 
-class UpdateTransaction implements Updated
+class UpdateTransaction 
 {
     /**
      * Actualizar transacción cuando el pago es exitoso
