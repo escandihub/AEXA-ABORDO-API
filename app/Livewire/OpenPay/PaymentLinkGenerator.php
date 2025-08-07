@@ -46,6 +46,10 @@ class PaymentLinkGenerator extends Component
         $this->paymentService = $paymentService;
     }
 
+     public function redirectToPaymenList()
+    {
+        return $this->redirectRoute('pay.list');
+    }
       public function generateLink()
     {
         $this->validate();
@@ -137,9 +141,9 @@ class PaymentLinkGenerator extends Component
         $this->dispatch('copy-to-clipboard', link: $this->generatedLink);
     }
 
-    public function resett()
+    public function clear()
     {
-        $this->reset(['monto', 'descripcion', 'generatedLink', 'showLink']);
+        $this->reset(['name','lastname','email','phone','monto', 'descripcion', 'generatedLink', 'showLink']);
         $this->resetErrorBag();
     }
     public function render()

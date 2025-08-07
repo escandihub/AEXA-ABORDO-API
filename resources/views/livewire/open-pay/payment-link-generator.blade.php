@@ -1,6 +1,17 @@
 <div x-data="paymentGenerator()">
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
     <div class="w-full max-w-3xl mx-auto ">
+        <div class="flex justify-start mb-6">
+            <button wire:click="redirectToPaymenList"
+            wire:loading.class="animate-pulse"
+            wire:loading.attr="disabled"
+   class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600  text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Regresar
+</button>
+         </div>
         <!-- Card Principal -->
         <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 space-y-6">
             <!-- Header -->
@@ -290,7 +301,7 @@
 
                     <div class="flex space-x-3">
                         <button 
-                            wire:click="reset"
+                            wire:click="clear"
                             class="flex-1 bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors duration-200 text-sm font-medium"
                         >
                             Generar Otro

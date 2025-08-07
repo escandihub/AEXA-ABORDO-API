@@ -10,7 +10,19 @@
                 </h1>
                 <p class="text-gray-600 text-lg">Gestiona y consulta el estado de los pagos</p>
             </div>
+            <div class="flex justify-end mb-6">
+                {{-- Botón para generar link de pago --}}
+                <div>
+                    <button wire:loading.class="animate-pulse"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"                      wire:click='redirectToPaymentLinkGenerator'>
 
+                        Link de pago
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
             {{-- Contenedor de la tabla con Material Expressive --}}
             <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
                 {{-- Superficie elevada con efecto glassmorphism --}}
@@ -172,39 +184,47 @@
                                         {{ $payment['description'] }}
                                     </div>
                                 </td>
-                              <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <div wire:key="consultarPago{{ $payment['order_id'] }}" wire:target="consultarPago('{{ $payment['order_id'] }}')">
-                                <button wire:click="consultarPago('{{ $payment['order_id'] }}')"
-                                    wire:loading.attr="disabled"
-                                    wire:loading.class="animate-pulse"
-                                    class="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 border-0 relative overflow-hidden group backdrop-blur-sm">
-                                    
-                                    <!-- Icon and text (default state) -->
-                                    <svg wire:loading.remove wire:target="consultarPago('{{ $payment['order_id'] }}')"
-                                        class="w-4 h-4 mr-2 transition-all duration-300 group-hover:rotate-12" 
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
-                                        </path>
-                                    </svg>
-                                    
-                                    <!-- Loading dots -->
-                                    <div wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')" class="flex items-center space-x-1 mr-2">
-                                        <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                                        <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                                        <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div wire:key="consultarPago{{ $payment['order_id'] }}"
+                                        wire:target="consultarPago('{{ $payment['order_id'] }}')">
+                                        <button wire:click="consultarPago('{{ $payment['order_id'] }}')"
+                                            wire:loading.attr="disabled" wire:loading.class="animate-pulse"
+                                            class="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 border-0 relative overflow-hidden group backdrop-blur-sm">
+
+                                            <!-- Icon and text (default state) -->
+                                            <svg wire:loading.remove
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')"
+                                                class="w-4 h-4 mr-2 transition-all duration-300 group-hover:rotate-12"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                                                </path>
+                                            </svg>
+
+                                            <!-- Loading dots -->
+                                            <div wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')"
+                                                class="flex items-center space-x-1 mr-2">
+                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"
+                                                    style="animation-delay: 0.1s"></div>
+                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"
+                                                    style="animation-delay: 0.2s"></div>
+                                            </div>
+                                            {{-- {{ $payment['order_id'] }} - --}}
+                                            <span wire:loading.remove
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')">
+                                                Consultar</span>
+                                            <span wire:loading
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')">Consultando
+                                                pago...</span>
+                                        </button>
                                     </div>
-                                    {{-- {{ $payment['order_id'] }} - --}}
-                                    <span wire:loading.remove wire:target="consultarPago('{{ $payment['order_id'] }}')"> Consultar</span>
-                                    <span wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')">Consultando pago...</span>
-                                </button>
-                                </div>
-                                <div>
-                                    {{-- @click="$dispatch('openPaymentLogsModal')" --}}
-                                    <button wire:click="consultaLogs('{{ $payment['order_id'] }}')">logs</button> 
-                                    {{-- <button @click="$dispatch('openPaymentLogsModal')">logs</button> --}}
-                                </div>
-</td>
+                                    <div>
+                                        {{-- @click="$dispatch('openPaymentLogsModal')" --}}
+                                        <button wire:click="consultaLogs('{{ $payment['order_id'] }}')">logs</button>
+                                        {{-- <button @click="$dispatch('openPaymentLogsModal')">logs</button> --}}
+                                    </div>
+                                </td>
                             </tr>
                             @empty
                             <tr>

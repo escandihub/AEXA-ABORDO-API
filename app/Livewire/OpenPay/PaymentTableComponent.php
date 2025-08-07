@@ -30,6 +30,10 @@ class PaymentTableComponent extends Component
         $this->applyFilters();
 
     }
+    public function redirectToPaymentLinkGenerator()
+    {
+        return $this->redirectRoute('pay.make');
+    }
 
     public function updatedSearchName()
     {
