@@ -53,6 +53,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('isGerente', function(User $user){
             return $user->isAdmin() == "gerente";
         });
+        Gate::define('isPayment', function(User $user){
+            return $user->isAdmin() == "payment";
+        });
         // Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
         Schema::defaultStringLength(191);
     }
