@@ -27,7 +27,16 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        $pefil = Auth::user();
+\Log::info('El usuario ' . $pefil->name . ' ha iniciado sesión.');
+\Log::info('El usuario ' . $pefil->isAdmin() . ' ha iniciado sesión.');
+        if ($pefil->isAdmin() == "admin") {
+            return redirect()->intended(route('monitoreo', absolute: false));
+        } elseif ($pefil->isAdmin() == "gerente") {
+            return redirect()->intended(route('monitoreo', absolute: false));
+        } elseif ($pefil->isAdmin() == "payment") {
+            return redirect()->intended(route('pay.make', absolute: false));
+        }
         return redirect()->intended(route('monitoreo', absolute: false));
     }
 
