@@ -96,12 +96,7 @@
                                         Ruta
                                     </th>
     
-                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                        descuento/clase
-                                    </th>
-    
-                                    <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Acciones</th>
-    
+                                
                                     <th scope="col" class="relative py-3.5 px-4">
                                         <span class="sr-only">Edit</span>
                                     </th>
@@ -130,23 +125,14 @@
                                         <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                             <span>{{ $pasajero->origen }}</span> - <span>{{ $pasajero->destino }}</span>
                                             <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
-                                            {{ $pasajero->fecha_salida }}
+                                            {{-- {{ $pasajero->fecha_salida }} --}}
                                         </div>
                                         </div>
                                     </td>
                                     <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                         <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
                                             {{ $pasajero->fecha_salida }}
-                                        </div>>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                        
-                                    </td>
-    
-                                    <td class="px-4 py-4 text-sm whitespace-nowrap">
-                                        {{-- <div class="w-48 h-1.5 bg-blue-200 overflow-hidden rounded-full">
-                                            <div class="bg-blue-500 w-2/3 h-1.5"></div>
-                                        </div> --}}
+                                        </div>
                                     </td>
     
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
