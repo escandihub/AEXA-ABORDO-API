@@ -86,6 +86,9 @@
                                     </th>
     
                                     <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                        Abordo
+                                    </th>
+                                    <th scope="col" class="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                         Terminal
                                     </th>
     
@@ -116,6 +119,12 @@
                                             <span class="text-sm inline px-3 py-1 font-normal rounded-full text-blue-600 bg-gray-800">{{ $pasajero->terminal }}</span>
                                             <span>{{ $pasajero->numero_terminal }}</span>
                                         </div>
+                                    </td>
+                                    <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
+                                        <span class="flex justify-center rounded-lg bg-green-400 text-white shadow-md bg-emerald-100/60 dark:bg-gray-800">
+                                            {{ $pasajero->abordo ? 'Abordo' : 'No abordo'  }}
+                                        </span>
+
                                     </td>
                                     <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
                                         <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">

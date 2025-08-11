@@ -45,8 +45,10 @@ class ShowAbordo extends Component
 
     public function query()
     {
+        $now = \Carbon\CarbonImmutable::now();
         return  DB::table('pasajeros')
             ->select('id_pasajero', 'nombre', 'fecha_salida', 'abordo', 'numero_terminal', 'terminal', 'origen', 'destino', 'tipo_descuento', 'clase', 'id_diario_c')
+            // ->where('fecha_salida', '>=', $now->format('Y-m-d'))
             ->orderBy('fecha_salida');
     }
 
@@ -54,10 +56,12 @@ class ShowAbordo extends Component
 
         \Log::info('Date: ' . $this->dateSelect);
         return $this->query()
-            ->when($this->search, function ($query) {
+            ->when($this->search && !is_numeric($this->search), function ($query) {
+                \Log::info('Searching by name: ' . $this->search);
                 $query->where('nombre', 'like', '%' . $this->search . '%');
             })
             ->when($this->search, function ($query) {
+                 \Log::info('Searching by code: ' . $this->search);
                 $query->where('consecutivo_terminal', $this->search);
             })
             ->when($this->dateSelect != '', function ($query) {
