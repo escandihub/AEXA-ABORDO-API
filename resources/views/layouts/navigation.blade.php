@@ -33,6 +33,9 @@
                     <x-nav-link :href="route('monitoreo')" :active="request()->routeIs('monitoreo')" wire:navigate >
                         {{ __('Monitoreo') }}
                     </x-nav-link>
+                     <x-nav-link :href="route('abordo.list')" :active="request()->routeIs('abordo.list')" wire:navigate >
+                        {{ __('Abordo') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -90,6 +93,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('monitoreo')" :active="request()->routeIs('monitoreo')">
                 {{ __('Monitoreo') }}
+            </x-responsive-nav-link>
+             <x-responsive-nav-link :href="route('abordo.list')" :active="request()->routeIs('abordo.list')" wire:navigate >
+                        {{ __('Abordo') }}
             </x-responsive-nav-link>
         </div>
 
