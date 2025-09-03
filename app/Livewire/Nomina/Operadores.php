@@ -15,6 +15,7 @@ use App\Exports\OperadoresExport;
 use PhpParser\Node\Stmt\TryCatch;
 use Livewire\Attributes\On; 
 use App\Http\Controllers\OperadoresService\GetRelation;
+use App\Models\Diario;
 
 class Operadores extends Component
 {
@@ -26,12 +27,16 @@ class Operadores extends Component
     public ?string $search = '';
     #[Url]
     public ?string $date = '';
+     #[Url]
+    public ?string $filter_dateOne = null;
+     #[Url]
+    public ?string $filter_dateTwo = null;
 
     public function render()
     {
         // $this->query();
         return view('livewire.nomina.operadores', [
-            'corridas' =>  $this->filters()->paginate(10),
+            'corridas' =>  $this->query()->paginate(10),
             'operadores' => $this->getOperadores(),
 
         ]);
@@ -40,13 +45,34 @@ class Operadores extends Component
     public function query()
     {
         $now = \Carbon\CarbonImmutable::now(); // $now->format('Y-m-d')
-        $corrida = DB::table('diario_c')->whereBetween('fecha', ["2025-05-01", "2025-05-15"])->where('condicion_corrida', 'Disponible')
-            ->where('clase', '!=', 3)
-            ->select('fecha', 'hora', 'minutos', 'origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
-            ->orderBy('fecha');
+        $query = Diario::disponibles()
+        ->select('fecha', 'hora', 'minutos', 'origen', 'destino', 'autobus', 'clase', 'operador1', 'operador2', 'id_diario_c')
+        ->orderBy('fecha')
+        ->orderBy('hora');
+        \Log::info("updating querty:_ {$this->filter_dateOne}");
+        if(!$this->filter_dateOne){
+            $query->where('fecha', '>=', $now->format('Y-m-d'));
+        }
+         // Aplicar filtros
+        if ($this->filter === 'now') {
+            // dd('ahora?');
+            $query->horaActual();
+        }
+        
+        if ($this->search) {
+            $query->buscar($this->search);
+        }
+        
+        if ($this->filter_dateOne && $this->filter_dateTwo) {
+            $query->entreFechas($this->filter_dateOne, $this->filter_dateTwo);
+        }else{
+            // Si no hay filtro de fecha, mostrar solo las corridas a partir de hoy
+            $query->HoraActual(); //where('fecha', '>=', $now->format('Y-m-d'))->whereBetween('hora', [$now->subHour(1)->format('H'), $now->format('H')])->orderBy('hora', 'asc');
+        }
+        
+        return $query; //->paginate(10);
 
         // \Log::info($corrida);
-        return $corrida;
         /**
          * SELECT fecha, hora, origen, destino, autobus, operador1, operador2, id_diario_c FROM diario_c
         WHERE fecha between '2025-04-16' and '2025-04-30' and condicion_corrida = "Disponible"
@@ -61,8 +87,6 @@ class Operadores extends Component
     private function filters()
     {
         $now = \Carbon\CarbonImmutable::now();
-        \Log::info($now->subMinutes(30)->format('H') . ':' . $now->subMinutes(30)->format('i'));
-        \Log::info($now->addMinutes(30)->format('H') . ':' . $now->addMinutes(30)->format('i'));
 
        return $this->query()->when($this->filter == 'now', function ($query) use ($now) {
             $query
@@ -73,6 +97,9 @@ class Operadores extends Component
                 $q->where('autobus', 'like', '%' . $this->search . '%')
                     ->orWhere('operador1', 'like', '%' . $this->search . '%');
             });
+        })
+        ->when($this->filter_dateOne != null, function ($query) {
+            $query->whereBetween('fecha', [$this->filter_dateOne, $this->filter_dateTwo]);
         });
     }
 
@@ -132,6 +159,48 @@ select * from `sessions` where `id` = "M58i05QvTZDQsuTAhgtMrCunORQvsCJxfWakJCA2"
         
         // Actualización ficticia
         return true;
+    }
+    /**
+     * escucha el evento new-date que envia el componente date-piker 
+     * para realizar un filtrador de fecha de las corridas 
+     */
+    
+    #[On('new-date')] 
+    public function newDate($start, $end)
+    {
+        $this->filter_dateOne = $start;
+        $this->filter_dateTwo = $end;
+
+        // $this->dispatch('post-created', data: $result); 
+        \Log::info($start);
+        \Log::info($end);
+    }
+    // Método para limpiar filtros
+    public function resetFilters()
+    {
+        $this->reset(['search', 'filter', 'filter_dateOne', 'filter_dateTwo']);
+        $this->resetPage();
+    }
+    
+    // Método que se ejecuta cuando cambian los filtros
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatedFilter()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatedFilterDateOne()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatedFilterDateTwo()
+    {
+        $this->resetPage();
     }
 }
 /**
