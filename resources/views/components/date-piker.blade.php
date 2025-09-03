@@ -1,11 +1,11 @@
-<div x-data="app" x-cloak>
+<div x-data="app" x-cloak class="relative">
 		<div class="z-40 mx-auto px-4 py-2 md:py-10 flex ">
-			<div class=" shadow-lg rounded-md px-5 py-5">
+			<div class=" shadow-lg rounded-md">
 				{{-- <span class="font-bold my-1 text-gray-700 block">Results (would normally be hidden)</span>
 				<input type="text" name="date_from" x-model="dateFromYmd">
 				<input type="text" name="date_to" x-model="dateToYmd"> --}}
-				<label for="datepicker" class="font-bold text-gray-700 block">Seleccione el rango de fechas a analizar</label>
-				<hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+				{{-- <label for="datepicker" class="font-bold text-gray-700 block">Seleccione el rango de fechas a analizar</label> --}}
+				{{-- <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"> --}}
 				<div class="relative" @keydown.escape="closeDatepicker()" @click.outside="closeDatepicker()">
 					<div class="fafaflex items-center gap-2 border rounded-md mt-3 bg-gray-200">
 						<input type="text" @click="endToShow = 'from'; init(); showDatepicker = true" x-model="outputDateFromValue" :class="{'font-semibold': endToShow == 'from' }" class="focus:outline-none border-0 p-2 w-40 rounded-l-md border-r border-gray-300"/>
