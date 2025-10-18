@@ -14,6 +14,7 @@ use App\Http\Controllers\PasajerosController;
 use App\Http\Controllers\DevicePrinterController;
 use App\Http\Middleware\CheckDevice;
 use App\Http\Middleware\validateUpdate;
+use App\Http\Controllers\ApiOperadores\OperadoresController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -47,3 +48,6 @@ Route::post('webhook/openpay', [App\Http\Controllers\openPay\OpenPayWebhookContr
 # administracion del dispositivo
 // Route::post('device-info',[ CorridasController::class, 'readCorridas']); 
 // Route::post('app-updated/{app_id}',[ AppTraking::class, 'updateStatus']); 
+Route::middleware('auth.token')->group(function () {
+    Route::get('operadores', [OperadoresController::class, 'index']);
+});
