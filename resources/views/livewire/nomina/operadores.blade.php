@@ -31,6 +31,7 @@
                             </svg>
                             Limpiar Filtros
                         </button>
+                        <button wire:click="generateReport()">Generar</button>
                     </div>
 
                     {{-- Panel de filtros --}}

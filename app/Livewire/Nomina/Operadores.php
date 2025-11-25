@@ -37,7 +37,7 @@ class Operadores extends Component
         // $this->query();
         return view('livewire.nomina.operadores', [
             'corridas' =>  $this->query()->paginate(10),
-            'operadores' => $this->getOperadores(),
+            'operadores' => [],
 
         ]);
     }
