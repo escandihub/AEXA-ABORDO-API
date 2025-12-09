@@ -19,6 +19,7 @@ class PaymentService
      */
     public function createPayment(array $data)
     {
+        \Log::info("datos creando: ", $data);
         try {
             // Create payment in Openpay
             $payment = new payment();

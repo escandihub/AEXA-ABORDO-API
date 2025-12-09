@@ -6,6 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use App\Services\CustomerService;
 use App\Services\PaymentService;
+use App\Livewire\OpenPay\service\Cliente;
 
 
 class PaymentLinkGenerator extends Component
@@ -21,6 +22,10 @@ class PaymentLinkGenerator extends Component
 
     private $customerService;
     private $paymentService;
+    
+
+
+    public ?string $selectOption = 'aexa';
 
     protected $rules = [
         'monto' => 'required|numeric|min:0.01',
@@ -29,6 +34,7 @@ class PaymentLinkGenerator extends Component
         'email' => 'email',
         'phone' => 'required|numeric',
         'descripcion' => 'required|string|min:3|max:255',
+        'selectOption' => 'required|string',
     ];
 
     protected $messages = [
@@ -40,9 +46,10 @@ class PaymentLinkGenerator extends Component
         'descripcion.max' => 'La descripción no puede exceder 255 caracteres',
     ];
 
-    public function boot(CustomerService $customerService, PaymentService $paymentService)
+    public function boot(SelectPaymentGategay $paymentService)
     {
-        $this->customerService = $customerService;
+        // $this->customerService = $customerService;
+        // $this->paymentService = $paymentService;
         $this->paymentService = $paymentService;
     }
 
@@ -55,84 +62,35 @@ class PaymentLinkGenerator extends Component
         $this->validate();
 
         try {
-            // Configuración de Openpay
-            $merchantId = config('openpay.merchant_id');
-            $privateKey = config('openpay.private_key');
-            $isSandbox = config('openpay.sandbox', true);
+            $cliente = new Cliente(
+                $this->name,
+                $this->lastname,
+                $this->phone,
+                $this->descripcion,
+                $this->email,
+                $this->monto);
+
+            $payment = $this->paymentService->GeneratePayFromBrand("aexa", $cliente);
+            $this->showLink = true;
+            $this->generatedLink = $payment['link'];
             
-            // URL base según el ambiente
-            $baseUrl = $isSandbox ? 'https://sandbox-api.openpay.mx' : 'https://api.openpay.mx';
-            
-            // Datos para crear el checkout
-            $checkoutData = [
-                'amount' => $this->monto,
-                'currency' => 'MXN',
-                'description' => $this->descripcion,
-                'order_id' => 'ORD-' . uniqid() . '-' . time(),
-                'send_email' => false,
-                'customer' => [
-                    'name' => $this->name,
-                    'last_name' => $this->lastname,
-                    'phone_number' => $this->phone,
-                    'email' => $this->email,
-                ],
-                'redirect_url' => url()->current(),
-                'expiration_date' => now()->addDays(7)->format('Y-m-d H:i'),
-            ];
+            session()->flash('success', '¡Link de pago de Openpay generado exitosamente!');
 
-            $cliente = $this->customerService->getOrCreateCustomer([
-                'name' => $this->name,
-                'lastname' => $this->lastname,
-                'phone' => $this->phone,
-                'email' => $this->email,
-            ]);
-
-            // Llamada a la API de Openpay
-            $response = Http::withBasicAuth($privateKey, '')
-                ->post("{$baseUrl}/v1/{$merchantId}/checkouts", $checkoutData);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $this->generatedLink = $data['checkout_link'];
-                $this->showLink = true;
-
-                $this->paymentService->createPayment([
-                    'openpay_id' => $data['id'],
-                    'customer_id' => $cliente->id,
-                    'amount' => $this->monto,
-                    'description' => $this->descripcion,
-                    'order_id' => $data['order_id'],
-                    'currency' => 'MXN',
-                    'iva' => 0.00, // Asumiendo que no se aplica IVA
-                    'status' => $data['status'],
-                    'checkout_link' => $data['checkout_link'],
-                    'creation_date' => now(),
-                    'expiration_date' => now()->addDays(7),
+            session()->put('openpay_checkout', [
+                    'id' => $payment['id'],
+                    'order_id' => $payment['order_id'],
+                    'amount' => $payment['amount'],
+                    'status' => $payment['status'],
+                    'expiration_date' => $payment['expiration_date']
                 ]);
-
-                // Guardar información adicional del checkout
-                session()->put('openpay_checkout', [
-                    'id' => $data['id'],
-                    'order_id' => $data['order_id'],
-                    'amount' => $data['amount'],
-                    'status' => $data['status'],
-                    'expiration_date' => $data['expiration_date']
-                ]);
-                
-                session()->flash('success', '¡Link de pago de Openpay generado exitosamente!');
-            } else {
-                $error = $response->json();
-                throw new \Exception($error['description'] ?? 'Error desconocido de Openpay');
-            }
-            
+            $this->dispatch('scroll-to-link');
         } catch (\Exception $e) {
             $this->addError('general', 'Error al generar el link de pago: ' . $e->getMessage());
             
             // Fallback: generar un link de prueba si falla Openpay
-            $this->generatedLink = 'https://sandbox-api.openpay.mx/ck/' . uniqid();
-            $this->showLink = true;
             
-            session()->flash('warning', 'Se generó un link de prueba. Configura tus credenciales de Openpay.');
+            
+            // session()->flash('warning', 'Se generó un link de prueba. Configura tus credenciales de Openpay.');
         }
     }
 
