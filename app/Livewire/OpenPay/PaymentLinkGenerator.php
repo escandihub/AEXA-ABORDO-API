@@ -81,10 +81,10 @@ class PaymentLinkGenerator extends Component
                     'order_id' => $payment['order_id'],
                     'amount' => $payment['amount'],
                     'status' => $payment['status'],
-                    'expiration_date' => $payment['expiration_date']
+                   'expiration_date' => $payment['expiration_date']
                 ]);
             $this->dispatch('scroll-to-link');
-        } catch (\Exception $e) {
+         } catch (\Exception $e) {
             $this->addError('general', 'Error al generar el link de pago: ' . $e->getMessage());
             
             // Fallback: generar un link de prueba si falla Openpay
@@ -103,6 +103,7 @@ class PaymentLinkGenerator extends Component
     {
         $this->reset(['name','lastname','email','phone','monto', 'descripcion', 'generatedLink', 'showLink']);
         $this->resetErrorBag();
+        $this->dispatch('set-all');
     }
     public function render()
     {
