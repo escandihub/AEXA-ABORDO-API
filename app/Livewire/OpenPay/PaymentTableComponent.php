@@ -2,6 +2,7 @@
 
 namespace App\Livewire\OpenPay;
 
+use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Openpay\payment;
 use App\Models\Openpay\Transaction;
@@ -10,7 +11,8 @@ use App\Services\PaymentServices\TransactionStatusService;
 
 class PaymentTableComponent extends Component
 {
-    public $payments = [];
+     use WithPagination;
+    // public $payments = [];
     public $filteredPayments = [];
     public $selectedPayment = null;
     public $showPaymentStatus = false;
@@ -27,7 +29,7 @@ class PaymentTableComponent extends Component
        $this->transactionStatusService = $transactionStatusService;
         // Datos de ejemplo - reemplaza con tu lógica de base de datos
        
-        $this->applyFilters();
+        // $this->applyFilters();
 
     }
     public function redirectToPaymentLinkGenerator()
@@ -37,17 +39,18 @@ class PaymentTableComponent extends Component
 
     public function updatedSearchName()
     {
-        $this->applyFilters();
+        // $this->applyFiltersDB();
+        $this->resetPage();
     }
 
     public function updatedStatusFilter()
     {
-        $this->applyFilters();
+        $this->resetPage();
     }
 
     public function updatedDateFilter()
     {
-        $this->applyFilters();
+        $this->resetPage();
     }
 
     public function applyFilters()
@@ -66,6 +69,29 @@ class PaymentTableComponent extends Component
             return $matchesName && $matchesStatus && $matchesDate;
         })->values()->toArray();
     }
+    public function applyFiltersDB(){
+        \Log::info('0.si esta buscando');
+       $query = $this->query();
+
+        $query->when($this->searchName , function($query, $search) {
+            \Log::info("filtrando {$search}");
+            $query->where('customers.email', 'LIKE', '%' . $search . '%');
+        });
+
+        $query->when($this->statusFilter, function($query, $search){
+            $query->where('transactions.status', $search);
+        });
+        $query->when($this->dateFilter, function($query, $search){
+            $query->whereDate('payments_buttons.created_at', $search);
+        });
+        /* ->when($this->statusFilter != '', function($query, $status){
+             $query->where('transactions.status', "%{$status}%");
+        })->when($this->dateFilter != '', function($query, $date){
+            $query->whereDate('payments_buttons.created_at', $date);
+        }); */
+
+        return $query;
+    }
 
     public function clearFilters()
     {
@@ -79,7 +105,7 @@ class PaymentTableComponent extends Component
     {
         \Log::info("Consultando pago con ID: {$paymentId}");
         // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
-        $this->selectedPayment = Transaction::where('order_id', $paymentId)->first();;
+        $this->selectedPayment = Transaction::where('order_id',  $paymentId)->first();
         \Log::info("Pago consultado: ", ['payment' => $this->selectedPayment]);
         $this->showPaymentStatus = true;
     }
@@ -119,7 +145,8 @@ class PaymentTableComponent extends Component
 
     public function query(){
         return payment::query()
-        ->joinCustomer();
+        ->joinCustomer()
+        ->orderBy('payments_buttons.id', 'DESC');
         // ->where('payments.creation_date', '=', now());
 
     }
@@ -127,8 +154,8 @@ class PaymentTableComponent extends Component
 
     public function render()
     {
-        $this->payments = $this->query()->get()->map(function ($payment) {
-            return [
+        \Log::info($this->applyFiltersDB()->get());
+        $pagos = $this->applyFiltersDB()->paginate(10)->through(fn ($payment) => [
                 'id' => $payment->id,
                 'cliente' => $payment->cliente,
                 'amount' => $payment->amount,
@@ -136,11 +163,10 @@ class PaymentTableComponent extends Component
                 'description' => $payment->description,
                 'status' => $payment->status,
                 'order_id' => $payment->order_id,
-            ];
-        })->toArray();
+            ]);
 
         return view('livewire.open-pay.payment-table-component', [
-            'payments' => $this->query()->get(),
+            'payments' => $pagos,
         ]);
     }
 }

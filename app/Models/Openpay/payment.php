@@ -51,8 +51,15 @@ class payment extends Model
     }
     public function scopeJoinCustomer($query)
     {
-        return $query->join('customers', 'payments_buttons.customer_id', '=', 'customers.id')
-        ->selectRaw("payments_buttons.*, CONCAT(customers.name, ' ', customers.last_name) AS cliente");
+        return $query->leftJoin('customers', 'payments_buttons.customer_id', '=', 'customers.id')
+        ->leftJoin('transactions', 'payments_buttons.order_id', '=', 'transactions.order_id')
+        ->select(
+            'payments_buttons.*',
+            'transactions.status',
+            'transactions.method',
+            'customers.email as customer_email'
+        )
+        ->selectRaw("CONCAT(customers.name, ' ', customers.last_name) AS cliente");
             // ->select('payments.*', "customers.name as cliente", 'customers.phone_number', 'customers.email as customer_email');
     }
 }
