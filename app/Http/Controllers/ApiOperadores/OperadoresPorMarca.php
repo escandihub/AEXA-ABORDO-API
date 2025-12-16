@@ -18,7 +18,7 @@ class OperadoresPorMarca
             ->where(function ($query) { return $query->where('Puesto', 'LIKE', '%PERADOR%'); });
         }else if($marca == 'TI'){ // titanium
             return $query->Where('Empresa', 'TRANS')->OrWhere('Empresa', 'MEXIC')
-            ->where(function ($query) { return $query->where('Puesto', 'LIKE', '%PERADOR%'); })->get();
+            ->where(function ($query) { return $query->where('Puesto', 'LIKE', '%PERADOR%'); });
         }else{
              throw new \Exception('non supported indicator');
             

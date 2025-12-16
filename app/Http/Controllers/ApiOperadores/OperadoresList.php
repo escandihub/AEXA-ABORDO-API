@@ -20,12 +20,13 @@ class OperadoresList extends Controller
 
         try {
             $query = ExternalPersonal::query();
-            if ($request->has('marca')) {
+            if ($request->filled('marca')) {
                 $query = $operadoreService->enumMarca($request->marca, $query);
-            } {
+                return response()->json($query->get());
+            } else{
                 return response()->json(['error' => 'Marca no proporcionada'], 400);
             }
-            return response()->json($query->get());
+            
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 401);
         }
