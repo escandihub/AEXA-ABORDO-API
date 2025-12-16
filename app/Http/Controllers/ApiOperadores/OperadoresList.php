@@ -15,14 +15,15 @@ class OperadoresList extends Controller
      */
     public function __invoke(Request $request)
     {
-        // $service = app(OperadoresService::class);
+        $service = app(OperadoresService::class);
         $operadoreService = app(OperadoresPorMarca::class);
 
         try {
             $query = ExternalPersonal::query();
             if ($request->filled('marca')) {
                 $query = $operadoreService->enumMarca($request->marca, $query);
-                return response()->json($query->get());
+                $aexaOperadores = $service->getOperadoresAexaTours();
+                return response()->json($service->mergeCollections($aexaOperadores,$query->get()));
             } else{
                 return response()->json(['error' => 'Marca no proporcionada'], 400);
             }
