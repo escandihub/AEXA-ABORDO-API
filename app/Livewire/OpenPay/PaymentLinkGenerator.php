@@ -70,7 +70,7 @@ class PaymentLinkGenerator extends Component
                 $this->email,
                 $this->monto);
 
-            $payment = $this->paymentService->GeneratePayFromBrand("aexa", $cliente);
+            $payment = $this->paymentService->GeneratePayFromBrand($this->selectOption, $cliente);
             $this->showLink = true;
             $this->generatedLink = $payment['link'];
             

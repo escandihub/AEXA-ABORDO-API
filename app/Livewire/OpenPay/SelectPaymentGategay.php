@@ -37,7 +37,7 @@ class SelectPaymentGategay
             'titanium' => TitaniumConfig::fromConfig(),
             'expreso' => ExpresoConfig::fromConfig(),
             'gtes' => GTESConfig::fromConfig(),
-            default => AexaConfig::fromConfig(),
+            default => throw new \InvalidArgumentException("Marca no soportada: {$this->brand}"),
         };
     }
 
@@ -69,7 +69,7 @@ class SelectPaymentGategay
                     'phone_number' => $cliente_pay->phone,
                     'email' => $cliente_pay->email,
                 ],
-                'redirect_url' => url()->current(),
+                'redirect_url' => env('OPENPAY_REDIRECT_URL', ''),
                 'expiration_date' => now()->addDays(7)->format('Y-m-d H:i'),
             ];
 
@@ -83,7 +83,7 @@ class SelectPaymentGategay
             // Llamada a la API de Openpay
             $response = Http::withBasicAuth($privateKey, '')
                 ->post("{$baseUrl}/v1/{$merchantId}/checkouts", $checkoutData);
-
+            \Log::info('Respuesta de Openpay: ' . $response->body());
             if ($response->successful()) {
                 $data = $response->json();
                 $this->generatedLink = $data['checkout_link'];
