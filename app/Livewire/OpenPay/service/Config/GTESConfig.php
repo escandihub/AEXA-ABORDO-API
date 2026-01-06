@@ -42,9 +42,9 @@ final readonly class GTESConfig implements PaymentConfigInterface
     public static function fromConfig(): self
     {
         return new self(
-            merchantId: config('aexa.merchant_id'),
-            privateKey: config('aexa.private_key'),
-            sandbox: config('aexa.sandbox', true),
+            merchantId: config('expreso_mx.merchant_id'),
+            privateKey: config('expreso_mx.private_key'),
+            sandbox: config('sandbox', true),
         );
     }
 }

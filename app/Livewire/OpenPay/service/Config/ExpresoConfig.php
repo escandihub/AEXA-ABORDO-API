@@ -7,14 +7,14 @@ use App\Livewire\OpenPay\service\Contracts\PaymentConfigInterface;
  * Clase para la configuracion de 
  * AUTOBUSES EXPRESOS DE MEXICO
  */
-final readonly class ExpresoConfig implements PaymentConfigInterface
+final class ExpresoConfig implements PaymentConfigInterface
 {
     private const API_URL = 'https://api.payment-gateway.com';
     
     public function __construct(
-        private string $merchantId,
-        private string $privateKey,
-        private bool $sandbox = true,
+        public readonly string $merchantId,
+        public readonly string $privateKey,
+        public readonly bool $sandbox = true,
     ) {}
 
     public function getMerchantId(): string
@@ -41,9 +41,9 @@ final readonly class ExpresoConfig implements PaymentConfigInterface
     public static function fromConfig(): self
     {
         return new self(
-            merchantId: config('aexa.merchant_id'),
-            privateKey: config('aexa.private_key'),
-            sandbox: config('aexa.sandbox', true),
+            merchantId: config('openpay.expreso_mx.merchant_id'),
+            privateKey: config('openpay.expreso_mx.private_key'),
+            sandbox: config('openpay.sandbox', true),
         );
     }
 }
