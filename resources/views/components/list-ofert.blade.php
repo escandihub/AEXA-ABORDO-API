@@ -15,7 +15,7 @@
                     class="inline-flex items-center justify-between w-full p-5 text-body bg-neutral-primary-soft border-1 border-default rounded-base cursor-pointer peer-checked:hover:bg-brand-softer peer-checked:border-brand-subtle peer-checked:bg-brand-softer hover:bg-neutral-secondary-medium peer-checked:text-fg-brand-strong">
                     <div class="block">
                         <template x-for="file in brand.brands" :key="file">
-                            <img  :src="`${assetPath}${file}`" alt="brand logo" class="w-36 h-10">
+                            <img  :src="`${assetPath}/${file}`" alt="brand logo" class="w-36 h-10">
                         </template>
                         <div class="w-full font-medium mb-1" x-text="brand.tag"> </div>
                         {{-- <div class="w-full text-sm">A JavaScript library for building user
@@ -77,7 +77,7 @@
                 @this.$set('selectOption', name)
             },
              get assetPath() {
-                return '{{ Vite::asset('resources/images/marcas/') }}';
+                return '{{ asset('marcas/') }}';
             }
         }) ) })
     </script>
