@@ -39,6 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/monitoreo', Monitoreo::class)->name('monitoreo');
 });
 
+Route::get('/pago_exitoso', App\Livewire\OpenPay\PaymentSuccess::class)->name('pay.exitoso');
 // Route::get('/map', Container::class)->name('map');
 
 require __DIR__.'/auth.php';
+
+/**
+ * url 
+ * /​v1/​mznqxikz412og5ln5zyg/​charges/​tr9f08auroxwv0fk0hbw/​redirect/​confirm
+ */

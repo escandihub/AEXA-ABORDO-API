@@ -18,8 +18,8 @@
                             <img  :src="`${assetPath}${file}`" alt="brand logo" class="w-36 h-10">
                         </template>
                         <div class="w-full font-medium mb-1" x-text="brand.tag"> </div>
-                        <div class="w-full text-sm">A JavaScript library for building user
-                            interfaces.</div>
+                        {{-- <div class="w-full text-sm">A JavaScript library for building user
+                            interfaces.</div> --}}
                     </div>
                 </label>
             </li>
