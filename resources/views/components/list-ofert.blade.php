@@ -58,7 +58,7 @@
                 {
                     // Transportista
                     id: 3,
-                    name: "Transportista",
+                    name: "gtes",
                     tag: "Panchera - aexa light",
                     brands: ['Aexa_ligh.png', 'PANCHERA_color.png']
                 },

@@ -7,7 +7,7 @@ use App\Livewire\OpenPay\service\Contracts\PaymentConfigInterface;
  * Clase para la configuracion de 
  * AUTOBUSES EXPRESOS DE MEXICO
  */
-final class ExpresoConfig implements PaymentConfigInterface
+final readonly class ExpresoConfig implements PaymentConfigInterface
 {
     private const API_URL = 'https://api.payment-gateway.com';
     

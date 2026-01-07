@@ -14,9 +14,9 @@ final readonly class TitaniumConfig implements PaymentConfigInterface
     private const API_URL = 'https://api.payment-gateway.com';
     
     public function __construct(
-        private string $merchantId,
-        private string $privateKey,
-        private bool $sandbox = true,
+        public string $merchantId,
+        public string $privateKey,
+        public bool $sandbox = true,
     ) {}
 
     public function getMerchantId(): string

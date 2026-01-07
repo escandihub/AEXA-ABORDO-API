@@ -61,21 +61,20 @@ return [
         'public_key' => env('OPENPAY_AEXA_PUBLIC_KEY', ''),
         'sandbox' => env('OPENPAY_SANDBOX', true),
     ],
-    // otros comercios 
+    # economico
+       'transportista' => [
+        'merchant_id' => env('OPENPAY_TRANSPORTISTA_MERCHANT_ID', ''),
+        'private_key' => env('OPENPAY_TRANSPORTISTA_PRIVATE_KEY', ''),
+        'public_key' => env('OPENPAY_TRANSPORTISTA_PUBLIC_KEY', ''),
+        'sandbox' => env('OPENPAY_SANDBOX', true),
+    ],
+    // expresos de mexico
     'expreso_mx' => [
         'merchant_id' => env('OPENPAY_MERCHANT_ID_EXPRESO', ''),
         'private_key' => env('OPENPAY_PRIVATE_KEY_EXPRESO', ''),
         'public_key' => env('OPENPAY_PUBLIC_KEY_EXPRESO', ''),
         'sandbox' => env('OPENPAY_SANDBOX', true),
     ],
-
-      'transportista' => [
-        'merchant_id' => env('OPENPAY_TRANSPORTISTA_MERCHANT_ID', ''),
-        'private_key' => env('OPENPAY_TRANSPORTISTA_PRIVATE_KEY', ''),
-        'public_key' => env('OPENPAY_TRANSPORTISTA_PUBLIC_KEY', ''),
-        'sandbox' => env('OPENPAY_SANDBOX', true),
-    ],
-
      'titanium' => [
         'merchant_id' => env('OPENPAY_TITANIUM_MERCHANT_ID', ''),
         'private_key' => env('OPENPAY_TITANIUM_PRIVATE_KEY', ''),
