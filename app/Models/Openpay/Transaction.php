@@ -57,6 +57,10 @@ class Transaction extends Model
     {
         return $this->hasOne(StorePayment::class);
     }
+    public function paymentButton(): HasOne
+    {
+        return $this->hasOne(payment::class, 'order_id', 'order_id');
+    }
 
     /**
      * Obtener el método de pago específico basado en el tipo
