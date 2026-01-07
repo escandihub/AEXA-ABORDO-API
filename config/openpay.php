@@ -55,6 +55,12 @@ return [
         'payments_type' => 'WITHOUT_INTEREST',
     ],
 
+    'aexa' => [
+        'merchant_id' => env('OPENPAY_AEXA_MERCHANT_ID', ''),
+        'private_key' => env('OPENPAY_AEXA_PRIVATE_KEY', ''),
+        'public_key' => env('OPENPAY_AEXA_PUBLIC_KEY', ''),
+        'sandbox' => env('OPENPAY_SANDBOX', true),
+    ],
     // otros comercios 
     'expreso_mx' => [
         'merchant_id' => env('OPENPAY_MERCHANT_ID_EXPRESO', ''),

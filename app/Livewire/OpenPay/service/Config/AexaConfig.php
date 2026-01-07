@@ -43,8 +43,8 @@ final readonly class AexaConfig implements PaymentConfigInterface
     public static function fromConfig(): self
     {
         return new self(
-            merchantId: config('openpay.merchant_id'),
-            privateKey: config('openpay.private_key'),
+            merchantId: config('openpay.aexa.merchant_id'),
+            privateKey: config('openpay.aexa.private_key'),
             sandbox: config('openpay.sandbox', true),
         );
     }
