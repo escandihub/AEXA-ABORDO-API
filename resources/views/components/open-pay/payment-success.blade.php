@@ -66,15 +66,15 @@
 
             <div class="text-center mb-4">
                 <span class="block text-sm font-medium text-gray-500 mb-1">Monto total</span>
-                <span class="text-4xl font-bold text-[#005AC1] tracking-tight">${{ number_format($monto, 2) }}</span>
+                <span class="text-4xl font-bold text-[#005AC1] tracking-tight">${{ number_format($pasajero->monto, 2) }}</span>
             </div>
 
              <div class="h-px bg-gray-200 w-full"></div>
 
             <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-gray-500">Enviado a</span>
+                <span class="text-sm font-medium text-gray-500">Autorizado por</span>
                 <div class="text-right">
-                    <span class="block text-lg font-semibold text-gray-900">{{ $nombre }} {{ $apellido }}</span>
+                    <span class="block text-lg font-semibold text-gray-900">{{ $pasajero->nombre_completo  }}</span>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
             @endif
         </div>
 
-        <div class="space-y-3"
+        {{-- <div class="space-y-3"
              x-show="shown"
              x-transition:enter="transition ease-out duration-500 delay-400"
              x-transition:enter-start="opacity-0 translate-y-4"
@@ -101,7 +101,7 @@
             <button class="w-full bg-[#DDE9FF] text-[#005AC1] h-14 rounded-full font-semibold text-lg hover:bg-[#CDE0FF] transition-colors active:scale-[0.98]">
                  Ver comprobante
             </button>
-        </div>
+        </div> --}}
     </div>
 </div>
 

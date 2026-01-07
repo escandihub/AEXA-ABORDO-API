@@ -1,3 +1,3 @@
 <div>
-    <x-open-pay.payment-success />
+    <x-open-pay.payment-success :pasajero="$pasajero" />
 </div>
