@@ -43,9 +43,9 @@ final readonly class TitaniumConfig implements PaymentConfigInterface
     public static function fromConfig(): self
     {
         return new self(
-            merchantId: config('aexa.merchant_id'),
-            privateKey: config('aexa.private_key'),
-            sandbox: config('aexa.sandbox', true),
+            merchantId: config('openpay.titanium.merchant_id'),
+            privateKey: config('openpay.titanium.private_key'),
+            sandbox: config('openpay.titanium.sandbox', true),
         );
     }
 }
