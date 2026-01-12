@@ -22,8 +22,11 @@ class OperadoresList extends Controller
             $query = ExternalPersonal::query();
             if ($request->filled('marca')) {
                 $query = $operadoreService->enumMarca($request->marca, $query);
-                $aexaOperadores = $service->getOperadoresAexaTours();
-                return response()->json($service->mergeCollections($aexaOperadores,$query->get()));
+                if($request->marca == 'AE'){
+                    $aexaOperadores = $service->getOperadoresAexaTours();
+                    return response()->json($service->mergeCollections($aexaOperadores,$query->get()));
+                }
+                return response()->json($query->get());
             } else{
                 return response()->json(['error' => 'Marca no proporcionada'], 400);
             }
