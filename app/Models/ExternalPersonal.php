@@ -29,7 +29,10 @@ class ExternalPersonal extends Model
     protected $fillable = [
         'ClavePersonal',
         'Nombre',
+        'ApellidoPaterno',
+        'ApellidoMaterno',
         'Puesto',
-        'Empresa'
+        'Empresa',
+        'Estatus'
     ];
 }
