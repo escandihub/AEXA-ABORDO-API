@@ -1,7 +1,7 @@
-@props(['wireModel' => 'select'])
+@props(['wireModel' => 'select', "comercios"])
 
 
-<div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" x-data="BrandList('{{ $wireModel }}')">
+<div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" x-data="BrandList('{{ $wireModel }}', {{ $comercios }})">
     <div class="flex flex-col gap-4">
 
         <h3 class="mb-4 text-lg font-medium text-heading">Selecciona la marca:</h3>
@@ -39,10 +39,11 @@
     </div>
     <script>
         document.addEventListener("alpine:init", () => {
-        Alpine.data("BrandList", (wireModel) => ({ 
+        Alpine.data("BrandList", (wireModel, comercios) => ({ 
             wireModel: wireModel,
             selectOption: 'aexa',
-            marcas: [
+            marcas: comercios,
+            marcas1: [
                 {
                     id: 1,
                     name: "aexa",

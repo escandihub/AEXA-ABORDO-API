@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 use App\Services\CustomerService;
 use App\Services\PaymentService;
 use App\Livewire\OpenPay\service\Cliente;
-
+use App\Livewire\OpenPay\service\ComercioService;
 
 class PaymentLinkGenerator extends Component
 {
@@ -22,6 +22,7 @@ class PaymentLinkGenerator extends Component
 
     private $customerService;
     private $paymentService;
+    public $comercios;
     
 
 
@@ -46,11 +47,13 @@ class PaymentLinkGenerator extends Component
         'descripcion.max' => 'La descripción no puede exceder 255 caracteres',
     ];
 
-    public function boot(SelectPaymentGategay $paymentService)
+    public function boot(SelectPaymentGategay $paymentService, ComercioService $comercios)
     {
         // $this->customerService = $customerService;
         // $this->paymentService = $paymentService;
         $this->paymentService = $paymentService;
+        $this->comercios = $comercios->GetComercio();
+        // dd($this->comercios);
     }
 
      public function redirectToPaymenList()
