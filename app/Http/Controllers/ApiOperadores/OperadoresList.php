@@ -19,7 +19,7 @@ class OperadoresList extends Controller
         $operadoreService = app(OperadoresPorMarca::class);
 
         try {
-            $query = ExternalPersonal::select(["ClavePersonal AS ID, Nombre, Puesto, Empresa"])->query();
+            $query = ExternalPersonal::select(["ClavePersonal AS ID, Nombre, Puesto, Empresa"]);
             if ($request->filled('marca')) {
                 $query = $operadoreService->enumMarca($request->marca, $query);
                 if($request->marca == 'AE'){
