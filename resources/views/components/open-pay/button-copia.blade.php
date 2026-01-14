@@ -1,26 +1,32 @@
 @props(['link'])
-<div x-data="dataHelp()">
+@php
+    $uniqueId = 'help-' . uniqid();
+@endphp
+
+
+<div x-data="dataHelp('{{ $link }}')"  x-ref="action" >
     <button x-on:click="copyToClipboard()" "
+    
         class=" inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800
         disabled:bg-blue-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-lg
         hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all
         duration-300 border-0 relative overflow-hidden group backdrop-blur-sm">
 
         <!-- Icon and text (default state) -->
-        <svg class="w-4 h-4 mr-2 transition-all duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24"
+        <svg class="w-4 h-4 mr-2 transition-all text-white duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24"
             fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <path opacity="0.5"
                     d="M16 4.00195C18.175 4.01406 19.3529 4.11051 20.1213 4.87889C21 5.75757 21 7.17179 21 10.0002V16.0002C21 18.8286 21 20.2429 20.1213 21.1215C19.2426 22.0002 17.8284 22.0002 15 22.0002H9C6.17157 22.0002 4.75736 22.0002 3.87868 21.1215C3 20.2429 3 18.8286 3 16.0002V10.0002C3 7.17179 3 5.75757 3.87868 4.87889C4.64706 4.11051 5.82497 4.01406 8 4.00195"
-                    stroke="#1C274C" stroke-width="1.5"></path>
-                <path d="M8 14H16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
-                <path d="M7 10.5H17" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
-                <path d="M9 17.5H15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                    stroke="currentColor" stroke-width="1.5"></path>
+                <path d="M8 14H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                <path d="M7 10.5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                <path d="M9 17.5H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                 <path
                     d="M8 3.5C8 2.67157 8.67157 2 9.5 2H14.5C15.3284 2 16 2.67157 16 3.5V4.5C16 5.32843 15.3284 6 14.5 6H9.5C8.67157 6 8 5.32843 8 4.5V3.5Z"
-                    stroke="#1C274C" stroke-width="1.5"></path>
+                    stroke="currentColor" stroke-width="1.5"></path>
             </g>
         </svg>
     </button>
@@ -28,13 +34,40 @@
 
 <script>
     document.addEventListener("alpine:init", () => {
-        Alpine.data("dataHelp", () => ({
+        Alpine.data("dataHelp", (link, uniqueId) => ({
+            url: link,
             copyToClipboard() {
-                navigator.clipboard.writeText("dsfsdfds").then(() => {
+                navigator.clipboard.writeText(this.url).then(() => {
                     this.showToast('¡Link copiado al portapapeles!', 'success');
                 }).catch(() => {
                     this.showToast('Error al copiar el link', 'error');
                 });
+            },
+            showToast(message, type = 'success') {
+                // Crear notificación toast
+                const toast = document.createElement('div');
+                const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+                
+                toast.className = `fixed  top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fadeIn transform transition-all duration-300`;
+                toast.textContent = message;
+                
+                // Agregar al DOM
+                document.body.appendChild(toast);
+                
+                // Animar entrada
+                setTimeout(() => {
+                    toast.classList.add('translate-x-0');
+                }, 10);
+                
+                // Remover después de 3 segundos
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full', 'opacity-0');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }, 3000);
             },
         }));
     });
