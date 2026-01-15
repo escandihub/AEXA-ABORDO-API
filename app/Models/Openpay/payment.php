@@ -35,6 +35,9 @@ class payment extends Model
     {
         return $this->belongsTo(customer::class, 'customer_id');
     }
+    public function comercio() {
+        return $this->belongsTo(Comercio::class, 'comercio_id');
+    }
 
     public function scopeFilterByCustomer($query, $customerId)
     {

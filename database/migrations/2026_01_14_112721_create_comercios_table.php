@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('comercios', function (Blueprint $table) {
             $table->id();
             $table->string('comercio', 65);
-            $table->string('tag', 15);
+            $table->string('tag', 30);
             $table->string('img_text', 255);
             $table->timestamps();
         });
