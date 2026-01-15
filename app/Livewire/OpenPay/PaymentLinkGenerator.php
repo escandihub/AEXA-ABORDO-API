@@ -25,8 +25,9 @@ class PaymentLinkGenerator extends Component
     public $comercios;
     
 
-
-    public ?string $selectOption = 'aexa';
+    // comercio selecionado
+    public ?string $brand = 'AEXA';
+    public ?array $selectOption = [];
 
     protected $rules = [
         'monto' => 'required|numeric|min:0.01',
@@ -35,7 +36,7 @@ class PaymentLinkGenerator extends Component
         'email' => 'email',
         'phone' => 'required|numeric',
         'descripcion' => 'required|string|min:3|max:255',
-        'selectOption' => 'required|string',
+        'selectOption' => 'required',
     ];
 
     protected $messages = [
