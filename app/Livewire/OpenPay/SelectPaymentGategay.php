@@ -33,20 +33,21 @@ class SelectPaymentGategay
     private function selectBrand()
     {
         return match ($this->brand) {
-            'aexa' => AexaConfig::fromConfig(),
-            'titanium' => TitaniumConfig::fromConfig(),
-            'expreso' => ExpresoConfig::fromConfig(),
-            'gtes' => GTESConfig::fromConfig(),
+            'AEXA' => AexaConfig::fromConfig(),
+            'TITANIUM' => TitaniumConfig::fromConfig(),
+            'Expreso' => ExpresoConfig::fromConfig(),
+            'GTES' => GTESConfig::fromConfig(),
             default => throw new \InvalidArgumentException("Marca no soportada: {$this->brand}"),
         };
     }
 
-    public function GeneratePayFromBrand($brand = 'aexa', Cliente $cliente_pay)
+    public function GeneratePayFromBrand($brand, Cliente $cliente_pay)
     {
-        \Log::info('generador de link de pago para ' . $brand);
+        \Log::info('generador de link de pago para ' . $brand['name']);
 
           try {
-            $this->brand = $brand;
+            $this->brand = $brand["name"];
+            \Log::info($this->brand);
             $brandConfig = $this->selectBrand();
             // Configuración de Openpay
             $merchantId = $brandConfig->merchantId;
