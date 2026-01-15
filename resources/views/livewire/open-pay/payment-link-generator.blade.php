@@ -53,7 +53,7 @@
                     @enderror
 
                     {{-- choosing a brand --}}
-                    <x-list-ofert wire-model="{{ $selectOption }}" />
+                    <x-list-ofert wire-model="{{ $brand }}" :comercios="$comercios" />
                     <!-- Información del Cliente -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
