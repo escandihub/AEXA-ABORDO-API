@@ -10,7 +10,7 @@
             <li >
                 <input type="radio" :id="`option-'${brand.name}`" :value="brand.name" class="hidden peer"
                     required="" wire:model="{{ $wireModel }}">
-                <label :for="`option-'${brand.name}`"  @click="emitOrSet(brand.name)"
+                <label :for="`option-'${brand.name}`"  @click="emitOrSet(brand)"
                     :class="selectOption ==  brand.name ? 'bg-blue-400 rounded-md' : ''"
                     class="inline-flex items-center justify-between w-full p-5 text-body bg-neutral-primary-soft border-1 border-default rounded-base cursor-pointer peer-checked:hover:bg-brand-softer peer-checked:border-brand-subtle peer-checked:bg-brand-softer hover:bg-neutral-secondary-medium peer-checked:text-fg-brand-strong">
                     <div class="block">
@@ -71,11 +71,11 @@
                     brands: ['TI/Logo_TLATitanium.png']
                 }
             ],
-            emitOrSet(name){
-                console.log(this.file)
+            emitOrSet(brand){
+                console.log(brand.name)
                 console.log(this.wireModel)
-                this.selectOption = name; 
-                @this.$set('selectOption', name)
+                this.selectOption = brand.name
+                @this.$set('selectOption', brand)
             },
              get assetPath() {
                 return '{{ asset('marcas/') }}';
