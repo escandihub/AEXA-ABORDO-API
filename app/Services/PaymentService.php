@@ -33,7 +33,8 @@ class PaymentService
             $payment->status = $data['status'];
             $payment->checkout_link = $data['checkout_link'];
             $payment->creation_date = now();
-            $payment->expiration_date = now()->addDays(7);
+            $payment->user_id = \Auth::user()->id;
+            $payment->expiration_date = now()->addDays(2);
 
             // Save payment to the database
             if ($payment->save()) {

@@ -16,6 +16,7 @@ class payment extends Model
     protected $fillable = [
         'openpay_id',
         'customer_id',
+        'user_id',
         'amount',
         'description',
         'authorization',
