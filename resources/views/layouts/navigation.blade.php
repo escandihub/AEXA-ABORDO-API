@@ -29,13 +29,17 @@
                     <x-nav-link :href="route('device.list')" :active="request()->routeIs('device.list')" wire:navigate >
                         {{ __('Lista de Dispositivos') }}
                     </x-nav-link>
-                    @endcan
+                   
                     <x-nav-link :href="route('monitoreo')" :active="request()->routeIs('monitoreo')" wire:navigate >
                         {{ __('Monitoreo') }}
                     </x-nav-link>
                      <x-nav-link :href="route('abordo.list')" :active="request()->routeIs('abordo.list')" wire:navigate >
                         {{ __('Abordo') }}
                     </x-nav-link>
+                     <x-nav-link :href="route('pay.make')" :active="request()->routeIs('pay.make')" wire:navigate >
+                        {{ __('Generar Link') }}
+                    </x-nav-link>
+                     @endcan
                 </div>
             </div>
 

@@ -8,6 +8,7 @@ use App\Services\CustomerService;
 use App\Services\PaymentService;
 use App\Livewire\OpenPay\service\Cliente;
 use App\Livewire\OpenPay\service\ComercioService;
+use Illuminate\Support\Facades\Gate;
 
 class PaymentLinkGenerator extends Component
 {
@@ -50,6 +51,12 @@ class PaymentLinkGenerator extends Component
 
     public function boot(SelectPaymentGategay $paymentService, ComercioService $comercios)
     {
+        // , ''
+        if(Gate::any(['isGerente', 'isPayment'])){
+            // allow access
+        }else{
+            abort(403, 'No tienes permiso para acceder a esta sección.');
+        }
         // $this->customerService = $customerService;
         // $this->paymentService = $paymentService;
         $this->paymentService = $paymentService;

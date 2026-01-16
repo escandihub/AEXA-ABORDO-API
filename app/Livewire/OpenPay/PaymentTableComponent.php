@@ -7,7 +7,7 @@ use Livewire\Component;
 use App\Models\Openpay\payment;
 use App\Models\Openpay\Transaction;
 use App\Services\PaymentServices\TransactionStatusService;
-
+use Illuminate\Support\Facades\Gate;
 
 class PaymentTableComponent extends Component
 {
@@ -26,6 +26,11 @@ class PaymentTableComponent extends Component
 
     public function mount(TransactionStatusService $transactionStatusService)
     {
+        if(Gate::any(['isGerente', 'isPayment'])){
+            // allow access
+        }else{
+            abort(403, 'No tienes permiso para acceder a esta sección.');
+        }  
        $this->transactionStatusService = $transactionStatusService;
         // Datos de ejemplo - reemplaza con tu lógica de base de datos
        
