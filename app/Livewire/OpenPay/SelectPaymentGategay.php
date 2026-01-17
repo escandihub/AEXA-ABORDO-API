@@ -43,11 +43,8 @@ class SelectPaymentGategay
 
     public function GeneratePayFromBrand($brand, Cliente $cliente_pay)
     {
-        \Log::info('generador de link de pago para ' . $brand['name']);
-
           try {
             $this->brand = $brand["name"];
-            \Log::info($this->brand);
             $brandConfig = $this->selectBrand();
             // Configuración de Openpay
             $merchantId = $brandConfig->merchantId;

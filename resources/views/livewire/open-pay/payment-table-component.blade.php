@@ -138,6 +138,9 @@
                                 <th
                                     class="px-6 py-4 text-left text-sm font-semibold text-gray-700 tracking-wider border-b border-gray-200">
                                     ID</th>
+                                    <th
+                                    class="px-6 py-4 text-left text-sm font-semibold text-gray-700 tracking-wider border-b border-gray-200">
+                                    Hecho por</th>
                                 <th
                                     class="px-6 py-4 text-left text-sm font-semibold text-gray-700 tracking-wider border-b border-gray-200">
                                     Cliente</th>
@@ -167,6 +170,13 @@
                                             class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center group-hover:from-purple-200 group-hover:to-blue-200 transition-colors">
                                             <span class="text-sm font-medium text-gray-700">#{{ $payment['id'] }}</span>
                                         </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        <span
+                                        class="text-white bg-blue-600 rounded-md px-2 text-center"
+                                        >{{ $payment['user'] }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

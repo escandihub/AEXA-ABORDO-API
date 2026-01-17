@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('openpay_id')->unique(); // Columna para el 'id' del JSON
             $table->foreignId('customer_id')->constrained()->onDelete('cascade'); // Clave foránea a la tabla customers
             $table->string('order_id')->unique(); // ID unico para logica interna del negocio
+            $table->foreingId('user_id')->constraided()->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->text('description')->nullable();
             $table->string('currency', 3)->default('MXN'); // Moneda, por defecto 'MXN'

@@ -4,6 +4,7 @@ namespace App\Models\Openpay;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class payment extends Model
 {
@@ -39,6 +40,9 @@ class payment extends Model
     public function comercio() {
         return $this->belongsTo(Comercio::class, 'comercio_id');
     }
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function scopeFilterByCustomer($query, $customerId)
     {
@@ -66,4 +70,5 @@ class payment extends Model
         ->selectRaw("CONCAT(customers.name, ' ', customers.last_name) AS cliente");
             // ->select('payments.*', "customers.name as cliente", 'customers.phone_number', 'customers.email as customer_email');
     }
+    
 }
