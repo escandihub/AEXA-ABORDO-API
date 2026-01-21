@@ -23,7 +23,9 @@
                         </svg>
                     </button>
                 </div>
+                
             </div>
+            
             {{-- Contenedor de la tabla con Material Expressive --}}
             <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
                 {{-- Superficie elevada con efecto glassmorphism --}}
@@ -51,6 +53,9 @@
                             </svg>
                             Limpiar Filtros
                         </button>
+                        @can('isGerente')
+                        <livewire:open-pay.report-modal />
+                        @endcan
                     </div>
 
                     {{-- Panel de filtros --}}

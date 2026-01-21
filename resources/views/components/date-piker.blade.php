@@ -1,96 +1,95 @@
-<div x-data="app" x-cloak class="relative">
-		<div class="z-40 mx-auto px-4 py-2 md:py-10 flex ">
-			<div class=" shadow-lg rounded-md">
-				{{-- <span class="font-bold my-1 text-gray-700 block">Results (would normally be hidden)</span>
-				<input type="text" name="date_from" x-model="dateFromYmd">
-				<input type="text" name="date_to" x-model="dateToYmd"> --}}
-				{{-- <label for="datepicker" class="font-bold text-gray-700 block">Seleccione el rango de fechas a analizar</label> --}}
-				{{-- <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"> --}}
-				<div class="relative" @keydown.escape="closeDatepicker()" @click.outside="closeDatepicker()">
-					<div class="fafaflex items-center gap-2 border rounded-md mt-3 bg-gray-200">
-						<input type="text" @click="endToShow = 'from'; init(); showDatepicker = true" x-model="outputDateFromValue" :class="{'font-semibold': endToShow == 'from' }" class="focus:outline-none border-0 p-2 w-40 rounded-l-md border-r border-gray-300"/>
-						<div class="inline-block px-2 h-full">a</div>
-						<input type="text" @click="endToShow = 'to'; init(); showDatepicker = true" x-model="outputDateToValue" :class="{'font-semibold': endToShow == 'to' }" class="focus:outline-none border-0 p-2 w-40 rounded-r-md border-l border-gray-300"/>
-						<button @click="cleanSearch()">limpiar</button>
-					</div>
-					<div 
-						class="bg-white mt-2 rounded-lg shadow p-4 absolute" 
-						style="width: 17rem" 
-						x-show="showDatepicker"
-						x-transition
-					>
-						<div class="flex flex-col items-center">
+<div x-data="app" x-cloak class="relative w-full">
+	<div class="z-50 mx-auto px-4 py-2 md:py-10 flex">
+		<div class=" shadow-lg rounded-md">
+			{{-- <span class="font-bold my-1 text-gray-700 block">Results (would normally be hidden)</span>
+			<input type="text" name="date_from" x-model="dateFromYmd">
+			<input type="text" name="date_to" x-model="dateToYmd"> --}}
+			{{-- <label for="datepicker" class="font-bold text-gray-700 block">Seleccione el rango de fechas a
+				analizar</label> --}}
+			{{--
+			<hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"> --}}
+			<div @keydown.escape="closeDatepicker()" @click.outside="closeDatepicker()">
+				<div class="fafaflex items-center gap-2 border rounded-md mt-3 bg-gray-200">
+					<input type="text" @click="endToShow = 'from'; init(); showDatepicker = true"
+						x-model="outputDateFromValue" :class="{'font-semibold': endToShow == 'from' }"
+						class="focus:outline-none border-0 p-2 w-40 rounded-l-md border-r border-gray-300" />
+					<div class="inline-block px-2 h-full">a</div>
+					<input type="text" @click="endToShow = 'to'; init(); showDatepicker = true"
+						x-model="outputDateToValue" :class="{'font-semibold': endToShow == 'to' }"
+						class="focus:outline-none border-0 p-2 w-40 rounded-r-md border-l border-gray-300" />
+					<button @click="cleanSearch()">limpiar</button>
+				</div>
+				<div class="bg-white mt-2 rounded-lg shadow p-4 relative" style="width: 17rem" x-show="showDatepicker"
+					x-transition>
+					<div class="flex flex-col items-center">
 
-							<div class="w-full flex justify-between items-center mb-2">
-								<div>
-									<span x-text="MONTH_NAMES[month]" class="text-lg font-bold text-gray-800"></span>
-									<span x-text="year" class="ml-1 text-lg text-gray-600 font-normal"></span>
-								</div>
-								<div>
-									<button 
-										type="button"
-										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800" 
-										@click="if (month == 0) {year--; month=11;} else {month--;} getNoOfDays()">
-										<svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-										</svg>  
-									</button>
-									<button 
-										type="button"
-										class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800" 
-										@click="if (month == 11) {year++; month=0;} else {month++;}; getNoOfDays()">
-										<svg class="h-6 w-6 text-gray-500 inline-flex"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-										</svg>									  
-									</button>
-								</div>
+						<div class="w-full flex justify-between items-center mb-2">
+							<div>
+								<span x-text="MONTH_NAMES[month]" class="text-lg font-bold text-gray-800"></span>
+								<span x-text="year" class="ml-1 text-lg text-gray-600 font-normal"></span>
 							</div>
-
-							<div class="w-full flex flex-wrap mb-3 -mx-1">
-								<template x-for="(day, index) in DAYS" :key="index">	
-									<div style="width: 14.26%" class="px-1">
-										<div
-											x-text="day" 
-											class="text-gray-800 font-medium text-center text-xs"
-										></div>
-									</div>
-								</template>
+							<div>
+								<button type="button"
+									class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800"
+									@click="if (month == 0) {year--; month=11;} else {month--;} getNoOfDays()">
+									<svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24"
+										stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+											d="M15 19l-7-7 7-7" />
+									</svg>
+								</button>
+								<button type="button"
+									class="transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 rounded-full text-blue-800"
+									@click="if (month == 11) {year++; month=0;} else {month++;}; getNoOfDays()">
+									<svg class="h-6 w-6 text-gray-500 inline-flex" fill="none" viewBox="0 0 24 24"
+										stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+											d="M9 5l7 7-7 7" />
+									</svg>
+								</button>
 							</div>
+						</div>
 
-							<div class="flex flex-wrap -mx-1">
-								<template x-for="blankday in blankdays">
-									<div 
-										style="width: 14.28%"
-										class="text-center border p-1 border-transparent text-sm"	
-									></div>
-								</template>	
-								<template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">	
-									<div style="width: 14.28%">
-										<div
-											@click="getDateValue(date, false)"
-											@mouseover="getDateValue(date, true)"
-											x-text="date"
-											class="p-1 cursor-pointer text-center text-sm leading-none leading-loose transition ease-in-out duration-100"
-											:class="{'font-bold': isToday(date) == true, 'bg-blue-800 text-white rounded-l-full': isDateFrom(date) == true, 'bg-blue-800 text-white rounded-r-full': isDateTo(date) == true, 'bg-blue-200': isInRange(date) == true }"	
-										></div>
-									</div>
-								</template>
-								<div>
-									<button @click="showDatepicker = false" class="px-2 py-1 border border-gray-300 hover:border-gray-500 rounded-md">Cancel</button>
-									<button @click="searchDate();" @click="outputDateValues(); showDatepicker = false" class="px-2 py-1 border border-blue-600 bg-blue-500 hover:bg-blue-300 text-white rounded-md">OK</button>
+						<div class="w-full flex flex-wrap mb-3 -mx-1">
+							<template x-for="(day, index) in DAYS" :key="index">
+								<div style="width: 14.26%" class="px-1">
+									<div x-text="day" class="text-gray-800 font-medium text-center text-xs"></div>
 								</div>
+							</template>
+						</div>
+
+						<div class="flex flex-wrap -mx-1">
+							<template x-for="blankday in blankdays">
+								<div style="width: 14.28%" class="text-center border p-1 border-transparent text-sm">
+								</div>
+							</template>
+							<template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
+								<div style="width: 14.28%">
+									<div @click="getDateValue(date, false)" @mouseover="getDateValue(date, true)"
+										x-text="date"
+										class="p-1 cursor-pointer text-center text-sm leading-none leading-loose transition ease-in-out duration-100"
+										:class="{'font-bold': isToday(date) == true, 'bg-blue-800 text-white rounded-l-full': isDateFrom(date) == true, 'bg-blue-800 text-white rounded-r-full': isDateTo(date) == true, 'bg-blue-200': isInRange(date) == true }">
+									</div>
+								</div>
+							</template>
+							<div>
+								<button @click="showDatepicker = false"
+									class="px-2 py-1 border border-gray-300 hover:border-gray-500 rounded-md">Cancel</button>
+								<button @click="searchDate();" @click="outputDateValues(); showDatepicker = false"
+									class="px-2 py-1 border border-blue-600 bg-blue-500 hover:bg-blue-300 text-white rounded-md">OK</button>
 							</div>
 						</div>
 					</div>
+				</div>
 
-				</div>	 
 			</div>
-
 		</div>
-	</div>
 
-	<script>
-		const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octobre', 'Noviembre', 'Diciembre'];
+	</div>
+</div>
+
+<script>
+	const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octobre', 'Noviembre', 'Diciembre'];
 		const DAYS = ['Dom', 'Lun', 'Mar', 'Mi', 'Jue', 'Vie', 'Sab'];
 
 		document.addEventListener('alpine:init', () => {
@@ -211,7 +210,8 @@
 				},
 				searchDate(){
 					this.outputDateValues()
-					Livewire.dispatch('new-date', { start: this.dateFromYmd, end: this.dateToYmd })
+					// Livewire.dispatch('new-date', { start: this.dateFromYmd, end: this.dateToYmd })
+					this.$wire.dispatch('new-date', {start: this.dateFromYmd, end: this.dateToYmd })
 				},
 
 				setDateValues() {
@@ -295,5 +295,5 @@
 				},
 			}))
 		})
-	</script>
+</script>
 </div>
