@@ -4,7 +4,7 @@
 >
     <div
         class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4"
-        
+
         >
         <div class="w-full max-w-3xl mx-auto ">
             <div class="flex justify-start mb-6">
@@ -226,12 +226,14 @@
                             </p>
                             @enderror
                         </div>
-
                         <!-- Campo Descripción -->
                         <div class="space-y-2">
                             <label for="descripcion" class="block text-sm font-semibold text-gray-700">
                                 Descripción del Pago
                             </label>
+                            <span class="bg-gray-100/50 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center gap-2">
+                                <small class="font-normal leading-relaxed text-gray-500 text-lg max-w-3xl">Formato: ORIGEN-DESTINO. DD-MM-YYYY. ASIENTO N. HH.MM HRS.</small>
+                            </span>
                             <div class="relative">
                                 <textarea id="descripcion" wire:model="descripcion" rows="3"
                                     class="w-full px-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400 resize-none"
@@ -402,14 +404,14 @@
                 this.moveToInfo()
             },
             moveToInfo(){
-                console.log('eventooooo'); 
+                console.log('eventooooo');
                 this.$nextTick(() => this.$refs.linkContainer.scrollIntoView({ behavior: 'smooth' }))
             },
             MoveToError(){
                 this.$nextTick(() => this.$refs.generalError.scrollIntoView({ behavior: 'smooth'}))
             },
             setAll(){
-                 this.showSuccess = false 
+                 this.showSuccess = false
             }
      }));
     });

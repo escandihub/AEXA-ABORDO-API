@@ -11,6 +11,11 @@
                     {{-- Encabezado del modal --}}
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center space-x-3">
+                            @if(is_null($selectedPayment))
+                              
+                             @else 
+                             
+                            
                             <div
                                 class="w-10 h-10 rounded-full bg-gradient-to-r {{ $selectedPayment['pagado'] ? 'from-green-400 to-emerald-500' : 'from-orange-400 to-red-500' }} flex items-center justify-center">
                                 @if($selectedPayment['status'] == 'completed')
@@ -27,6 +32,7 @@
                             </div>
                             <h3 class="text-lg font-semibold text-gray-900">Estado del Pago</h3>
                         </div>
+                        @endif
                         <button wire:click="cerrarModal" class="text-gray-400 hover:text-gray-600 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -37,7 +43,12 @@
 
                     {{-- Contenido del modal --}}
                     <div class="space-y-4">
+                        @if(is_null($selectedPayment))
+                        <span>No se ha generado refencia de pago</span>
+                        @else
+                        
                         <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4">
+                             
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <span class="font-medium text-gray-500">Cliente:</span>
@@ -84,6 +95,7 @@
                             </div>
                             @endif
                         </div>
+                         @endif
                     </div>
 
                     {{-- Botón cerrar --}}

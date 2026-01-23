@@ -274,7 +274,7 @@
         </div>
 
         {{-- Modal de estado de pago --}}
-        @if($showPaymentStatus && $selectedPayment)
+        @if($showPaymentStatus)
         <x-payments.card-info :selectedPayment="$selectedPayment" />
         @endif
     </div>
