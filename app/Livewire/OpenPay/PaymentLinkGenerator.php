@@ -9,6 +9,7 @@ use App\Services\PaymentService;
 use App\Livewire\OpenPay\service\Cliente;
 use App\Livewire\OpenPay\service\ComercioService;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\StorePayLink;
 
 class PaymentLinkGenerator extends Component
 {
@@ -34,9 +35,9 @@ class PaymentLinkGenerator extends Component
         'monto' => 'required|numeric|min:0.01',
         'name' => 'required|string',
         'lastname' => 'required|string',
-        'email' => 'email',
+        'email' => 'required|email',
         'phone' => 'required|numeric',
-        'descripcion' => 'required|string|min:3|max:255',
+        'descripcion' => 'required|string|min:10|max:100|regex:/^[a-zA-Z]{3}-[a-zA-Z]{3}\. \d{2}-\d{2}-\d{4}\. ASIENTO \d{1,2}+\. \d{2}\.\d{2} HRS.$/',
         'selectOption' => 'required',
     ];
 
@@ -47,12 +48,19 @@ class PaymentLinkGenerator extends Component
         'descripcion.required' => 'La descripción es obligatoria',
         'descripcion.min' => 'La descripción debe tener al menos 3 caracteres',
         'descripcion.max' => 'La descripción no puede exceder 255 caracteres',
+        'descripcion.regex' => 'La descripción debe seguir el formato: origen-destino. DD-MM-YYYY. ASIENTO N. HH.MM HRS.',
+        'selectOption.required' => 'Debes seleccionar una marca para continuar',
+        'name.required' => 'Nombre es obligatorio',
+        'lastname.required' => 'apellido es obligatorio',
+        'phone.required' => 'telefono es obligatorio',
+        'email.required' => 'correo es obligatorio',
+        'email.email' => 'Formato de correo inválido',
     ];
 
     public function boot(SelectPaymentGategay $paymentService, ComercioService $comercios)
     {
         // , ''
-        if(Gate::any(['isGerente', 'isPayment'])){
+        if(Gate::any(['isGerente', 'isPayment', 'isAdmin'])){
             // allow access
         }else{
             abort(403, 'No tienes permiso para acceder a esta sección.');
@@ -116,6 +124,10 @@ class PaymentLinkGenerator extends Component
         $this->resetErrorBag();
         $this->dispatch('set-all');
     }
+    public function setError($field, $message)
+{
+    $this->addError($field, $message);
+}
     public function render()
     {
         return view('livewire.open-pay.payment-link-generator');
