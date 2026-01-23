@@ -157,6 +157,11 @@ class PaymentTableComponent extends Component
 
     }
 
+    public function exportSalesByExcel(){
+    $resolveService = app()->make(ExportSales::class);
+    
+    }
+
 
     public function render()
     {
