@@ -155,12 +155,10 @@
                                                         {{ ucfirst($log['status']) }}
                                                     </span>
                                                 </div>
-                                                @if($log['error_message'])
                                                     <div class="text-red-600">
                                                         <span class="font-semibold">Error:</span>
-                                                        <p>{{ $log['error_message'] }}</p>
+                                                        <p> rechazado por el algoritmo de openpay </p>
                                                     </div>
-                                                @endif
                                                 <div>
                                                     <span class="font-semibold text-gray-600">Código Gateway:</span>
                                                     <p>{{ $log['gateway_response_code'] ?? 'N/A' }}</p>
