@@ -34,6 +34,8 @@ class Transaction extends Model
         'created_at_openpay' => 'datetime',
     ];
 
+    protected $hidden = ['error_message'];
+
     /**
      * Relación con pagos con tarjeta
      */
