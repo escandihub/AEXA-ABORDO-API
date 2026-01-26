@@ -12,6 +12,7 @@ use App\Livewire\OpenPay\service\Config\AexaConfig;
 use App\Livewire\OpenPay\service\Config\TitaniumConfig;
 use App\Livewire\OpenPay\service\Config\ExpresoConfig;
 use App\Livewire\OpenPay\service\Config\GTESConfig;
+use Illuminate\Support\Facades\DB;
 
 class SelectPaymentGategay
 {
@@ -44,6 +45,8 @@ class SelectPaymentGategay
     public function GeneratePayFromBrand($brand, Cliente $cliente_pay)
     {
           try {
+            DB::beginTransaction();
+            
             $this->brand = $brand["name"];
             $brandConfig = $this->selectBrand();
             // Configuración de Openpay
@@ -114,6 +117,7 @@ class SelectPaymentGategay
                 // $this->generatedLink = 'https://sandbox-api.openpay.mx/ck/' . uniqid();
 
                 // session()->flash('success', '¡Link de pago de Openpay generado exitosamente!');
+                DB::commit();
                 return [
                 'id' => $data['id'],
                 'link' => $data['checkout_link'],
@@ -124,6 +128,7 @@ class SelectPaymentGategay
             ];
             } else {
                 $error = $response->json();
+                DB::rollBack();
                 throw new \Exception($error['description'] ?? 'Error desconocido de Openpay');
             }
             
@@ -133,7 +138,7 @@ class SelectPaymentGategay
             // Fallback: generar un link de prueba si falla Openpay
             $this->generatedLink = 'https://sandbox-api.openpay.mx/ck/' . uniqid();
             // $this->showLink = true;
-            
+             DB::rollBack();
             session()->flash('warning', 'Se generó un link de prueba. Configura tus credenciales de Openpay.');
         }
     }
