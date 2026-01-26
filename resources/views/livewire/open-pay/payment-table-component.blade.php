@@ -200,9 +200,9 @@
                                         number_format($payment['amount'], 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-600 max-w-xs truncate"
+                                    <div class="text-sm text-gray-600  w-20"
                                         title="{{ $payment['description'] }}">
-                                        {{ $payment['description'] }}
+                                        <p class="text-wrap"> {{ $payment['description'] }} </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">

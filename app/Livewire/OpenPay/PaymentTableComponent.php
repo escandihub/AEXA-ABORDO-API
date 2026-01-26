@@ -103,7 +103,7 @@ class PaymentTableComponent extends Component
         $this->searchName = '';
         $this->statusFilter = '';
         $this->dateFilter = '';
-        $this->applyFilters();
+        $this->applyFiltersDB();
     }
 
     public function consultarPago($paymentId)
@@ -125,7 +125,7 @@ class PaymentTableComponent extends Component
                     'amount' => $log->amount,
                     'currency' => $log->currency,
                     'method' => $log->method,
-                    'error_message' => $log->error_message,
+                    // 'error_message' => $log->error_message,
                     'error_details' => $log->error_details,
                     'gateway_response_code' => $log->gateway_response_code,
                     'attempted_amount' => $log->attempted_amount,
