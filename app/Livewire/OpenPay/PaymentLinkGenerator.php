@@ -37,7 +37,7 @@ class PaymentLinkGenerator extends Component
         'lastname' => 'required|string',
         'email' => 'required|email',
         'phone' => 'required|numeric',
-        'descripcion' => 'required|string|min:10|max:100|regex:/^[a-zA-Z]{3}-[a-zA-Z]{3}\. \d{2}-\d{2}-\d{4}\. ASIENTO \d{1,2}+\. \d{2}\.\d{2} HRS.$/',
+        'descripcion' => 'required|string|min:10|max:100|regex:/^[a-zA-Z]{3}-[a-zA-Z]{3}\. \d{2}-\d{2}-\d{4}\. ASIENTO \d{1,2}(?:\.\d{1,2})*\. \d{2}\.\d{2} HRS.$/',
         'selectOption' => 'required',
     ];
 
