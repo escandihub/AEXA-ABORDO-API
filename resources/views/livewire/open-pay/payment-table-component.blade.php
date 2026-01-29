@@ -170,9 +170,28 @@
                             <tr
                                 class="hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-blue-50/50 transition-all duration-300 group">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div
+                                    <div class="flex flex-col gap-2 justify-center items-center">
+                                        @isset($payment['brand'])
+                                            @php
+                                                $urlBrand = '';
+                                                if($payment['brand'] == 'AEXA'){
+                                                    $urlBrand = 'merge/ae.png';
+                                                }
+                                                elseif ($payment['brand'] == 'TITANIUM') {
+                                                    $urlBrand = 'TI/Autobuses_TITANIUM.png';
+                                                }elseif ($payment['brand'] == 'Expreso') {
+                                                    $urlBrand = 'TI/Logo_TLATitanium.png';
+                                                }elseif ($payment['brand'] == 'GTES') {
+                                                   $urlBrand = 'merge/palight.png';
+                                                }
+                                                
+
+                                            @endphp
+                                            <img class="flex w-16" src="{{ asset('marcas/' . $urlBrand) }}" alt="">
+                                             @endisset
+                                        <div 
                                             class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center group-hover:from-purple-200 group-hover:to-blue-200 transition-colors">
+                                            
                                             <span class="text-sm font-medium text-gray-700">#{{ $payment['id'] }}</span>
                                         </div>
                                     </div>
