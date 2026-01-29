@@ -71,7 +71,7 @@ class SelectPaymentGategay
                     'email' => $cliente_pay->email,
                 ],
                 'redirect_url' => env('OPENPAY_REDIRECT_URL', ''),
-                'expiration_date' => now()->addDays(7)->format('Y-m-d H:i'),
+                'expiration_date' => now()->addHours(3)->format('Y-m-d H:i'),
             ];
 
             $cliente = $this->customerService->getOrCreateCustomer([
@@ -96,12 +96,13 @@ class SelectPaymentGategay
                     'amount' => $cliente_pay->monto,
                     'description' => $cliente_pay->descripcion,
                     'order_id' => $data['order_id'],
+                    'brand' => $this->brand,
                     'currency' => 'MXN',
                     'iva' => 0.00, // Asumiendo que no se aplica IVA
                     'status' => $data['status'],
                     'checkout_link' => $data['checkout_link'],
                     'creation_date' => now(),
-                    'expiration_date' => now()->addDays(7),
+                    'expiration_date' => now()->addHour(3)
                 ]);
 
                 // Guardar información adicional del checkout

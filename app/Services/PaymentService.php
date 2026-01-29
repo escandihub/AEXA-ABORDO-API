@@ -34,7 +34,8 @@ class PaymentService
             $payment->checkout_link = $data['checkout_link'];
             $payment->creation_date = now();
             $payment->user_id = \Auth::user()->id;
-            $payment->expiration_date = now()->addDays(2);
+            $payment->brand = $data['brand'] ?? null;
+            $payment->expiration_date = now()->addDays(3);
 
             // Save payment to the database
             if ($payment->save()) {
