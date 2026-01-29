@@ -205,7 +205,7 @@
                                         <p class="text-wrap"> {{ $payment['description'] }} </p>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="px-6 py-4 whitespace-nowrap text-center space-y-2 items-center justify-center flex flex-col">
                                     <div wire:key="consultarPago{{ $payment['order_id'] }}"
                                         wire:target="consultarPago('{{ $payment['order_id'] }}')">
                                         {{-- wire:loading.attr="disabled" wire:loading.class="animate-pulse" --}}
@@ -226,11 +226,7 @@
                                             <!-- Loading dots -->
                                             <div wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')"
                                                 class="flex items-center space-x-1 mr-2">
-                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"
-                                                    style="animation-delay: 0.1s"></div>
-                                                <div class="w-2 h-2 bg-white rounded-full animate-bounce"
-                                                    style="animation-delay: 0.2s"></div>
+                                                 <svg class="mr-3 -ml-1 size-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                             </div>
                                             {{-- {{ $payment['order_id'] }} - --}}
                                             <span wire:loading.remove
@@ -243,7 +239,21 @@
                                     </div>
                                     <div>
                                         {{-- @click="$dispatch('openPaymentLogsModal')" --}}
-                                        <button wire:click="consultaLogs('{{ $payment['order_id'] }}')">logs</button>
+                                        <button wire:click="consultaLogs('{{ $payment['order_id'] }}')"
+                                        class="inline-flex items-center px-6 py-2.5 bg-blue-300 hover:bg-blue-500 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed text-gray-700 text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-300 border-0 relative overflow-hidden group backdrop-blur-sm"
+                                        >
+                                        <div wire:loading wire:target="consultaLogs('{{ $payment['order_id'] }}')"
+                                                class="flex items-center space-x-1 mr-2">
+                                                 <svg class="mr-3 -ml-1 size-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                            </div>
+                                        <span wire:loading.remove
+                                                wire:target="consultaLogs('{{ $payment['order_id'] }}')">
+                                                logs</span> 
+                                        <span wire:loading
+                                        wire:target="consultaLogs('{{ $payment['order_id'] }}')">Consultando
+                                        log...</span> 
+
+                                    </button>
                                         {{-- <button @click="$dispatch('openPaymentLogsModal')">logs</button> --}}
                                     </div>
                                 </td>
