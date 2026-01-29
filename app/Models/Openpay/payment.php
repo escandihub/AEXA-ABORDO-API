@@ -18,6 +18,7 @@ class payment extends Model
         'openpay_id',
         'customer_id',
         'user_id',
+        'brand',
         'amount',
         'description',
         'authorization',

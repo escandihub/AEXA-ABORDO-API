@@ -176,9 +176,10 @@ class PaymentTableComponent extends Component
                 'description' => $payment->description,
                 'status' => $payment->status,
                 'order_id' => $payment->order_id,
-                'checkout_link' => $payment->checkout_link
+                'checkout_link' => $payment->checkout_link,
+                'brand' => $payment->brand,
             ]);
-
+// dd($pagos);
         return view('livewire.open-pay.payment-table-component', [
             'payments' => $pagos,
         ]);
