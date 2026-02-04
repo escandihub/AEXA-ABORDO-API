@@ -62,11 +62,11 @@ return [
         'sandbox' => env('OPENPAY_SANDBOX', true),
     ],
     # economico
-       'transportista' => [
+    'transportista' => [
         'merchant_id' => env('OPENPAY_TRANSPORTISTA_MERCHANT_ID', ''),
         'private_key' => env('OPENPAY_TRANSPORTISTA_PRIVATE_KEY', ''),
         'public_key' => env('OPENPAY_TRANSPORTISTA_PUBLIC_KEY', ''),
-        'sandbox' => env('OPENPAY_SANDBOX', true),
+        'sandbox' => env('OPENPAY_SANDBOX_TRANSPORTISTA', true),
     ],
     // expresos de mexico
     'expreso_mx' => [
