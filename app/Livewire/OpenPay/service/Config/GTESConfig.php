@@ -13,9 +13,9 @@ final readonly class GTESConfig implements PaymentConfigInterface
     private const API_URL = 'https://api.payment-gateway.com';
     
     public function __construct(
-        public string $merchantId,
-        public string $privateKey,
-        public bool $sandbox = true,
+        public readonly string $merchantId,
+        public readonly string $privateKey,
+        public readonly bool $sandbox = true,
     ) {}
 
     public function getMerchantId(): string
@@ -44,7 +44,7 @@ final readonly class GTESConfig implements PaymentConfigInterface
         return new self(
             merchantId: config('openpay.transportista.merchant_id'),
             privateKey: config('openpay.transportista.private_key'),
-            sandbox: config('sandbox', true),
+            sandbox: config('openpay.sandbox', true),
         );
     }
 }
