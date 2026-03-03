@@ -259,6 +259,8 @@
                     <!-- Botón Generar -->
                     <div class="pt-2">
                         <button type="submit"
+                        wire:loading.attr="disabled"
+                        wire:submit.debounce.500ms="generateLink"
                             class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             wire:loading.attr="disabled">
                             <div wire:loading.remove class="flex items-center justify-center">
@@ -412,6 +414,18 @@
             },
             setAll(){
                  this.showSuccess = false
+            },
+            init() {
+                // Escuchar eventos de Livewire
+                Livewire.on('submission-start', () => {
+                    this.isSubmitting = true;
+                });
+                
+                Livewire.on('submission-complete', () => {
+                    setTimeout(() => {
+                        this.isSubmitting = false;
+                    }, 500);
+                });
             }
      }));
     });
