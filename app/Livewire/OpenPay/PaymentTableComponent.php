@@ -116,7 +116,7 @@ class PaymentTableComponent extends Component
     }
     public function consultaLogs($orderId){
         try {
-            $logs = Transaction::where('order_id', $orderId)->get();
+            $logs = Transaction::where('order_id', $orderId)->orderBy('created_at', 'desc')->get();
             $logs = $logs->map(function ($log) {
                 return [
                     'id' => $log->id,
