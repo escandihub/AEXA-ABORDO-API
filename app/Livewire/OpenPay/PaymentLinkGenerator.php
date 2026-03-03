@@ -10,6 +10,7 @@ use App\Livewire\OpenPay\service\Cliente;
 use App\Livewire\OpenPay\service\ComercioService;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePayLink;
+use Illuminate\Support\Facades\Cache;
 
 class PaymentLinkGenerator extends Component
 {
@@ -30,6 +31,10 @@ class PaymentLinkGenerator extends Component
     // comercio selecionado
     public ?string $brand = 'AEXA';
     public ?array $selectOption = [];
+
+    private $isProcessing = false;
+    private $lastGenerationTime = 0;
+    private $requestHash = null;
 
     protected $rules = [
         'monto' => 'required|numeric|min:0.01',
@@ -78,7 +83,36 @@ class PaymentLinkGenerator extends Component
     }
       public function generateLink()
     {
+        if ($this->isProcessing) {
+            $this->addError('general', 'Por favor espera a que se complete la solicitud anterior.');
+            return;
+        }
+
         $this->validate();
+
+         $this->requestHash = hash('sha256', json_encode([
+            $this->name,
+            $this->lastname,
+            $this->email,
+            $this->phone,
+            $this->monto,
+            $this->brand
+        ]));
+
+        $cacheKey = 'payment_request_' . $this->requestHash;
+        if (Cache::has($cacheKey)) {
+            $cached = Cache::get($cacheKey);
+            $this->generatedLink = $cached['link'];
+            $this->showLink = true;
+            
+            session()->put('openpay_checkout', $cached['checkout']);
+            $this->dispatch('scroll-to-link');
+            
+            return;
+        }
+         // 5. Marcar como procesando
+        $this->isProcessing = true;
+        $this->dispatch('submission-start');
 
         try {
             $cliente = new Cliente(
@@ -90,6 +124,20 @@ class PaymentLinkGenerator extends Component
                 $this->monto);
 
             $payment = $this->paymentService->GeneratePayFromBrand($this->selectOption, $cliente);
+            // 6. Guardar en caché para evitar duplicados en 5 minutos
+            $checkoutData = [
+                'id' => $payment['id'],
+                'order_id' => $payment['order_id'],
+                'amount' => $payment['amount'],
+                'status' => $payment['status'],
+                'expiration_date' => $payment['expiration_date']
+            ];
+
+            Cache::put($cacheKey, [
+                'link' => $payment['link'],
+                'checkout' => $checkoutData
+            ], now()->addMinutes(5));
+
             $this->showLink = true;
             $this->generatedLink = $payment['link'];
             
@@ -110,6 +158,9 @@ class PaymentLinkGenerator extends Component
             
             
             // session()->flash('warning', 'Se generó un link de prueba. Configura tus credenciales de Openpay.');
+        } finally {
+            $this->isProcessing = false;
+            $this->dispatch('submission-complete');
         }
     }
 
