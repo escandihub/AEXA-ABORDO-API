@@ -128,7 +128,6 @@ class PaymentLinkGenerator extends Component
                 $this->descripcion,
                 $this->email,
                 $this->monto);
-                dd($cliente );
 
             $payment = $this->paymentService->GeneratePayFromBrand($this->selectOption, $cliente);
             // 6. Guardar en caché para evitar duplicados en 5 minutos
@@ -168,6 +167,8 @@ class PaymentLinkGenerator extends Component
         } finally {
             $this->isProcessing = false;
             $this->dispatch('submission-complete');
+            // $this->clear();
+            // $this->dispatch('clear-form-child');
         }
     }
 
