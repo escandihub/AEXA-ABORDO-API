@@ -11,6 +11,7 @@ use App\Livewire\OpenPay\service\ComercioService;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePayLink;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\On;
 
 class PaymentLinkGenerator extends Component
 {
@@ -87,8 +88,12 @@ class PaymentLinkGenerator extends Component
             $this->addError('general', 'Por favor espera a que se complete la solicitud anterior.');
             return;
         }
+        $this->dispatch('request-description');
+       
+    }
 
-        $this->validate();
+    private function procesar(){
+         $this->validate();
 
          $this->requestHash = hash('sha256', json_encode([
             $this->name,
@@ -113,7 +118,8 @@ class PaymentLinkGenerator extends Component
          // 5. Marcar como procesando
         $this->isProcessing = true;
         $this->dispatch('submission-start');
-
+        
+        
         try {
             $cliente = new Cliente(
                 $this->name,
@@ -122,6 +128,7 @@ class PaymentLinkGenerator extends Component
                 $this->descripcion,
                 $this->email,
                 $this->monto);
+                dd($cliente );
 
             $payment = $this->paymentService->GeneratePayFromBrand($this->selectOption, $cliente);
             // 6. Guardar en caché para evitar duplicados en 5 minutos
@@ -162,6 +169,13 @@ class PaymentLinkGenerator extends Component
             $this->isProcessing = false;
             $this->dispatch('submission-complete');
         }
+    }
+
+    #[On('description-created')] 
+    public function createDescription($description = null){
+        \Log::info('description: ' .  $description);
+        $this->descripcion = $description;
+        $this->procesar();
     }
 
     public function copyToClipboard()
