@@ -234,7 +234,7 @@
                             <span class="bg-gray-100/50 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center gap-2">
                                 <small class="font-normal leading-relaxed text-gray-500 text-lg max-w-3xl">Formato: ORIGEN-DESTINO. DD-MM-YYYY. ASIENTO N. HH.MM HRS.</small>
                             </span>
-                            <div class="relative">
+                            {{-- <div class="relative">
                                 <textarea id="descripcion" wire:model="descripcion" rows="3"
                                     class="w-full px-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400 resize-none"
                                     placeholder="Describe el concepto del pago..." maxlength="255"></textarea>
@@ -242,7 +242,8 @@
                                     class="absolute bottom-2 right-2 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded">
                                     {{ strlen($descripcion) }}/255
                                 </div>
-                            </div>
+                            </div> --}}
+                            @include('livewire.open-pay.selector-input')
                             @error('descripcion')
                             <p class="text-red-500 text-xs mt-1 animate-pulse flex items-center">
                                 <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -425,7 +426,7 @@
                     setTimeout(() => {
                         this.isSubmitting = false;
                     }, 500);
-                });
+                });              
             }
      }));
     });
