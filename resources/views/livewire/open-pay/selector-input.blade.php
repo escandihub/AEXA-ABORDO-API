@@ -21,18 +21,8 @@
                                 d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
                         </svg>
                     </div>
-                    <select id="origen" x-model="origen"
-                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300">
-                        <option value="">Selecciona origen</option>
-                        <option value="CDMX">Ciudad de México</option>
-                        <option value="MTY">Monterrey</option>
-                        <option value="GDL">Guadalajara</option>
-                        <option value="CUN">Cancún</option>
-                        <option value="PLY">Puebla</option>
-                        <option value="TJN">Tijuana</option>
-                        <option value="AGS">Aguascalientes</option>
-                        <option value="LPZ">La Paz</option>
-                    </select>
+                    <input type="text" id="origen" x-model="origen" class="w-full pl-11 pr-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400 uppercase"
+                                            maxlength="3">
                 </div>
                 <template x-if="!origen">
                     <p class="text-red-500 text-xs mt-1">Selecciona un origen</p>
@@ -51,18 +41,8 @@
                                 d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
                         </svg>
                     </div>
-                    <select id="destino" x-model="destino"
-                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300">
-                        <option value="">Selecciona destino</option>
-                        <option value="CDMX">Ciudad de México</option>
-                        <option value="MTY">Monterrey</option>
-                        <option value="GDL">Guadalajara</option>
-                        <option value="CUN">Cancún</option>
-                        <option value="PLY">Puebla</option>
-                        <option value="TJN">Tijuana</option>
-                        <option value="AGS">Aguascalientes</option>
-                        <option value="LPZ">La Paz</option>
-                    </select>
+                   <input type="text" id="destino" x-model="destino" class="w-full pl-11 pr-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400 uppercase"
+                                            maxlength="3>
                 </div>
                 <template x-if="!destino">
                     <p class="text-red-500 text-xs mt-1">Selecciona un destino</p>
@@ -186,7 +166,6 @@
                     </button>
                 </div>
    
-    <button @click="generarFormato()"> mostrar formato </button>
 </div>
 <script>
     function selectorItinerario() {
@@ -281,6 +260,9 @@
                     let  description = this.generarFormato()
                      @this.dispatch('description-created', {description: description})
                 }); 
+                Livewire.on('clear-form-child', () => {
+                    this.limpiar();
+                }); 
 
                 },
 
@@ -288,7 +270,7 @@
                     this.origen = '';
                     this.destino = '';
                     this.fecha = '';
-                    this.asientos = [{ numero: '', hora: '' }];
+                    this.asientos = [{ numero: ''}];
                     this.formatoGenerado = null;
                 }
             };
