@@ -62,4 +62,7 @@ class User extends Authenticatable
     public function isAdmin() {
         return $this->role()->first()->name;
     }
+    public function hasRole(string $role): bool {
+        return $this->role()->first()->name == $role;
+    }
 }
