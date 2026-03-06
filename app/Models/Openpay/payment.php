@@ -61,8 +61,15 @@ class payment extends Model
     public function scopeJoinCustomer($query)
     {
         return $query->leftJoin('customers', 'payments_buttons.customer_id', '=', 'customers.id')
-        ->leftJoin('transactions', 'payments_buttons.order_id', '=', 'transactions.order_id')
-        ->select(
+        ->leftJoin('transactions', function ($join){
+            $join->on('payments_buttons.order_id', '=', 'transactions.order_id')
+            ->whereRaw('transactions.id = (
+                SELECT id FROM transactions t2
+                where t2.order_id = payments_buttons.order_id
+                ORDER BY t2.created_at DESC
+                LIMIT 1
+            )');
+        })->select(
             'payments_buttons.*',
             'transactions.status',
             'transactions.method',
