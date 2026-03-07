@@ -177,9 +177,9 @@
                                                 if($payment['brand'] == 'AEXA'){
                                                     $urlBrand = 'merge/ae.png';
                                                 }
-                                                elseif ($payment['brand'] == 'TITANIUM') {
+                                                elseif ($payment['brand'] == 'Expreso') {
                                                     $urlBrand = 'TI/Autobuses_TITANIUM.png';
-                                                }elseif ($payment['brand'] == 'Expreso') {
+                                                }elseif ($payment['brand'] == 'TITANIUM') {
                                                     $urlBrand = 'TI/Logo_TLATitanium.png';
                                                 }elseif ($payment['brand'] == 'GTES') {
                                                    $urlBrand = 'merge/palight.png';
