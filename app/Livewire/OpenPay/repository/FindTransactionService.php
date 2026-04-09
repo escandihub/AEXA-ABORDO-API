@@ -16,24 +16,46 @@ class FindTransactionService
             return new SuccessCardPay(
                  nombre: 'mi nombre',
                 apellido: 'apellido',
-                monto: 0
+                monto: 0,
+                status: 'trans'
             );
           }
 
           $customer = $transaction->paymentButton->customer;
 
+          // verificar el id de la transaccion el status de la operacion 
+          // indicativo exitoso o no. 
+
           if(!$customer){
             return new SuccessCardPay(
                  nombre: 'mi nombre',
                 apellido: 'apellido',
-                monto: 0
+                monto: 0,
+                status: 'cliente'
             );
           }
-        
+
+          $estado = $this->mapStatus($transaction);
+          \Log::info($estado);
+
           return new SuccessCardPay(
             nombre: $customer->name,
             apellido: $customer->last_name,
-            monto: $transaction->amount
+            monto: $transaction->amount,
+            status: $estado,
+            concepto: $transaction->description
           );
     }
-} 
+
+    private function mapStatus($transaction) {
+      if($transaction->status == 'completed'){
+        return true;
+       }
+       else if($transaction->logs()->latest()->first()->status){
+        return false;
+       }
+       else {
+        return false;
+       }
+      }
+    }
