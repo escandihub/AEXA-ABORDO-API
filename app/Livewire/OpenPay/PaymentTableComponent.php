@@ -111,7 +111,7 @@ class PaymentTableComponent extends Component
         \Log::info("Consultando pago con ID: {$paymentId}");
         // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
     //    = Transaction::where('order_id',  $paymentId)->where('status', 'completed')->first();
-        $transaction = Transaction::where('order_id',  $paymentId)->whereIn('status', ['completed', 'failed'])->first();
+        $transaction = Transaction::where('order_id',  $paymentId)->whereIn('status', ['completed'])->first();
 
         if ($transaction) {
            $this->selectedPayment = $transaction; // retorna el primero que sea completed o failed
