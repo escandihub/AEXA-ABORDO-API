@@ -26,11 +26,11 @@ class PaymentTableComponent extends Component
 
     public function mount(TransactionStatusService $transactionStatusService)
     {
-        if(Gate::any(['isGerente', 'isPayment'])){
-            // allow access
-        }else{
-            abort(403, 'No tienes permiso para acceder a esta sección.');
-        }  
+        // if(Gate::any(['isGerente', 'isPayment'])){
+        //     // allow access
+        // }else{
+        //     abort(403, 'No tienes permiso para acceder a esta sección.');
+        // }  
        $this->transactionStatusService = $transactionStatusService;
         // Datos de ejemplo - reemplaza con tu lógica de base de datos
        
@@ -111,6 +111,9 @@ class PaymentTableComponent extends Component
         \Log::info("Consultando pago con ID: {$paymentId}");
         // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
         $this->selectedPayment = Transaction::where('order_id',  $paymentId)->first();
+        if($this->selectedPayment->logs()){
+            $this->selectedPayment = $this->selectedPayment->logs()->latest()->first();
+        }
         \Log::info("Pago consultado: ", ['payment' => $this->selectedPayment]);
         $this->showPaymentStatus = true;
     }
@@ -131,10 +134,15 @@ class PaymentTableComponent extends Component
                     'attempted_amount' => $log->attempted_amount,
                     'created_at' => $log->created_at,
                     'updated_at' => $log->updated_at,
-                    'logs' => $log->logs()->get()
+                    'dia' => $log->created_at->format('Y-m-d'),
+                    'hora' => $log->created_at->format('H:i:s'),
+                    'logs' => $log->logs()->transform(function($log){
+                        $log->date = $log->created_at->format('Y-m-d H:i');
+                        return $log;
+                    })->get()
                 ];
             })->toArray(); 
-
+// dd($logs);
             \Log::info($logs);
             $this->dispatch('open-logs-modal', $logs);
         } catch (\Throwable $th) {
@@ -165,7 +173,7 @@ class PaymentTableComponent extends Component
 
     public function render()
     {
-        \Log::info($this->applyFiltersDB()->get());
+        // \Log::info($this->applyFiltersDB()->get());
         $pagos = $this->applyFiltersDB()->paginate(10)->through(fn ($payment) => [
                 'id' => $payment->id,
                 'cliente' => $payment->cliente,
