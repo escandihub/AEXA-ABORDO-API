@@ -110,7 +110,16 @@ class PaymentTableComponent extends Component
     {
         \Log::info("Consultando pago con ID: {$paymentId}");
         // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
-        $this->selectedPayment = Transaction::where('order_id',  $paymentId)->orderBy('created_at', 'desc')->first();
+    //    = Transaction::where('order_id',  $paymentId)->where('status', 'completed')->first();
+        $transaction = Transaction::where('order_id',  $paymentId)->whereIn('status', ['completed', 'failed'])->first();
+
+        if ($transaction) {
+           $this->selectedPayment = $transaction; // retorna el primero que sea completed o failed
+        }else{
+            // dd( $transaction);
+             $this->selectedPayment = Transaction::where('order_id',  $paymentId)->get()->sortByDesc('created_at')->first();
+        }
+                 
         // recorrer los logs para ver si existe un log con status completed o failed
         \Log::info("Pago consultado: ", ['payment' => $this->selectedPayment]);
         $this->showPaymentStatus = true;
