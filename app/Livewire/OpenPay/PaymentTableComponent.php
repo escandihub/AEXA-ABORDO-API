@@ -110,10 +110,8 @@ class PaymentTableComponent extends Component
     {
         \Log::info("Consultando pago con ID: {$paymentId}");
         // $this->selectedPayment = collect($this->filteredPayments)->firstWhere('id', $paymentId);
-        $this->selectedPayment = Transaction::where('transaction_id',  $paymentId)->first();
-        if($this->selectedPayment->logs()){
-            $this->selectedPayment = $this->selectedPayment->logs()->latest()->first();
-        }
+        $this->selectedPayment = Transaction::where('order_id',  $paymentId)->orderBy('created_at', 'desc')->first();
+        // recorrer los logs para ver si existe un log con status completed o failed
         \Log::info("Pago consultado: ", ['payment' => $this->selectedPayment]);
         $this->showPaymentStatus = true;
     }
@@ -186,7 +184,6 @@ class PaymentTableComponent extends Component
                 'order_id' => $payment->order_id,
                 'checkout_link' => $payment->checkout_link,
                 'brand' => $payment->brand,
-                'transaction_id' => $payment->transaction_id
             ]);
 // dd($pagos);
         return view('livewire.open-pay.payment-table-component', [

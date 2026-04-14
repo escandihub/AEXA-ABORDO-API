@@ -225,16 +225,16 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center space-y-2 items-center justify-center flex flex-col">
-                                    <div wire:key="consultarPago{{ $payment['transaction_id'] }}"
-                                        wire:target="consultarPago('{{ $payment['transaction_id'] }}')">
+                                    <div wire:key="consultarPago{{ $payment['order_id'] }}"
+                                        wire:target="consultarPago('{{ $payment['order_id'] }}')">
                                         {{-- wire:loading.attr="disabled" wire:loading.class="animate-pulse" --}}
-                                        <button wire:click="consultarPago('{{ $payment['transaction_id'] }}')"
+                                        <button wire:click="consultarPago('{{ $payment['order_id'] }}')"
                                             
                                             class="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 border-0 relative overflow-hidden group backdrop-blur-sm">
 
                                             <!-- Icon and text (default state) -->
                                             <svg wire:loading.remove
-                                                wire:target="consultarPago('{{ $payment['transaction_id'] }}')"
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')"
                                                 class="w-4 h-4 mr-2 transition-all duration-300 group-hover:rotate-12"
                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -243,16 +243,16 @@
                                             </svg>
 
                                             <!-- Loading dots -->
-                                            <div wire:loading wire:target="consultarPago('{{ $payment['transaction_id'] }}')"
+                                            <div wire:loading wire:target="consultarPago('{{ $payment['order_id'] }}')"
                                                 class="flex items-center space-x-1 mr-2">
                                                  <svg class="mr-3 -ml-1 size-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                             </div>
-                                            {{-- {{ $payment['transaction_id'] }} - --}}
+                                            {{-- {{ $payment['order_id'] }} - --}}
                                             <span wire:loading.remove
-                                                wire:target="consultarPago('{{ $payment['transaction_id'] }}')">
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')">
                                                 Consultar</span>
                                             <span wire:loading
-                                                wire:target="consultarPago('{{ $payment['transaction_id'] }}')">Consultando
+                                                wire:target="consultarPago('{{ $payment['order_id'] }}')">Consultando
                                                 pago...</span>
                                         </button>
                                     </div>
