@@ -143,16 +143,14 @@ class PaymentTableComponent extends Component
                     'updated_at' => $log->updated_at,
                     'dia' => $log->created_at->format('Y-m-d'),
                     'hora' => $log->created_at->format('H:i:s'),
-                    'logs' => $log->logs()->transform(function($log){
-                        $log->date = $log->created_at->format('Y-m-d H:i');
-                        return $log;
-                    })->get()
+                    'logs' => $log->logs()->get()
                 ];
             })->toArray(); 
 // dd($logs);
-            \Log::info($logs);
+            // \Log::info($logs);
             $this->dispatch('open-logs-modal', $logs);
         } catch (\Throwable $th) {
+            \Log::info("esta pasando un error al consulta los logs", ['error' => $th->getMessage()]);
             //throw $th;
         }
     }

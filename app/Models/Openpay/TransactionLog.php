@@ -29,6 +29,8 @@ class TransactionLog extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = ['date'];
+
     /**
      * Relación con la transacción
      */
@@ -88,5 +90,8 @@ class TransactionLog extends Model
         $summary .= " - {$this->created_at->format('d/m/Y H:i:s')}";
 
         return $summary;
+    }
+    public function getDateAttribute() {
+    return $this->created_at->format('Y-m-d H:i');
     }
 }
