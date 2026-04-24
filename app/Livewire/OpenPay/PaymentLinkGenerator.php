@@ -3,15 +3,18 @@
 namespace App\Livewire\OpenPay;
 
 use Livewire\Component;
+use App\Actions\BuscarClientesPorContactoAction;
+use App\Services\ContactoService;
 use Illuminate\Support\Facades\Http;
 use App\Services\CustomerService;
 use App\Services\PaymentService;
-use App\Livewire\OpenPay\service\Cliente;
+use App\Livewire\OpenPay\service\PagoData;
 use App\Livewire\OpenPay\service\ComercioService;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePayLink;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Computed;
 
 class PaymentLinkGenerator extends Component
 {
@@ -22,7 +25,7 @@ class PaymentLinkGenerator extends Component
      public $phone = '';
     public $descripcion = '';
     public $generatedLink = '';
-    public $showLink = false;
+    public $showLink = false; #generado
 
     private $customerService;
     private $paymentService;
@@ -36,6 +39,13 @@ class PaymentLinkGenerator extends Component
     private $isProcessing = false;
     private $lastGenerationTime = 0;
     private $requestHash = null;
+    // estado de UI
+    public bool   $showSuggestions  = false;
+    public bool   $isSearching      = false;
+    public int|null $selectedClienteId = null;
+
+    protected BuscarClientesPorContactoAction $buscarAction;
+    protected ContactoService $contactoService;
 
     protected $rules = [
         'monto' => 'required|numeric|min:0.01',
@@ -63,7 +73,8 @@ class PaymentLinkGenerator extends Component
         'email.email' => 'Formato de correo inválido',
     ];
 
-    public function boot(SelectPaymentGategay $paymentService, ComercioService $comercios)
+    public function boot(SelectPaymentGategay $paymentService, ComercioService $comercios,
+    BuscarClientesPorContactoAction $buscarAction, ContactoService $contactoService)
     {
         // , ''
         if(Gate::any(['isGerente', 'isPayment', 'isAdmin'])){
@@ -75,6 +86,8 @@ class PaymentLinkGenerator extends Component
         // $this->paymentService = $paymentService;
         $this->paymentService = $paymentService;
         $this->comercios = $comercios->GetComercio();
+        $this->buscarAction = $buscarAction;
+        $this->contactoService = $contactoService;;
         // dd($this->comercios);
     }
 
@@ -121,12 +134,20 @@ class PaymentLinkGenerator extends Component
         
         
         try {
-            $cliente = new Cliente(
+            $client = $this->contactoService->resolverCliente(
+                email: $this->email ?? '',
+                phone: $this->phone ?? '',
+                name: $this->name,
+                lastname: $this->lastname
+            );
+
+            // this is a DTO inmutable object to generate pay.
+            $cliente = new PagoData(
                 $this->name,
                 $this->lastname,
                 $this->phone,
-                $this->descripcion,
                 $this->email,
+                $this->descripcion,
                 $this->monto);
 
             $payment = $this->paymentService->GeneratePayFromBrand($this->selectOption, $cliente);
@@ -177,6 +198,35 @@ class PaymentLinkGenerator extends Component
         \Log::info('description: ' .  $description);
         $this->descripcion = $description;
         $this->procesar();
+    }
+
+    // busqueda reactiva 
+    #[Computed]
+    public function sugerencias() {
+        if(!$this->email && !$this->phone) return collect();
+
+        return $this->buscarAction->execute($this->email, $this->phone);
+    }
+
+    public function updatedEmail(): void   { $this->triggerSearch(); }
+    public function updatedPhone(): void   { $this->triggerSearch(); }
+
+    private function triggerSearch(){
+        $this->selectedClienteId = null;
+        $this->showSuggestions = $this->sugerencias()->isNotEmpty();
+    }
+    public function selecionarClient(int $id, string $name, string $lastname, string $email){
+        $this->selectedClienteId = $id;
+        $this->name              = $name;
+        $this->lastname          = $lastname;
+        $this->showSuggestions   = false;
+        $this->email = $email;
+    }
+    public function nuevoNombre(){
+        $this->selectedClienteId = null;
+        $this->name              = '';
+        $this->lastname          = '';
+        $this->showSuggestions   = false;
     }
 
     public function copyToClipboard()

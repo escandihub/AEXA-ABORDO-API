@@ -12,6 +12,7 @@ use App\Livewire\OpenPay\service\Config\AexaConfig;
 use App\Livewire\OpenPay\service\Config\TitaniumConfig;
 use App\Livewire\OpenPay\service\Config\ExpresoConfig;
 use App\Livewire\OpenPay\service\Config\GTESConfig;
+use App\Livewire\OpenPay\service\PagoData;
 use Illuminate\Support\Facades\DB;
 
 class SelectPaymentGategay
@@ -42,7 +43,7 @@ class SelectPaymentGategay
         };
     }
 
-    public function GeneratePayFromBrand($brand, Cliente $cliente_pay)
+    public function GeneratePayFromBrand($brand, PagoData $cliente_pay)
     {
           try {
             DB::beginTransaction();
@@ -74,12 +75,7 @@ class SelectPaymentGategay
                 'expiration_date' => now()->addHours(2)->format('Y-m-d H:i'),
             ];
 
-            $cliente = $this->customerService->getOrCreateCustomer([
-                'name' => $cliente_pay->name,
-                'lastname' => $cliente_pay->lastname,
-                'phone' => $cliente_pay->phone,
-                'email' => $cliente_pay->email,
-            ]);
+            $cliente = $this->customerService->getOrCreateCustomer($cliente_pay);
 
             // Llamada a la API de Openpay
             $response = Http::withBasicAuth($privateKey, '')
