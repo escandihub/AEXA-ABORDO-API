@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Openpay\Customer;
+use App\Livewire\OpenPay\service\PagoData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -38,16 +39,21 @@ class CustomerService
         return null;
     }
 
-    public function getOrCreateCustomer(array $data): Customer
+    public function getOrCreateCustomer(PagoData $data): ?Customer
     {
-        // Check if customer already exists
-        $customer = Customer::where('email', $data['email'])->first();
-
-        if (!$customer) {
-            // If not, create a new customer
-            $customer = $this->createCustomer($data);
+        try {
+            return Customer::firstOrCreate(
+                ['email' => $data->email],
+                [
+                    'name' => $data->name,
+                    'last_name' => $data->lastname,
+                    'phone_number' => $data->phone,
+                    'external_id'  => Hash::make($data->email),
+                ]
+            );
+        } catch (\Throwable $th) {
+            Log::error('CustomerService: ' . $e->getMessage(), ['data' => $data]);
+            return null;
         }
-
-        return $customer;
     }
 }
