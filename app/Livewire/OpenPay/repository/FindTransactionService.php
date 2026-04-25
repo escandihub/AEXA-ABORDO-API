@@ -48,10 +48,10 @@ class FindTransactionService
     }
 
     private function mapStatus($transaction) {
-      if($transaction->status == 'completed'){
+      if($transaction?->status == 'completed'){
         return true;
        }
-       else if($transaction->logs()->latest()->first()->status){
+       else if($transaction?->logs()?->latest()->first()?->status){
         return false;
        }
        else {
