@@ -1,11 +1,6 @@
-<div x-data="paymentGenerator()"
-@scroll-to-link.window="showAll()"
-@set-all.window="setAll()"
->
+<div x-data="paymentGenerator()" @scroll-to-link.window="showAll()" @set-all.window="setAll()">
     <div
-        class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4"
-
-        >
+        class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
         <div class="w-full max-w-3xl mx-auto ">
             <div class="flex justify-start mb-6">
                 <button wire:click="redirectToPaymenList" wire:loading.class="animate-pulse"
@@ -65,129 +60,119 @@
                             Información del Cliente
                         </h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Campo Nombre -->
-                            <div class="space-y-2">
-                                <label for="name" class="block text-sm font-semibold text-gray-700">
-                                    Nombre <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <input type="text" id="name" wire:model="name"
-                                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400"
-                                        placeholder="Ingrese el nombre">
-                                </div>
-                                @error('name')
-                                <p class="text-red-500 text-xs mt-1 animate-pulse flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ $message }}
-                                </p>
-                                @enderror
-                            </div>
+                        <div class="text-center space-y-1 pb-2">
+                            <p class="text-sm text-slate-500">Ingresa el contacto para buscar o registrar al solicitante
+                            </p>
+                        </div>
 
-                            <!-- Campo Apellido -->
-                            <div class="space-y-2">
-                                <label for="lastname" class="block text-sm font-semibold text-gray-700">
-                                    Apellido <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <input type="text" id="lastname" wire:model="lastname"
-                                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400"
-                                        placeholder="Ingrese el apellido">
-                                </div>
-                                @error('lastname')
-                                <p class="text-red-500 text-xs mt-1 animate-pulse flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ $message }}
-                                </p>
-                                @enderror
+                        {{-- error en general --}}
+                        @error('general')
+                        <div x-data="{ show: true }" x-show="show" x-transition
+                            class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-4.75a.75.75 0 001.5 0v-4.5a.75.75 0 00-1.5 0v4.5zm.75-7a.75.75 0 100 1.5.75.75 0 000-1.5z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm text-red-700 font-medium">{{ $message }}</p>
+                            </div>
+                            <button @click="show=false" class="text-red-400 hover:text-red-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        @enderror
+
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
+                            <x-open-pay.section-header icon="phone" title="Datos de Contacto"
+                                subtitle="Buscaremos solicitantes asociados a este correo o teléfono" />
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                 <x-open-pay.form-field wire:model.live.debounce.400ms="phone" id="phone" type="tel"
+                                    label="Teléfono" placeholder="10 dígitos" icon="phone" />
+                                <x-open-pay.form-field wire:model.live.debounce.400ms="email" id="email" type="email"
+                                    label="Correo Electrónico" placeholder="correo@dominio.com" icon="email" />                             
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <!-- Campo Email -->
-                            <div class="space-y-2">
-                                <label for="email" class="block text-sm font-semibold text-gray-700">
-                                    Correo Electrónico <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <input type="email" id="email" wire:model="email"
-                                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400"
-                                        placeholder="correo@dominio.com">
-                                </div>
-                                @error('email')
-                                <p class="text-red-500 text-xs mt-1 animate-pulse flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ $message }}
+                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4"
+                            >
+       
+                            <x-open-pay.section-header icon="user" title="Solicitante"
+                                subtitle="Selecciona un nombre existente o registra uno nuevo" />
+{{-- seccion de sugerencias  --}}
+{{-- @if($isSearching && !$this->sugerencias->isNotEmpty()) --}}    
+<section>
+ <x-open-pay.skeleton-suggest  />
+</section>
+                            @if($showSuggestions && $this->sugerencias->isNotEmpty())
+                            <div x-show="true" x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 -translate-y-2"
+                                x-transition:enter-end="opacity-100 translate-y-0" class="space-y-2">
+                                <p
+                                    class="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                                    Solicitantes encontrados ({{ $this->sugerencias->count() }})
                                 </p>
-                                @enderror
+                                <div
+                                    class="grid gap-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-200">
+                                    @foreach($this->sugerencias as $sugerencia)
+                                    <button
+                                        wire:click="selecionarClient({{ $sugerencia['id'] }}, '{{ $sugerencia['name'] }}', '{{ $sugerencia['lastname'] ?? '' }}', '{{ $sugerencia['email'] ?? '' }}')"
+                                        wire:key="sug-{{ $sugerencia['id'] }}" class="group flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-200 text-left
+                               {{ $selectedClienteId === $sugerencia['id']
+                                   ? 'border-indigo-500 bg-indigo-50'
+                                   : 'border-slate-100 hover:border-indigo-200 hover:bg-slate-50' }}"
+                                        style="animation: slideIn {{ $loop->index * 60 }}ms ease-out both">
+                                        <div
+                                            class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                            <span class="text-white text-sm font-bold">{{
+                                                strtoupper(substr($sugerencia['name'], 0, 1)) }}</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-semibold text-slate-800 text-sm truncate">{{
+                                                $sugerencia['full_name'] }}</p>
+                                        </div>
+                                        @if($selectedClienteId === $sugerencia['id'])
+                                        <svg class="w-5 h-5 text-indigo-500 flex-shrink-0" fill="currentColor"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        @endif
+                                    </button>
+                                    @endforeach
+                                </div>
+                                <button wire:click="nuevoNombre"
+                                    class="w-full flex items-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all duration-200 text-slate-500 hover:text-indigo-600 text-sm font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Registrar nuevo nombre (familiar / empresa)
+                                </button>
                             </div>
+                            @endif
 
-                            <!-- Campo Teléfono -->
-                            <div class="space-y-2">
-                                <label for="phone" class="block text-sm font-semibold text-gray-700">
-                                    Teléfono <span class="text-red-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                    <input type="tel" id="phone" wire:model="phone"
-                                        class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400"
-                                        placeholder="(123) 456-7890">
-                                </div>
-                                @error('phone')
-                                <p class="text-red-500 text-xs mt-1 animate-pulse flex items-center">
-                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    {{ $message }}
-                                </p>
-                                @enderror
+                            {{-- [campos nombres] --}}
+
+                            <div x-show="true" x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 translate-y-3"
+                                x-transition:enter-end="opacity-100 translate-y-0"
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-open-pay.form-field wire:model="name" id="name" label="Nombre"
+                                    placeholder="Nombre del solicitante" icon="user" required />
+                                <x-open-pay.form-field wire:model="lastname" id="lastname" label="Apellido"
+                                    placeholder="Apellido (opcional)" icon="user" />
                             </div>
                         </div>
+                        {{-- termina seccion de sugerencias --}}
+                        {{-- termina la nueva operacion de sugerencia --}}                        
                     </div>
 
                     <!-- Detalles del Pago -->
@@ -231,8 +216,10 @@
                             <label for="descripcion" class="block text-sm font-semibold text-gray-700">
                                 Descripción del Pago
                             </label>
-                            <span class="bg-gray-100/50 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center gap-2">
-                                <small class="font-normal leading-relaxed text-gray-500 text-lg max-w-3xl">Formato: ORIGEN-DESTINO. DD-MM-YYYY. ASIENTO N. HH.MM HRS.</small>
+                            <span
+                                class="bg-gray-100/50 px-3 py-1 rounded-full text-xs text-gray-600 flex items-center gap-2">
+                                <small class="font-normal leading-relaxed text-gray-500 text-lg max-w-3xl">Formato:
+                                    ORIGEN-DESTINO. DD-MM-YYYY. ASIENTO N. HH.MM HRS.</small>
                             </span>
                             {{-- <div class="relative">
                                 <textarea id="descripcion" wire:model="descripcion" rows="3"
@@ -259,8 +246,7 @@
 
                     <!-- Botón Generar -->
                     <div class="pt-2">
-                        <button type="submit"
-                        wire:loading.attr="disabled"
+                        <button type="submit" wire:loading.attr="disabled"
                             class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             wire:loading.attr="disabled">
                             <div wire:loading.remove class="flex items-center justify-center">
@@ -286,11 +272,9 @@
                 </form>
 
                 <!-- Link Generado -->
-                
+
                 <div class="mt-6 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200 space-y-4 animate-fadeIn"
-                    
-                    x-show="showSuccess"
-                    >
+                    x-show="showSuccess">
                     <div class="flex items-center space-x-2">
                         <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
