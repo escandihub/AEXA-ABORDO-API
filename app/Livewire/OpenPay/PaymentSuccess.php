@@ -12,6 +12,7 @@ class PaymentSuccess extends Component
      #[Url]
     public $id = '';
     public $pasajero;
+    public $pending = false;
 
     public function render()
     {
@@ -23,16 +24,9 @@ class PaymentSuccess extends Component
     public function mount(FindTransactionService $findTransactionService){
         // dd($this->id);
         $service = $findTransactionService->find($this->id);
-        $this->mapStatus($service);
-        \Log::info("service: ", (array) $service);
+        $this->pending = $service->status === 'charge_pending';
+        // \Log::info("service: ", (array) $service);
         $this->pasajero = (object)  $service->jsonSerialize();
         // dd($service);
-    }
-
-    public function mapStatus($transaction){
-        if($transaction->status === 'charge_pending'){
-            \Log::info("se emite el evento");
-            $this->dispatch("iniciar-temporizado");
-        }
     }
 }
