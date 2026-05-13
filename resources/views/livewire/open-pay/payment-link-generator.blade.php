@@ -196,7 +196,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <span class="text-gray-500 font-medium text-lg">$</span>
                                 </div>
-                                <input type="number" step="0.01" id="monto" wire:model="monto"
+                                <input type="number" pattern="[0-9]*" step="0.01" id="monto" wire:model="monto"
                                     class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 focus:bg-white transition-all duration-300 placeholder-gray-400 text-lg font-semibold"
                                     placeholder="0.00">
                             </div>
@@ -409,7 +409,13 @@
                     setTimeout(() => {
                         this.isSubmitting = false;
                     }, 500);
-                });              
+                });  
+
+                document.querySelector('input[type="number"]').addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                    }
+                });            
             }
      }));
     });
@@ -431,5 +437,12 @@
         .animate-fadeIn {
             animation: fadeIn 0.3s ease-out;
         }
+        
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+        }
+
     </style>
 </div>
