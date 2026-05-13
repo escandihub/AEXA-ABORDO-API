@@ -14,10 +14,10 @@ class FindTransactionService
 
           if(!$transaction){
             return new SuccessCardPay(
-                 nombre: 'mi nombre',
-                apellido: 'apellido',
+                 nombre: '',
+                apellido: '',
                 monto: 0,
-                status: 'trans'
+                status: 'no_existe'
             );
           }
 
@@ -28,16 +28,15 @@ class FindTransactionService
 
           if(!$customer){
             return new SuccessCardPay(
-                 nombre: 'mi nombre',
-                apellido: 'apellido',
+                 nombre: '',
+                apellido: ' ',
                 monto: 0,
-                status: 'cliente'
+                status: 'sin_cliente'
             );
           }
 
           $estado = $this->mapStatus($transaction);
-          \Log::info($estado);
-
+          // \Log::info("estado:", $estado);
           return new SuccessCardPay(
             nombre: $customer->name,
             apellido: $customer->last_name,
@@ -48,14 +47,19 @@ class FindTransactionService
     }
 
     private function mapStatus($transaction) {
-      if($transaction?->status == 'completed'){
-        return true;
+      if($transaction?->status === 'completed'){
+        return "success";
        }
-       else if($transaction?->logs()?->latest()->first()?->status){
-        return false;
-       }
-       else {
-        return false;
-       }
+
+       $lastLog = $transaction->logs()
+        ->latest()
+        ->first();
+        // no hay logs, entonces posiblemente no ha sido procesada por el webhook
+         if (!$lastLog) {
+          \Log::info("esta pasando en el las log");
+        return 'charge_pending';
+        } 
+        //$lastLog->status ?? 
+       return $lastLog->status ?? false;
       }
     }
