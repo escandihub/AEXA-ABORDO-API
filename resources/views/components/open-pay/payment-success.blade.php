@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-b from-[#F2F6FC] to-[#E3EEFF] flex items-center justify-center p-6"
-     x-data="{ shown: false, particles: false }"
+     x-data="{ shown: false, particles: false, runRefresh: false }"
      x-init="setTimeout(() => { shown = true; setTimeout(() => particles = true, 200); }, 100)"
      x-cloak>
 
