@@ -37,7 +37,7 @@ class ErrorHandler
     public function saveLog(array $webhookData): void
     {
         $transaction = Transaction::where('transaction_id', $webhookData['transaction']['id'])->firstOrFail();
-
+   
         $log = TransactionLog::create([
             'transaction_id' => $transaction->id,
             'status' => $webhookData['transaction']['status'] ?? 'failed',
@@ -45,6 +45,13 @@ class ErrorHandler
             'gateway_response_code' => $webhookData['transaction']['error_code'] ?? null,
             'attempted_amount' => $webhookData['transaction']['amount']?? 0.00
         ]);
+
+         if($transaction->status === 'completed'){
+            $transaction->update([
+                'status' => $webhookData['transaction']['status'],
+                'metadata' => $webhookData['transaction']['metadata'] ?? 'failed',
+            ]);
+        }
     }
 
 
