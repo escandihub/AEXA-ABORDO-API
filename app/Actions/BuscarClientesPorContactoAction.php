@@ -20,7 +20,7 @@ class BuscarClientesPorContactoAction
             return collect();
         }
 
-        return Customer::byEmailOrPhone($email, $phone)
+        return Customer::ByEmailOrPhone($email, $phone)
             ->with(['clients' => fn($q) => $q->select('id', 'customer_id', 'name', 'lastname')])
             ->get()
             ->flatMap(function (Customer $c) {
