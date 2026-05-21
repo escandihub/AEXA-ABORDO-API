@@ -74,7 +74,7 @@ class SelectPaymentGategay
                 'redirect_url' => env('OPENPAY_REDIRECT_URL', ''),
                 'expiration_date' => now()->addHours(2)->format('Y-m-d H:i'),
             ];
-
+            // verificar crear client para asociar a customer (email, phone)
             $cliente = $this->customerService->getOrCreateCustomer($cliente_pay);
 
             // Llamada a la API de Openpay

@@ -164,7 +164,7 @@ class PaymentTableComponent extends Component
     public function query(){
         return payment::query()
         ->with(['user'])
-        ->joinCustomer()
+        // ->joinCustomer()
         ->orderBy('payments_buttons.id', 'DESC');
         // ->where('payments.creation_date', '=', now());
 
@@ -181,7 +181,7 @@ class PaymentTableComponent extends Component
         // \Log::info($this->applyFiltersDB()->get());
         $pagos = $this->applyFiltersDB()->paginate(10)->through(fn ($payment) => [
                 'id' => $payment->id,
-                'cliente' => $payment->cliente,
+                'cliente' => $payment->customer->display_name ?? 'N/A',
                 'user' => $payment->user ? $payment->user->name : 'N/A',
                 'amount' => $payment->amount,
                 'fecha' => $payment->created_at->format('Y-m-d'),
