@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Openpay\Customer;
+use App\Models\Openpay\Client;
 use App\Livewire\OpenPay\service\PagoData;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,14 +23,19 @@ class CustomerService
         try {
             // Create customer in Openpay
             $customer = new Customer();
-            $customer->name = $data['name'];
-            $customer->last_name = $data['lastname'];
+            $client = new Client();
+
+            $client->name = $data['name'];
+            $client->last_name = $data['lastname'];
+
             $customer->phone_number = $data['phone'];
             $customer->email = $data['email'];
             $customer->external_id = Hash::make($data['email']); // Use email as external ID
 
             // Save customer to the database
             if ($customer->save()) {
+                $client->customer_id = $customer->id;
+                $client->save();
                 return $customer;
             }
         } catch (Throwable $e) {
@@ -42,15 +48,23 @@ class CustomerService
     public function getOrCreateCustomer(PagoData $data): ?Customer
     {
         try {
-            return Customer::firstOrCreate(
-                ['email' => $data->email],
+            $customer = Customer::firstOrCreate(
                 [
-                    'name' => $data->name,
-                    'last_name' => $data->lastname,
                     'phone_number' => $data->phone,
-                    'external_id'  => Hash::make($data->email),
+                    'email' => $data->email,
                 ]
             );
+
+            $customer->client()->updateOrCreate(
+                [
+                    'customer_id' => $customer->id,
+                ],
+                [
+                    'name' => $data->name,
+                    'lastname' => $data->lastname,
+                ]
+            );
+            return $customer;
         } catch (\Throwable $th) {
             Log::error('CustomerService: ' . $e->getMessage(), ['data' => $data]);
             return null;
