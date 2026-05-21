@@ -32,5 +32,21 @@ class Customer extends Model
             if ($phone) $q->orWhere('phone_number', $phone);
         });
     }
+
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+
+    /** 
+     * se busca el nombre del cliente con relacion a customers 
+     * ya que aqui reguarda datos de contacto. 
+     */
+
+    public function getDisplayNameAttribute() {
+        $name = $this->client?->name ?? $this->name;
+        $lastname = $this->client?->lastname ?? $this->last_name;
+
+        return trim($name . ' ' . $lastname);
+    }
 }
  

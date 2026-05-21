@@ -58,6 +58,9 @@ class payment extends Model
     {
         return $query->whereBetween('creation_date', [$startDate, $endDate]);
     }
+    /**
+     * Para mostrar el nombre del cliente 
+     */
     public function scopeJoinCustomer($query)
     {
         return $query->leftJoin('customers', 'payments_buttons.customer_id', '=', 'customers.id')
